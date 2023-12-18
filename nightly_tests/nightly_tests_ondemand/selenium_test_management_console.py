@@ -79,9 +79,9 @@ def initiate_core_setup(driver, image_dir, results):
         assert driver.current_url.endswith('/ui/setup'), "Navigation to setup page failed"
         results.append({'name': 'Initiate Core Setup', 'status': 'PASSED'})
     except AssertionError as e:
-        results.append({'name': 'Click Core Management Btn', 'status': f'FAILED - {e}'})
+        results.append({'name': 'Click Core Management Btn', 'status': 'FAILED '})
     except Exception as e:
-        results.append({'name': 'Click Core Management Btn', 'status': f'FAILED - {e}'})
+        results.append({'name': 'Click Core Management Btn', 'status': 'FAILED '})
         
 def core_management_setup(driver, image_dir, results, text, element_id):
     test_name = f'Enter {element_id} Name'
@@ -136,7 +136,7 @@ def core_setup_save_btn(driver, image_dir, results):
         results.append({'name': test_name, 'status': 'PASSED'})
 
     except Exception as e:
-        results.append({'name': test_name, 'status': f'FAILED - {e}'})
+        results.append({'name': test_name, 'status': 'FAILED'})
         
 def return_to_MC(driver, image_dir, results, url_without_cred):
     test_name = 'Go Back and Go To Market'
@@ -195,7 +195,7 @@ def grab_terminal_output(driver, element_selector, results):
         return output_text
 
     except Exception as e:
-        results.append({'name': 'Terminal Output', 'status': f'FAILED - {e}'})
+        results.append({'name': 'Terminal Output', 'status': 'FAILED '})
         return None
 
 def install_eks(driver, image_dir, results):
@@ -222,7 +222,8 @@ def install_eks(driver, image_dir, results):
 
     except Exception as e:
         # Append a failed result with the exception message
-        results.append({'name': test_name, 'status': f'FAILED - {e}'})
+        results.append({'name': test_name, 'status': 'FAILED'})
+        
 def unity_management_setup(driver, image_dir, results, text, element_id):
     test_name = f'Enter {element_id} Name'
     try:
