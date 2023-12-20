@@ -123,8 +123,9 @@ def input_project_name(driver, image_dir, results, text, element_id):
     """
     core_management_setup(driver, image_dir, results, text, "unity-cs-selenium-project")
 
+
 def core_setup_save_btn(driver, image_dir, results):
-    test_name = 'Core Setup Save Button'
+    test_name = 'Core Setup Save Button'   
     try:
         save_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[@type='submit'][contains(@class, 'st-button large mt-5')]"))
@@ -251,13 +252,14 @@ def unity_management_setup(driver, image_dir, results, text, element_id):
         results.append({'name': test_name, 'status': 'PASSED'})
     except AssertionError as e:
         results.append({'name': test_name, 'status': 'FAILED', 'error': str(e)})
-def eks_module_name(driver, image_dir, results, text):
+        
+def eks_module_name(driver, image_dir, results, text, element_id):
     """
     Wrapper function to setup the EKS module name using unity_management_setup.
     """
     unity_management_setup(driver, image_dir, results, text, "unity-cs-selenium-name")
 
-def eks_module_branch(driver, image_dir, results, text):
+def eks_module_branch(driver, image_dir, results, text, element_id):
     """
     Wrapper function to setup the EKS module branch using unity_management_setup.
     :param text: Text to be input as the EKS module branch
@@ -295,7 +297,7 @@ if __name__ == '__main__':
     mc_password = os.getenv('MC_PASSWORD')
     management_console_url = os.getenv('MANAGEMENT_CONSOLE_URL')
 
-    # Construct the URL with credentials
+    # Construct the URL with credential
     parsed_url = urlparse(management_console_url)
     new_netloc = f"{mc_username}:{mc_password}@{parsed_url.hostname}"
     if parsed_url.port:
