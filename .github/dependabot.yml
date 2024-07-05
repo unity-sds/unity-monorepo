@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: 'pip'
-    directory: '/' # location of package manifests
+    directory: '/apps/sps/' # location of package manifests
     schedule:
       interval: 'daily'
       time: '09:00'
