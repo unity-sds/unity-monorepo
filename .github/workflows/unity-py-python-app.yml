@@ -15,6 +15,9 @@ on:
 
 jobs:
   build:
+    defaults:
+      run:
+        working-directory: ./libs/unity-py
     strategy:
       fail-fast: false
       max-parallel: 2
@@ -61,6 +64,9 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push' 
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./libs/unity-py
     steps:
       - uses: actions/checkout@v4
         with:

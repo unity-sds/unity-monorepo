@@ -9,9 +9,10 @@ on:
     - 'libs/unity-py/**'
 
 jobs:
-
   release:
-
+    defaults:
+      run:
+        working-directory: ./libs/unity-py
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
