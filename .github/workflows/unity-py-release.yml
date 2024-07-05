@@ -1,4 +1,4 @@
-name: PyPi release
+name: Unity-sds-client PyPi release
 
 on:
   push:
