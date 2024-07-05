@@ -7,11 +7,11 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-    - 'libs/unity-py/**'
+    - './libs/unity-py/**'
   pull_request:
     branches: [ main, develop ]
     paths:
-    - 'libs/unity-py/**'
+    - './libs/unity-py/**'
 
 jobs:
   build:
