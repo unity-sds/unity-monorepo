@@ -9,12 +9,12 @@ on:
     - main
     - develop
     paths:
-    - 'libs/unity-py/'
+    - 'libs/unity-py/**'
   pull_request:
     branches: 
     - main
     paths:
-    - './libs/unity-py/'
+    - 'libs/unity-py/**'
 
 jobs:
   build:
