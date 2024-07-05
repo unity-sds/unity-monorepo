@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": [
+    {
+      "type": "object",
+      "properties": {
+        "service": {
+          "type": "string"
+        },
+        "landingPage": {
+          "type": "string"
+        },
+        "healthChecks": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": ["HEALTHY", "UNHEALTHY"]
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "status",
+                "date"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "service",
+        "landingPage",
+        "healthChecks"
+      ]
+    }
+  ]
+}
