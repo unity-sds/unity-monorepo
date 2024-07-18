@@ -110,7 +110,7 @@ See also: https://github.com/unity-sds/sounder-sips-tutorial/blob/develop/jupyte
 ```
 {
     "componentName": "Data Catalog",
-    "ssmKey": "/unity/component/shared-services/data-catalog",
+    "ssmKey": "/unity/shared-services/component/data-catalog",
     "healthCheckUrl": "https://...",
     "landingPageUrl": "https://...",
     "healthChecks": [
@@ -141,7 +141,7 @@ https://...healthCheck..
 ## NEW:
 Example key:
 ```
-/unity/component/shared-services/data-catalog/
+/unity/shared-services/component/data-catalog/
 ```
 
 Example value:
