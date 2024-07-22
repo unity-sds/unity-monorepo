@@ -22,6 +22,8 @@ giturlparse = "^0.10.0"
 pystac = "^1.7.3"
 unity-sps-ogc-processes-api-python-client = "^1.0.0"
 #unity-sps-ogc-processes-api-python-client = {path = "../unity-sps-ogc-processes-api-client-python", develop = true}
+jsonschema = "^4.22.0"
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
