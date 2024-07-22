@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import traceback
 from typing import TYPE_CHECKING
+import requests
 import unity_sps_ogc_processes_api_python_client
 from unity_sps_ogc_processes_api_python_client.exceptions import NotFoundException
 
 from unity_sds_client.unity_exception import UnityException
 from unity_sds_client.unity_session import UnitySession
 from unity_sds_client.resources.job_status import JobStatus
+from unity_sds_client.utils.http import get_headers
 
 if TYPE_CHECKING:
     from unity_sds_client.resources.process import Process
