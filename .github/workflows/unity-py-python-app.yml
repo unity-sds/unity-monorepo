@@ -81,15 +81,21 @@ jobs:
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: "1.5.1"
-      - name: version-bump
-        run: |
-          poetry version prerelease
-      - name: Commit Version Bump
-        run: |
-          git config --global user.name 'mdps bot'
-          git config --global user.email 'mdps@noreply.github.com'
-          git commit -am "development version bump. [skip actions]"
-          git push
+      # Commented out the version bump code. Will publish new unity-py version to pypi on push to main. 
+      # This means we are always releasing. This will fail if the version already exists in Pypi.
+      # We must ensure that the version has been updated.
+      # 
+      # Future work: set PR test to ensure the version has been updated.
+      
+      # - name: version-bump
+      #   run: |
+      #     poetry version prerelease
+      # - name: Commit Version Bump
+      #   run: |
+      #     git config --global user.name 'mdps bot'
+      #     git config --global user.email 'mdps@noreply.github.com'
+      #     git commit -am "development version bump. [skip actions]"
+      #     git push
       - name: Install dependencies
         run: |
           poetry install
