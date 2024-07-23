@@ -41,6 +41,16 @@ jobs:
       uses: abatilo/actions-poetry@v2.0.0
       with:
         poetry-version: ${{ matrix.poetry-version }}
+    - name: Software Version Check
+      run: |
+        unity_py_proposed_version=`poetry version -s`
+        echo "curl -s -o /dev/null -w \"%{http_code}\" https://pypi.org/project/unity-sds-client/$unity_py_proposed_version/"
+        status_code=`curl -s -o /dev/null -w "%{http_code}" https://pypi.org/project/unity-sds-client/$unity_py_proposed_version/`
+        echo "Received status code of $status_code"
+        if ((status_code == 200)); then
+          echo "Version already exists."
+          exit 1
+        fi
     - name: Install dependencies
       run: |
         poetry install
@@ -84,7 +94,7 @@ jobs:
       # Commented out the version bump code. Will publish new unity-py version to pypi on push to main. 
       # This means we are always releasing. This will fail if the version already exists in Pypi.
       # We must ensure that the version has been updated.
-      # 
+      # ADded version check above.
       # Future work: set PR test to ensure the version has been updated.
       
       # - name: version-bump
