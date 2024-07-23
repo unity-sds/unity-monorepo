@@ -37,6 +37,11 @@ Unity-Py provides a seamless way to interact with NASA's Unity Platform using Py
 
 * Python
 * pip
+
+Development Requirements
+
+* poetry
+* [poetry-monorepo-dependency-plugin](https://pypi.org/project/poetry-monorepo-dependency-plugin/) 
   
 ### Setup Instructions
 
