@@ -47,9 +47,9 @@ jobs:
       with:
         filters: |
           src:
-            - '**'
+            - 'libs/unity-py/**'
     - name: Software Version Check
-      if: steps.filter.outputs.src == 'true'
+      if: steps.changes.outputs.src == 'true'
       run: |
         unity_py_proposed_version=`poetry version -s`
         echo "curl -s -o /dev/null -w \"%{http_code}\" https://pypi.org/project/unity-sds-client/$unity_py_proposed_version/"
