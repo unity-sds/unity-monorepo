@@ -1,12 +1,13 @@
 import os
 from configparser import ConfigParser, ExtendedInterpolation
+
 from unity_sds_client.services.data_service import DataService
-from unity_sds_client.services.process_service import ProcessService
 from unity_sds_client.services.health_service import HealthService
-from unity_sds_client.unity_session import UnitySession
-from unity_sds_client.unity_exception import UnityException
+from unity_sds_client.services.process_service import ProcessService
 from unity_sds_client.unity_environments import UnityEnvironments
+from unity_sds_client.unity_exception import UnityException
 from unity_sds_client.unity_services import UnityServices
+from unity_sds_client.unity_session import UnitySession
 
 
 class Unity(object):
@@ -16,16 +17,22 @@ class Unity(object):
     is passed to different services and resources as needed.
     """
 
-    def __init__(self, environment: UnityEnvironments = UnityEnvironments.TEST, config_file_override:str = None):
+    def __init__(
+        self,
+        environment: UnityEnvironments = UnityEnvironments.PROD,
+        config_file_override: str = None,
+    ):
         """
-        :param environment: the default environment for a session to work with. Defaults to 'TEST' unity environment.
+        :param environment: the default environment for a session to work with. Defaults to 'PROD' unity environment.
         :param config_file_override: absolute path to a config file containing settings to override default config
         """
         env = environment
-        config = _read_config([
-            os.path.dirname(os.path.realpath(__file__)) + "/envs/environments.cfg".format(str(env.value).lower()),
-            config_file_override
-        ])
+        config = _read_config(
+            [
+                os.path.dirname(os.path.realpath(__file__)) + "/envs/environments.cfg",
+                config_file_override,
+            ]
+        )
         self._session = UnitySession(env.value, config)
 
     def set_project(self, project):
@@ -33,7 +40,7 @@ class Unity(object):
         :param project: the project to use when interacting with venue specific services. Used in building the restful
         endpoint.
         """
-        self._session._project  = project
+        self._session._project = project
 
     def set_venue(self, venue):
         """
@@ -66,15 +73,20 @@ class Unity(object):
     def __str__(self):
         response = "\nUNITY CONFIGURATION"
         response = response + "\n" + len(response) * "-" + "\n"
-        
+
         config = self._session.get_config()
         config_sections = config.sections()
         for section in config_sections:
             response = response + "\n[{}]\n".format(section)
             for setting in dict(config[section]):
-                response = response + "{}: {}\n".format(setting, dict(config[section])[setting])
+                response = response + "{}: {}\n".format(
+                    setting, dict(config[section])[setting]
+                )
 
-        response = response + self.client(UnityServices.HEALTH_SERVICE).generate_health_status_report()
+        response = (
+            response
+            + self.client(UnityServices.HEALTH_SERVICE).generate_health_status_report()
+        )
 
         return response
 
