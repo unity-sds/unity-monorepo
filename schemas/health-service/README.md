@@ -48,6 +48,7 @@ NOTE: The latter form of shared SSM parameters are created per [these instructio
 
 2) gathers the health status of each of the healthCheck URLs found in the SSM values. For now, HTTP 200 represents HEALTHY, and anything else represents UNHEALTHY. Some of the URLs represented in the SSM values are endpoints in the shared services AWS account, and others are in the venue account.
 Generates the JSON status file, with the statuses (healthy or unhealthy). EXAMPLE JSON file:
+```
 {
   "services": [
     {
@@ -78,8 +79,9 @@ Generates the JSON status file, with the statuses (healthy or unhealthy). EXAMPL
     }
   ]
 }
+```
 
-3) Uploads JSON file to S3 bucket. Use the bucket defined in Create SSM parameter for monitoring S3 bucket name #370
+4) Uploads JSON file to S3 bucket. Use the bucket defined in Create SSM parameter for monitoring S3 bucket name #370
 
 
 ## What if the healthCheck endpoint is secured? How will I work around that?
