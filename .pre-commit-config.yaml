@@ -43,13 +43,15 @@ repos:
     hooks:
       - id: ruff
 
+  # unity-py bandit config
   - repo: https://github.com/PyCQA/bandit
     rev: "1.7.8" # you must change this to newest version
     hooks:
       - id: bandit
+        files: '^libs/unity-py/.*\.py'
         args:
           [
-            "--configfile=pyproject.toml",
+            "--configfile=libs/unity-py/pyproject.toml",
             "--severity-level=high",
             "--confidence-level=high",
           ]
