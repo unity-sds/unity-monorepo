@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: App Package API
+  description: Service for application package generation
+
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+
+security:
+  - bearerAuth: []
+
+servers:
+  - url: api.dev.mdps.mcp.nasa.gov
+
+paths:
+  /ads-acb/mcp-clone:
+    get:
+      summary: Begins the MCP Clone process
+      parameters:
+        - in: header
+          name: clone_url
+          schema:
+            type: string
+          required: true
+
+      responses:
+        '200':
+          description: Successfully submitted a job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clone_url:
+                    type: string
+                  log_group_name:
+                    type: string
