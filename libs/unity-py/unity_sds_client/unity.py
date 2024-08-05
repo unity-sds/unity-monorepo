@@ -20,11 +20,11 @@ class Unity(object):
 
     def __init__(
         self,
-        environment: UnityEnvironments = UnityEnvironments.TEST,
+        environment: UnityEnvironments = UnityEnvironments.PROD,
         config_file_override: str = None,
     ):
         """
-        :param environment: the default environment for a session to work with. Defaults to 'TEST' unity environment.
+        :param environment: the default environment for a session to work with. Defaults to 'PROD' unity environment.
         :param config_file_override: absolute path to a config file containing settings to override default config
         """
         env = environment
