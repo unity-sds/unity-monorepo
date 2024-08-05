@@ -1,14 +1,79 @@
 import json
 import os
-import requests
-from zipfile import ZipFile
-
-from functools import cached_property
-
+import traceback
 from abc import ABC, abstractmethod
 from enum import Enum
+from functools import cached_property
+from zipfile import ZipFile
 
+import requests
+import unity_sds_apgs_client
 from attrs import define, field
+from unity_sds_apgs_client import AdsAcbMcpCloneGet200Response
+from unity_sds_client.unity_exception import UnityException
+from unity_sds_client.unity_session import UnitySession
+
+
+class ApplicationService(object):
+    def __init__(
+        self, session: UnitySession, endpoint: str = None, debug: bool = False
+    ):
+        """
+        Initialize the ApplicationService class.
+
+        Parameters
+        ----------
+        session : UnitySession
+            The Unity Session that will be used to facilitate making calls to the SPS endpoints.
+        endpoint : str
+            An endpoint URL to override the endpoint specified in the package's config.
+
+        Returns
+        -------
+        ProcessService
+            The Process Service object.
+        """
+        self._session = session
+        self._debug = debug
+        if endpoint is None:
+            # end point is the combination of the processes API and the project/venue
+            # self._session.get_unity_href()
+            self.endpoint = self._session.get_unity_href()
+
+    def build_application_package(self, repo_url) -> AdsAcbMcpCloneGet200Response:
+        """
+        Submit github repository for application-pacakge build. This interacts with a Unity shared service so
+        project/venue are not required for this method.
+
+        :param repo_url: the publicly accessible repository that you want to convert into an applicaiton pacakge.
+        Examples include https://github.com/unity-sds/unity-example-application
+        :return  AdsAcbMcpCloneGet200Response:
+        """
+        token = self._session.get_auth().get_token()
+        url = self.endpoint
+        print(token)
+
+        # The access_token as of 8/2/2024 is not being repsected so we have a work around being used below.
+        configuration = unity_sds_apgs_client.Configuration(
+            host=url, access_token=token, debug=self._debug
+        )
+
+        with unity_sds_apgs_client.ApiClient(configuration) as api_client:
+            # This is a workaround (suggested in https://github.com/OpenAPITools/openapi-generator/issues/8865) that
+            # fixes the outstanding bug
+            api_client.default_headers["Authorization"] = "Bearer " + token
+            api_instance = unity_sds_apgs_client.api.DefaultApi(api_client)
+            try:
+                ads_clone_repo_response = api_instance.ads_acb_mcp_clone_get(repo_url)
+                return ads_clone_repo_response
+            except Exception as e:
+                print(traceback.format_exc())
+                print(
+                    "Exception when calling DefaultApi->ads_acb_mcp_clone_get: %s\n" % e
+                )
+                raise UnityException(
+                    "Exception when calling DefaultApi->ads_acb_mcp_clone_get: %s\n" % e
+                )
 
 
 class ApplicationCatalogAccessError(Exception):
@@ -46,14 +111,10 @@ class WorkflowType(Enum):
 #
 
 # File type for the workflow parameter file
-DockstoreFileType = {
-    CWL_VALUE: 'DOCKSTORE_CWL'
-}
+DockstoreFileType = {CWL_VALUE: "DOCKSTORE_CWL"}
 
 # File type for the JSON format file based on the workflow type
-DockstoreJSONFileType = {
-    CWL_VALUE: 'CWL_TEST_JSON'
-}
+DockstoreJSONFileType = {CWL_VALUE: "CWL_TEST_JSON"}
 
 
 @define
@@ -69,7 +130,7 @@ class ApplicationPackage(object):
     # Optional
     source_repository: str = None
     # Dockstore hard-codes the primary descriptor path for the hosted workflow
-    workflow_path: str = 'Dockstore.cwl'
+    workflow_path: str = "Dockstore.cwl"
     id: str = None  # Not yet commited to catalog
     is_published: bool = False
     description: str = ""
@@ -102,8 +163,7 @@ class ApplicationCatalog(ABC):
     """
 
     def __init__(self):
-        """
-        """
+        """ """
         pass
 
     @abstractmethod
@@ -185,10 +245,7 @@ class DockstoreAppCatalog(ApplicationCatalog):
         """
         Header used to download ZIP archive of the workflow descriptor and parameter files.
         """
-        return {
-            "Accept": "application/zip",
-            "Authorization": f"Bearer {self.token}"
-        }
+        return {"Accept": "application/zip", "Authorization": f"Bearer {self.token}"}
 
     def _get(self, request_url, params=None):
         """
@@ -207,10 +264,14 @@ class DockstoreAppCatalog(ApplicationCatalog):
 
         request_url = request_url.strip("/")
 
-        response = requests.get(f"{self.api_url}/{request_url}", headers=self._headers, params=params)
+        response = requests.get(
+            f"{self.api_url}/{request_url}", headers=self._headers, params=params
+        )
 
         if response.status_code != 200:
-            raise ApplicationCatalogAccessError(f"GET operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content}")
+            raise ApplicationCatalogAccessError(
+                f"GET operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content}"
+            )
 
         return response
 
@@ -229,10 +290,14 @@ class DockstoreAppCatalog(ApplicationCatalog):
         """
         request_url = request_url.strip("/")
 
-        response = requests.get(f"{self.api_url}/{request_url}", headers=self._zip_headers)
+        response = requests.get(
+            f"{self.api_url}/{request_url}", headers=self._zip_headers
+        )
 
         if response.status_code != 200:
-            raise ApplicationCatalogAccessError(f"GET operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content}")
+            raise ApplicationCatalogAccessError(
+                f"GET operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content}"
+            )
 
         return response
 
@@ -241,12 +306,21 @@ class DockstoreAppCatalog(ApplicationCatalog):
         request_url = request_url.strip("/")
 
         if data is not None:
-            response = requests.post(f"{self.api_url}/{request_url}", headers=self._headers, params=params, data=json.dumps(data))
+            response = requests.post(
+                f"{self.api_url}/{request_url}",
+                headers=self._headers,
+                params=params,
+                data=json.dumps(data),
+            )
         else:
-            response = requests.post(f"{self.api_url}/{request_url}", headers=self._headers, params=params)
+            response = requests.post(
+                f"{self.api_url}/{request_url}", headers=self._headers, params=params
+            )
 
         if response.status_code != 200:
-            raise ApplicationCatalogAccessError(f"POST operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content} using params: {params}")
+            raise ApplicationCatalogAccessError(
+                f"POST operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content} using params: {params}"
+            )
 
         return response
 
@@ -256,11 +330,17 @@ class DockstoreAppCatalog(ApplicationCatalog):
         """
         request_url = request_url.strip("/")
 
-        response = requests.patch(f"{self.api_url}/{request_url}", headers=self._headers, data=json.dumps(data))
+        response = requests.patch(
+            f"{self.api_url}/{request_url}",
+            headers=self._headers,
+            data=json.dumps(data),
+        )
 
         # 204 indicates that no action was taken
         if response.status_code != 200 and response.status_code != 204:
-            raise ApplicationCatalogAccessError(f"PATCH operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content} using data: {data}")
+            raise ApplicationCatalogAccessError(
+                f"PATCH operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content} using data: {data}"
+            )
 
         return response
 
@@ -270,10 +350,14 @@ class DockstoreAppCatalog(ApplicationCatalog):
         """
         request_url = request_url.strip("/")
 
-        response = requests.delete(f"{self.api_url}/{request_url}", headers=self._headers)
+        response = requests.delete(
+            f"{self.api_url}/{request_url}", headers=self._headers
+        )
 
         if response.status_code != 200 and response.status_code != 204:
-            raise ApplicationCatalogAccessError(f"DELETE operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content}")
+            raise ApplicationCatalogAccessError(
+                f"DELETE operation to application catalog at {self.api_url}/{request_url} return unexpected status code: {response.status_code} with message: {response.content}"
+            )
 
         return response
 
@@ -290,7 +374,7 @@ class DockstoreAppCatalog(ApplicationCatalog):
 
     @property
     def _user_id(self):
-        return self._user_info['id']
+        return self._user_info["id"]
 
     def _application_from_json(self, json_dict):
         """
@@ -299,16 +383,16 @@ class DockstoreAppCatalog(ApplicationCatalog):
         """
         # Name when using manual registry is an extra string given
         # after registry path
-        name = json_dict['full_workflow_path'].split("/")[-1]
+        name = json_dict["full_workflow_path"].split("/")[-1]
 
         return DockstoreApplicationPackage(
-            id=str(json_dict['id']),
+            id=str(json_dict["id"]),
             name=name,
-            source_repository=json_dict['gitUrl'],
-            workflow_path=json_dict['workflow_path'],
-            is_published=json_dict['is_published'],
-            description=json_dict['description'],
-            dockstore_info=json_dict
+            source_repository=json_dict["gitUrl"],
+            workflow_path=json_dict["workflow_path"],
+            is_published=json_dict["is_published"],
+            description=json_dict["description"],
+            dockstore_info=json_dict,
         )
 
     @staticmethod
@@ -324,20 +408,22 @@ class DockstoreAppCatalog(ApplicationCatalog):
             file_format: Dockstore file type for the file.
         """
         # Dockstore requires absolute path for the file to be uploaded
-        dockstore_file_path = f'/{dockstore_path}' if dockstore_path[0] != '/' else dockstore_path
+        dockstore_file_path = (
+            f"/{dockstore_path}" if dockstore_path[0] != "/" else dockstore_path
+        )
 
         # Content of the file: None means to delete the file from the hosted workflow
         data = None
         if file_path is not None and len(file_path):
             # Read contents of the local file
-            with open(file_path, 'r') as fhandle:
+            with open(file_path, "r") as fhandle:
                 data = fhandle.read()
 
         return {
-            'path': dockstore_file_path,
-            'absolutePath': dockstore_file_path,
-            'content': data,
-            'type': file_format
+            "path": dockstore_file_path,
+            "absolutePath": dockstore_file_path,
+            "content": data,
+            "type": file_format,
         }
 
     def application(self, app_id: int):
@@ -369,7 +455,7 @@ class DockstoreAppCatalog(ApplicationCatalog):
             # Searching for user workflows does not return the full
             # set of application information
             if for_user:
-                app_obj = self.application(app_info['id'])
+                app_obj = self.application(app_info["id"])
 
             else:
                 app_obj = self._application_from_json(app_info)
@@ -388,7 +474,7 @@ class DockstoreAppCatalog(ApplicationCatalog):
         cwl_files: list = [],
         json_files: list = [],
         filename_map: dict = {},
-        publish: bool = True
+        publish: bool = True,
     ):
         """
         Register new hosted workflow within the Dockstore, upload workflow parameter files and publish
@@ -416,8 +502,8 @@ class DockstoreAppCatalog(ApplicationCatalog):
         """
         # Set up request parameters for the Dockstore application as expected for the hosted workflow
         params = {
-            'name': app_name,
-            'descriptorType': app_type,
+            "name": app_name,
+            "descriptorType": app_type,
         }
 
         request_url = "/workflows/hostedEntry"
@@ -438,7 +524,9 @@ class DockstoreAppCatalog(ApplicationCatalog):
                 self._publish(new_app_id, publish)
 
             else:
-                raise HostedWorkflowError('Can not publish hosted workflow (id={new_app_id}) as no parameter files have been uploaded')
+                raise HostedWorkflowError(
+                    "Can not publish hosted workflow (id={new_app_id}) as no parameter files have been uploaded"
+                )
 
         # Reload application information from the Dockstore
         return self.application(new_app_id)
@@ -448,7 +536,7 @@ class DockstoreAppCatalog(ApplicationCatalog):
         application,
         cwl_files: list = [],
         json_files: list = [],
-        filename_map: dict = {}
+        filename_map: dict = {},
     ):
         """
         Upload workflow parameter files for the workflow.
@@ -476,24 +564,28 @@ class DockstoreAppCatalog(ApplicationCatalog):
             params = []
 
             for each_path in cwl_files:
-                dockstore_path = os.path.basename(each_path) if each_path not in filename_map else filename_map[each_path]
+                dockstore_path = (
+                    os.path.basename(each_path)
+                    if each_path not in filename_map
+                    else filename_map[each_path]
+                )
 
                 params.append(
                     DockstoreAppCatalog._file_to_json(
-                        each_path,
-                        dockstore_path,
-                        DockstoreFileType[app_type]
+                        each_path, dockstore_path, DockstoreFileType[app_type]
                     )
                 )
 
             for each_path in json_files:
-                dockstore_path = os.path.basename(each_path) if each_path not in filename_map else filename_map[each_path]
+                dockstore_path = (
+                    os.path.basename(each_path)
+                    if each_path not in filename_map
+                    else filename_map[each_path]
+                )
 
                 params.append(
                     DockstoreAppCatalog._file_to_json(
-                        each_path,
-                        dockstore_path,
-                        DockstoreJSONFileType[app_type]
+                        each_path, dockstore_path, DockstoreJSONFileType[app_type]
                     )
                 )
 
@@ -504,7 +596,9 @@ class DockstoreAppCatalog(ApplicationCatalog):
 
         return
 
-    def upload_parameter_file(self, application, param_filename: str, dockstore_filename: str = ''):
+    def upload_parameter_file(
+        self, application, param_filename: str, dockstore_filename: str = ""
+    ):
         """
         Upload local workflow parameter file "param_filename" to the hosted by Dockstore workflow.
 
@@ -513,13 +607,18 @@ class DockstoreAppCatalog(ApplicationCatalog):
 
         To remove the file from the registered application just upload file of empy content to the Dockstore.
         """
-        dockstore_path = os.path.basename(param_filename) if len(dockstore_filename) == 0 else dockstore_filename
+        dockstore_path = (
+            os.path.basename(param_filename)
+            if len(dockstore_filename) == 0
+            else dockstore_filename
+        )
 
         # Create JSON dictionary of parameters for the file
-        params = [DockstoreAppCatalog._file_to_json(
+        params = [
+            DockstoreAppCatalog._file_to_json(
                 param_filename,
                 dockstore_path,
-                DockstoreFileType[application.workflow_type]
+                DockstoreFileType[application.workflow_type],
             )
         ]
 
@@ -527,7 +626,9 @@ class DockstoreAppCatalog(ApplicationCatalog):
 
         self._patch(request_url, params)
 
-    def upload_json_file(self, application, param_filename: str, dockstore_filename: str = ''):
+    def upload_json_file(
+        self, application, param_filename: str, dockstore_filename: str = ""
+    ):
         """
         Upload local JSON file "param_filename" to the hosted by Dockstore workflow.
 
@@ -536,13 +637,18 @@ class DockstoreAppCatalog(ApplicationCatalog):
 
         To remove the file from the registered application just upload file of an empy content to the Dockstore.
         """
-        dockstore_path = os.path.basename(param_filename) if len(dockstore_filename) == 0 else dockstore_filename
+        dockstore_path = (
+            os.path.basename(param_filename)
+            if len(dockstore_filename) == 0
+            else dockstore_filename
+        )
 
         # Create JSON dictionary of parameters for the file
-        params = [DockstoreAppCatalog._file_to_json(
+        params = [
+            DockstoreAppCatalog._file_to_json(
                 param_filename,
                 dockstore_path,
-                DockstoreJSONFileType[application.workflow_type]
+                DockstoreJSONFileType[application.workflow_type],
             )
         ]
 
@@ -567,15 +673,13 @@ class DockstoreAppCatalog(ApplicationCatalog):
         """
         request_url = f"/workflows/{application.id}"
 
-        params = {
-            'include': 'versions'
-        }
+        params = {"include": "versions"}
 
         response = self._get(request_url, params=params).json()
 
         application_versions = {}
-        for each in response['workflowVersions']:
-            application_versions[each['id']] = each['name']
+        for each in response["workflowVersions"]:
+            application_versions[each["id"]] = each["name"]
 
         return application_versions
 
@@ -602,11 +706,11 @@ class DockstoreAppCatalog(ApplicationCatalog):
         # Create ZIP filename with the version name as it appears in the Dockstore UI
         zip_file_path = os.path.join(
             output_dir_path,
-            f'application_id{application.id}_v{app_versions[latest_version_id]}.zip'
+            f"application_id{application.id}_v{app_versions[latest_version_id]}.zip",
         )
 
         # Download the zip archive file
-        with open(zip_file_path, 'wb') as f:
+        with open(zip_file_path, "wb") as f:
             request_url = f"/workflows/{application.id}/zip/{latest_version_id}"
             response = self._get_zip(request_url)
 
