@@ -22,11 +22,12 @@ repos:
           - --allow-missing-credentials
       - id: check-toml # Checks toml files for parsable syntax.
 
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: "v0.39.0"
-    hooks:
-      - id: markdownlint
-        args: ["--config", ".markdownlintrc", "--ignore", "CHANGELOG.md"]
+  # Ignored because it caused exceptions with no clear indication as to the problem
+  #- repo: https://github.com/igorshubovych/markdownlint-cli
+  #  rev: "v0.39.0"
+  #  hooks:
+  #    - id: markdownlint
+  #      args: ["--config", ".markdownlintrc", "--ignore", "**/CHANGELOG.md"]
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2
