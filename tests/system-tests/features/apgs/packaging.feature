@@ -7,14 +7,14 @@ Feature: MDPS_2_REQ-164, MDPS_2_REQ-165, MDPS_2_REQ-80, MDPS_2_REQ-81
     Given I have a token to authenticate with Unity Services
     When I submit <repo_name> to the apgs build system
     Then the apgs build response is <result>
-#    And I wait for the apgs build to complete
+    And I wait for the apgs build to complete
 #    And the completed apgs build information references <repository>
 #    And the completed apgs build information references the application catalog
 
     @develop
     Examples: repos
       | repo_name  | result | artifact_repo |
-      | https://github.com/unity-sds/unity-example-application.git | success | dockerhub |
+      | https://github.com/unity-sds/unity-example-application | success | dockerhub |
 
 
     @test
