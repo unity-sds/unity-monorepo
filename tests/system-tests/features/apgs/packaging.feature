@@ -20,7 +20,7 @@ Feature: MDPS_2_REQ-164, MDPS_2_REQ-165, MDPS_2_REQ-80, MDPS_2_REQ-81
     @test
     Examples: repos
       | repo_name  | result | artifact_repo |
-      | https://github.com/unity-sds/unity-example-application.git | success | dockerhub |
+      | https://github.com/unity-sds/unity-example-application | success | dockerhub |
 
   @apgs
   Scenario: Unsuccessful Application Package Builds from non-existent repo
