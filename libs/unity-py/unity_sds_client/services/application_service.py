@@ -24,7 +24,7 @@ class ApplicationService(object):
         Parameters
         ----------
         session : UnitySession
-            The Unity Session that will be used to facilitate making calls to the SPS endpoints.
+            The Unity Session that will be used to facilitate making calls to the Application endpoints.
         endpoint : str
             An endpoint URL to override the endpoint specified in the package's config.
 
