@@ -5,16 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.6.0] - 2024-08-13
-### Added
-* Added app-pacakge build system client and integrations
-### Fixed
-### Changed
-### Removed
-### Security
-### Deprecated
-
-
 ## [0.5.0] - 2024-07-31
 ### Added
 ### Fixed
@@ -68,10 +58,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 
-## [0.2.2] - 2024-01-03
+## [0.2.2] - 2024-01-03 
 ### Added
 * Added project/venue support [5](https://github.com/unity-sds/unity-py/issues/58)
-### Fixed
+### Fixed 
 ### Changed
 ### Removed
 ### Security
@@ -80,7 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.1] - 2023-11-29
 ### Added
 * python code coverage via coveralls
-### Fixed
+### Fixed 
 ### Changed
 * updated install to support python 3.8 and above.
 ### Removed
@@ -90,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.1] - 2023-11-29
 ### Added
 * python code coverage via coveralls
-### Fixed
+### Fixed 
 ### Changed
 * updated install to support python 3.8 and above.
 ### Removed
@@ -100,9 +90,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2023-08-10
 ### Added
-* Added parsing of collection in stac items
+* Added parsing of collection in stac items 
 ### Fixed
-* fixed release workflow to test against `unity-sds-client` not `unity_py`
+* fixed release workflow to test against `unity-sds-client` not `unity_py` 
 ### Changed
 * updated package name so that imports reference `unity_sds_client` not `unity_py`
 ### Removed
