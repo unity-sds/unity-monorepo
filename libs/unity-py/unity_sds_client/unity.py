@@ -1,7 +1,6 @@
 import os
 from configparser import ConfigParser, ExtendedInterpolation
 
-from unity_sds_client.services.application_service import ApplicationService
 from unity_sds_client.services.data_service import DataService
 from unity_sds_client.services.health_service import HealthService
 from unity_sds_client.services.process_service import ProcessService
@@ -68,8 +67,6 @@ class Unity(object):
             return HealthService(session=self._session)
         elif service_name == UnityServices.PROCESS_SERVICE:
             return ProcessService(session=self._session)
-        elif service_name == UnityServices.APPLICATION_SERVICE:
-            return ApplicationService(session=self._session)
         else:
             raise UnityException("Invalid service name: " + str(service_name))
 
