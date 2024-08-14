@@ -24,7 +24,7 @@
 
 <!--[INSERT MORE DETAILED DESCRIPTION OF YOUR REPOSITORY HERE]
  ☝️ Replace with a more detailed description of your repository, including why it was made and whom its intended for.  ☝️ -->
-This repository includes the system test plan to be executed against a release of the Unity software system. This is mainly forr developers and integrators of Unity software. 
+This repository includes the system test plan to be executed against a release of the Unity software system. This is mainly forr developers and integrators of Unity software.
 
 <!--
 [INSERT LIST OF IMPORTANT PROJECT / REPO LINKS HERE]
@@ -58,23 +58,46 @@ This guide provides a quick way to get started with our project. Please see our 
 * [Behave framework](https://behave.readthedocs.io/en/stable/)
 * Unity username and password for service based testing
 * AWS access for in-depth testing
-  
+
 
 ### Setup Instructions
 
-1. Install the behave framework:
+1. Install the required libraries:
   ```
-   pip install behave
+   poery install
   ```
-   
+
 <!-- ☝️ Replace with a numbered list of how to set up your software prior to running ☝️ -->
 
 ### Run Instructions
+1. Configure environment for tests
+    ```
+    cp env.cfg .env.cfg
+    vi .env.cfg (fill out this stuff for the environment)
+    source .env.cfg
+    ```
+The configuration requires things like a unity username/password (possibly replaces with a token in the future), specific endpoints you'll want to hit, and project/venues to test against.
 
-1. Run the tests
+
+2. Run the regression tests
   ```
-   behave
+   sh regression_test.sh
   ```
+
+### A Note On Tags
+
+Most tests are setup with scenario outlines, meaning we can pass in a number of values from a table into a test suite. The tables are often different for de, test, and ops environments since they might refer to specific items that change in dev/test/ops environments like a collection ID or the venue you'll be in. To choose a venue, we use a tag system (e.g. `-t develop`).
+
+This not only chooses the environment specific values to send in, it also choses the environment for things like unity_py:
+
+```python
+    if "develop" in context.tags:
+        s = Unity(UnityEnvironments.DEV)
+    elif "test" in context.tags:
+        s = Unity(UnityEnvironments.TEST)
+    elif "prod" in context.tags:
+        s = Unity(UnityEnvironments.PROD)
+```
 
 ### Usage Examples
 
@@ -84,23 +107,24 @@ behave
 
 Run against "develop" values
 ```
-behave --tags=@develop features/tagged_examples.feature
+behave features/tagged_examples.feature -t develop
 ```
 
 Run against "test" values
 ```
-behave --tags=@test features/data_catalog/parent_collections.feature
+behave features/data_catalog/parent_collections.feature -t test
 ```
 
-run Shared Service Tests:
+run only Shared Service Tests with test data:
+```
+behave --tags=shared --tags=test
 ```
 
-behave --tags=shared
-```
+note, using `--tags=shared,test` would run any tests tagged with shared OR items marked test.
 
 ### Build Instructions (if applicable)
 
-No builds are necessary- thes run from source code.
+No builds are necessary- these run from source code.
 
 ### Test Instructions (if applicable)
 
@@ -152,4 +176,3 @@ Key points of contact are: [@github-user-1](link to github profile) [@github-use
 -->
 
 <!-- ☝️ Replace with the key individuals who should be contacted for questions ☝️ -->
-

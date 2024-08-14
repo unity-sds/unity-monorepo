@@ -169,3 +169,6 @@ reports/
 #unity-py
 libs/unity-py/tests/test_files/tmp/
 libs/unity-py/tests/test_files/tmp2/
+
+#system-tests
+tests/system-tests/.env.cfg
