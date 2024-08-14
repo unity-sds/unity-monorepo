@@ -42,16 +42,15 @@ class ApplicationService(object):
 
     def build_application_package(self, repo_url) -> AdsAcbMcpCloneGet200Response:
         """
-        Submit github repository for application-pacakge build. This interacts with a Unity shared service so
+        Submit github repository for application-package build. This interacts with a Unity shared service so
         project/venue are not required for this method.
 
-        :param repo_url: the publicly accessible repository that you want to convert into an applicaiton pacakge.
+        :param repo_url: the publicly accessible repository that you want to convert into an applicaiton package.
         Examples include https://github.com/unity-sds/unity-example-application
         :return  AdsAcbMcpCloneGet200Response:
         """
         token = self._session.get_auth().get_token()
         url = self.endpoint
-        print(token)
 
         # The access_token as of 8/2/2024 is not being repsected so we have a work around being used below.
         configuration = unity_sds_apgs_client.Configuration(
