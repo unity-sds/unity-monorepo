@@ -88,9 +88,10 @@ The configuration requires things like a unity username/password (possibly repla
 
 Most tests are setup with scenario outlines, meaning we can pass in a number of values from a table into a test suite. The tables are often different for de, test, and ops environments since they might refer to specific items that change in dev/test/ops environments like a collection ID or the venue you'll be in. To choose a venue, we use a tag system (e.g. `-t develop`).
 
-This not only chooses the environment specific values to send in, it also choses the environment for things like unity_py:
+Note: the tags define the scenarios run. Within the steps being executed, a call to the tags (`context.tags`) will return the tags annotating the FEATURE or SCENARIO- ***not the ones inserted on the command line!*** The following code will not work
 
 ```python
+    ## DO NOT DO THIS
     if "develop" in context.tags:
         s = Unity(UnityEnvironments.DEV)
     elif "test" in context.tags:
@@ -98,6 +99,7 @@ This not only chooses the environment specific values to send in, it also choses
     elif "prod" in context.tags:
         s = Unity(UnityEnvironments.PROD)
 ```
+Instead, we use an environment variable `UNITY_ENVIRONMENT` to determine the environment to use.
 
 ### Usage Examples
 

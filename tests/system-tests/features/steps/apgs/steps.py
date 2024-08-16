@@ -10,11 +10,14 @@ from unity_sds_client.unity_services import UnityServices as services
 
 @given("I have a token to authenticate with Unity Services")  # noqa: F405
 def step_impl(context):
-    if "develop" in context.tags:
+    if "dev" in os.environ.get("UNITY_ENVIRONMENT").lower():
+        print("Starting Development Session")
         s = Unity(UnityEnvironments.DEV)
-    elif "test" in context.tags:
+    elif "test" in os.environ.get("UNITY_ENVIRONMENT").lower():
+        print("Starting Test Session")
         s = Unity(UnityEnvironments.TEST)
-    elif "prod" in context.tags:
+    elif "prod" in os.environ.get("UNITY_ENVIRONMENT").lower():
+        print("Starting Production Session")
         s = Unity(UnityEnvironments.PROD)
     else:
         raise Exception(

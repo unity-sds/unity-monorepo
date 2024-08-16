@@ -5,6 +5,8 @@ from datetime import datetime
 
 import requests
 from behave import *  # noqa: F403
+from unity_sds_client.resources.collection import Collection
+from unity_sds_client.unity_services import UnityServices as services
 
 
 @given("the cwl_dag workflow is currently deployed in airflow")  # noqa: F405
@@ -28,8 +30,9 @@ def step_impl(context):  # noqa: F811
     context.airflow_endpoint = deployment_url
 
 
+# This step_impl is specific to the unity-example-application application package
 @given(  # noqa: F405
-    "I provide the required workflow inputs for unity-example-applications"
+    "I provide the required workflow inputs for unity-example-application"
 )  # noqa: F405
 def step_impl(context):  # noqa: F811
     # Project/Venue specific items
@@ -38,7 +41,13 @@ def step_impl(context):  # noqa: F811
     # We get a datetime to append to the file names we create so we can ensure a _new_ file is added to the system.
     date = datetime.now().strftime("%m%d%YT%H%M%S")
     s3bucket = os.environ.get("VENUE_BUCKET", None)
+    output_collection = "urn:nasa:unity:{0}:{1}:unity-tutorial___1".format(
+        project, venue
+    )
+    output_file = "summary_table_{0}.txt".format(date)
 
+    context.output_file = output_file
+    context.output_collection = output_collection
     input_json = """
     {{
       "stage_in": {{
@@ -99,7 +108,7 @@ def step_impl(context):  # noqa: F811
 def step_impl(context):  # noqa: F811
     dag_id = "cwl_dag"  # This is the generic "run any CWL you want" dag
     state = "running"
-    while state == "running":
+    while state == "running" or state == "queued":
         dag_run_response = requests.get(
             url=f"{context.airflow_endpoint}/api/v1/dags/{dag_id}/dagRuns/{context.dag_run_id}",
             verify=False,  # Required if not hitting this through a proxy (e.g. mdps.mcp.nasa.gov....)
@@ -110,3 +119,23 @@ def step_impl(context):  # noqa: F811
         print("Dag run state is {}".format(state))
         time.sleep(30)
     assert state == "success"
+
+
+@then("the workflow data shows up in the data catalog")  # noqa: F405
+def step_impl(context):  # noqa: F811
+    s = context.unity_session
+    data_manager = s.client(services.DATA_SERVICE)
+    collection_id = context.output_collection
+    found = False
+    check = 1
+    print("finding data for collection {}".format(collection_id))
+    while found is False and check < 20:
+        cd = data_manager.get_collection_data(Collection(collection_id), limit=100)
+        for dataset in cd:
+            if context.output_file in dataset.id:
+                found = True
+                break
+        check = check + 1
+        time.sleep(30)
+
+    assert found is True
