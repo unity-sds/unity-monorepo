@@ -1,44 +1,66 @@
+
+
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "type": "array",
-  "items": [
-    {
-      "type": "object",
-      "properties": {
-        "service": {
-          "type": "string"
-        },
-        "landingPage": {
-          "type": "string"
-        },
-        "healthChecks": {
-          "type": "array",
-          "items": [
-            {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "enum": ["HEALTHY", "UNHEALTHY"]
-                },
-                "date": {
-                  "type": "string",
-                  "format": "date-time"
+  "type": "object",
+  "properties": {
+    "services": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "componentName": {
+              "type": "string"
+            },
+            "ssmKey": {
+              "type": "string"
+            },
+            "healthCheckUrl": {
+              "type": "string"
+            },
+            "landingPageUrl": {
+              "type": "string"
+            },
+            "healthChecks": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["HEALTHY", "UNHEALTHY"]
+                    },
+                    "httpResponseCode": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "httpResponseCode",
+                    "date"
+                  ]
                 }
-              },
-              "required": [
-                "status",
-                "date"
               ]
             }
+          },
+          "required": [
+            "componentName",
+            "ssmKey",
+            "healthCheckUrl",
+            "landingPageUrl",
+            "healthChecks"
           ]
         }
-      },
-      "required": [
-        "service",
-        "landingPage",
-        "healthChecks"
       ]
     }
+  },
+  "required": [
+    "services"
   ]
 }
