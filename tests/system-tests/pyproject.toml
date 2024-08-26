@@ -4,6 +4,11 @@ version = "0.1.0"
 description = ""
 authors = ["mike-gangl <michael.e.gangl@jpl.nasa.gov>"]
 readme = "README.md"
+package-mode = false
+
+
+[tool.poetry-monorepo-dependency-plugin]
+enable = true
 
 [tool.poetry-monorepo.deps]
 
