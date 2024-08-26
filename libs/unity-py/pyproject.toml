@@ -11,6 +11,9 @@ packages = [
     { include = "unity_sds_client" },
 ]
 
+[tool.poetry-monorepo-dependency-plugin]
+enable = true
+
 #Used to fix path dependencies referencing develop=true (e.g. within the mono-repo)
 [tool.poetry-monorepo.deps]
 
