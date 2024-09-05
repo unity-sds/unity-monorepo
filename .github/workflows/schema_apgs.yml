@@ -42,6 +42,6 @@ jobs:
       if: github.ref == 'refs/heads/main'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./schemas/app-package-service/index.html
+        publish_dir: ./schemas/app-package-service/
         exclude_assets: '.github,.openapi-generator,.openapi-generator-ignore,README.md,app-package.api.yaml'
         destination_dir: application-package-system
