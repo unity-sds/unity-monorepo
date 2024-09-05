@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "system-tests"
+version = "0.1.0"
+description = ""
+authors = ["mike-gangl <michael.e.gangl@jpl.nasa.gov>"]
+readme = "README.md"
+package-mode = false
+
+
+[tool.poetry-monorepo-dependency-plugin]
+enable = true
+
+[tool.poetry-monorepo.deps]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+behave = "^1.2.6"
+unity-sds-client = {path = "../../libs/unity-py", develop = true}
+unity-sds-apgs-client = {path = "../../libs/app-package-build-client", develop = true}
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
