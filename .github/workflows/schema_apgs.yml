@@ -1,0 +1,47 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Unity-app-package-client Python Build
+
+# Do Run if we push anything changes in /libs/app-package-build-client to the main branch
+# Run on an PR if it includes unity-py changes OR if the schema in health are changed.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    paths:
+    - 'schemas/app-package-service/**'
+  pull_request:
+    branches:
+    - main
+    paths:
+    - 'schemas/app-package-service/**'
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: ./schemas/app-package-service
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: Generate HTML
+      uses: openapi-generators/openapitools-generator-action@v1
+      with:
+        generator: html
+        openapi-file: schemas/app-package-service/app-package.api.yaml
+    - name: Upload HTML artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-docs
+        path: ./schemas/app-package-service/index.html
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./schemas/app-package-service/index.html
+        exclude_assets: '.github,.openapi-generator,.openapi-generator-ignore,README.md,app-package.api.yaml'
+        destination_dir: application-package-system
