@@ -21,11 +21,21 @@ paths:
     get:
       summary: Begins the MCP Clone process
       parameters:
-        - in: header
+        - in: body
           name: clone_url
           schema:
             type: string
           required: true
+        - in: body
+          name: apg_tag
+          schema:
+            type: string
+          required: false
+        - in: body
+          name: uag_tag
+          schema:
+            type: string
+          required: false
 
       responses:
         '200':
@@ -38,4 +48,8 @@ paths:
                   clone_url:
                     type: string
                   log_group_name:
+                    type: string
+                  apg_tag:
+		    type: string
+                  uag_tag:
                     type: string
