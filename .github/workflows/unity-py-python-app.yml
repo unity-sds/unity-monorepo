@@ -117,6 +117,7 @@ jobs:
       #     git push
       - name: Install dependencies
         run: |
+          poetry self add poetry-monorepo-dependency-plugin
           poetry install
       - name: build
         run: |
