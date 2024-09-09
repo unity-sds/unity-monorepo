@@ -21,7 +21,7 @@ Unity-Py provides a seamless way to interact with NASA's Unity Platform using Py
 
 * Pythonic interface to NASA's Unity Platform
 * Support for interactive and environment variable-based authorization
-  
+
 ## Contents
 
 * [Quick Start](#quick-start)
@@ -41,8 +41,8 @@ Unity-Py provides a seamless way to interact with NASA's Unity Platform using Py
 Development Requirements
 
 * poetry
-* [poetry-monorepo-dependency-plugin](https://pypi.org/project/poetry-monorepo-dependency-plugin/) 
-  
+* [poetry-monorepo-dependency-plugin](https://pypi.org/project/poetry-monorepo-dependency-plugin/)
+
 ### Setup Instructions
 
 1. Install via pypi:
@@ -114,6 +114,15 @@ for dataset in cd:
    ```
    (Not Available Yet)
    ```
+
+### Documentation Generation
+```
+poetry install --with docs
+poetry run sphinx-apidoc -f -o docs/source/ unity_sds_client
+poetry run sphinx-build -M markdown docs/source docs/build
+poetry run sphinx-build -M html docs/source docs/build/
+```
+
 
 ## Changelog
 
