@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>unity_sds_client.services package &#8212; unity-sds-client 0.6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=add265a1"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="unity_sds_client.utils package" href="unity_sds_client.utils.html" />
+    <link rel="prev" title="unity_sds_client.resources package" href="unity_sds_client.resources.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="unity-sds-client-services-package">
+<h1>unity_sds_client.services package<a class="headerlink" href="#unity-sds-client-services-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-unity_sds_client.services.application_service">
+<span id="unity-sds-client-services-application-service-module"></span><h2>unity_sds_client.services.application_service module<a class="headerlink" href="#module-unity_sds_client.services.application_service" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationCatalog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">ApplicationCatalog</span></span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationCatalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract interface for interacting with an application catalog in an implementation agnostic way</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationCatalog.application">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationCatalog.application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve an ApplicationPackage from the catalog based on application id</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationCatalog.application_list">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">application_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationCatalog.application_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of ApplicationPackage objects representing the applications the catalog knows about</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationCatalog.publish">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationCatalog.publish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish an ApplicationPackage object into the catalog</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationCatalog.register">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">publish</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationCatalog.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register an ApplicationPackage object into the catalog, optionally publish it</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationCatalog.unpublish">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unpublish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationCatalog.unpublish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpublish an ApplicationPackage object into the catalog</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationCatalogAccessError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">ApplicationCatalogAccessError</span></span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationCatalogAccessError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An error occuring when attempting to access an application catalog</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">ApplicationPackage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_repository</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Dockstore.cwl'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_published</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">_Nothing.NOTHING</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Describes an application package either stored within an application catalog or that
+can be registered with an application catalog.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.check_workflow_default">
+<span class="sig-name descname"><span class="pre">check_workflow_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.check_workflow_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.check_workflow_type">
+<span class="sig-name descname"><span class="pre">check_workflow_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.check_workflow_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.is_published">
+<span class="sig-name descname"><span class="pre">is_published</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.is_published" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.source_repository">
+<span class="sig-name descname"><span class="pre">source_repository</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.source_repository" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.workflow_path">
+<span class="sig-name descname"><span class="pre">workflow_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.workflow_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationPackage.workflow_type">
+<span class="sig-name descname"><span class="pre">workflow_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationPackage.workflow_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">ApplicationService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession" title="unity_sds_client.unity_session.UnitySession"><span class="pre">UnitySession</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.ApplicationService.build_application_package">
+<span class="sig-name descname"><span class="pre">build_application_package</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_url</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AdsAcbMcpCloneGet200Response</span></span></span><a class="headerlink" href="#unity_sds_client.services.application_service.ApplicationService.build_application_package" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit github repository for application-package build. This interacts with a Unity shared service so
+project/venue are not required for this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>repo_url</strong> – the publicly accessible repository that you want to convert into an applicaiton package.</p>
+</dd>
+</dl>
+<p>Examples include <a class="reference external" href="https://github.com/unity-sds/unity-example-application">https://github.com/unity-sds/unity-example-application</a>
+:return  AdsAcbMcpCloneGet200Response:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">DockstoreAppCatalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#unity_sds_client.services.application_service.ApplicationCatalog" title="unity_sds_client.services.application_service.ApplicationCatalog"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApplicationCatalog</span></code></a></p>
+<p>Implementation of an application catalog interface to the Dockstore application</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.application">
+<span class="sig-name descname"><span class="pre">application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get application information from the Dockstore based on the application ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>app_id</strong> – Application ID.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.application_list">
+<span class="sig-name descname"><span class="pre">application_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">for_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">published</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.application_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>For Dockstore optionally filter the application list for the user belonging to the token
+as well as restrict to just published applications.</p>
+<p>Unpublished applications can only be seen when using for_user=True.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.download_files">
+<span class="sig-name descname"><span class="pre">download_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.download_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download latest version of parameter files for the workflow.
+The method stores ZIP archive of all parameter files as well as
+all extracted files to the “output_dir_path” directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>application</strong> – DockstoreApplicationPackage to download parameter files for.</p></li>
+<li><p><strong>output_dir_path</strong> – Target directory for the workflow ZIP archive and extracted
+workflow files.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.get_application_version_info">
+<span class="sig-name descname"><span class="pre">get_application_version_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.get_application_version_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve version information for the workflow. Generated version information is
+a dictionary of the “db_version_id: workflow_version_id” content.
+This method identifies a mapping between database ID and the “name” of the workflow version
+as it appears in the Dockstore UI.
+Docktore uses DB version ID instead of the version ID as it appears in the Dockstore UI for the
+file retrieval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>application</strong> – DockstoreApplicationPackage object to retrieve version information for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.publish">
+<span class="sig-name descname"><span class="pre">publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.publish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish the workflow.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'CWL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cwl_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">publish</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register new hosted workflow within the Dockstore, upload workflow parameter files and publish
+the workflow if requested.</p>
+<p>Basename of each parameter file will be used as absolute path of the file within Dockstore. If other than basename
+path is preferred to store the file in the Dockstore, “filename_map” input argument should be used to provide
+preferred path of the file in the Dockstore. For example:
+{</p>
+<blockquote>
+<div><p>‘local_path/step_one.cwl’:    ‘l1/step_one.cwl’,
+‘local_path/params_one.json’: ‘l1_params/params_one.json’</p>
+</div></blockquote>
+<p>}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app_name</strong> – Application name to register within the Dockstore.</p></li>
+<li><p><strong>app_type</strong> – Type of the application. Default is ‘CWL’.</p></li>
+<li><p><strong>cwl_files</strong> – List of CWL format parameter file paths to upload to the Dockstore. Default is an empty list.</p></li>
+<li><p><strong>json_files</strong> – List of JSON format parameter file paths to upload to the Dockstore. Default is an empty list.</p></li>
+<li><p><strong>filename_map</strong> – Mapping of parameter filenames on local file system vs. filename path as to appear in
+the Dockstore once the file is uploaded. Default is an empty map meaning that each file will be uploaded into
+the Dockstore using its basename.</p></li>
+<li><p><strong>publish</strong> – Flag if registered application should be published within the Dockstore. Default is True meaning that
+application should be published once it’s registered within the Dockstore. Applications that does not have
+any files uploaded to the Dockstore can’t be published.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.unpublish">
+<span class="sig-name descname"><span class="pre">unpublish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.unpublish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpublish the workflow.</p>
+<p>Dockstore does not allow to delete a hosted workflow, so we can only remove/add parameter files and
+publish/unpublish hosted workflows within Dockstore.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.upload_files">
+<span class="sig-name descname"><span class="pre">upload_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cwl_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.upload_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload workflow parameter files for the workflow.</p>
+<p>Basename of each parameter file will be used as absolute path of the file within the Dockstore. If other
+than basename path is preferred to store the file in the Dockstore, “filename_map” input argument should
+be used to provide mapping of local file vs. preferred path of the file in the Dockstore. For example:
+{</p>
+<blockquote>
+<div><p>‘local_path/step_one.cwl’:    ‘l1/step_one.cwl’,
+‘local_path/params_one.json’: ‘l1_params/params_one.json’</p>
+</div></blockquote>
+<p>}</p>
+<p>Inputs:
+application: DockstoreApplicationPackage to upload the files for.
+cwl_files: List of CWL format parameter file paths to upload to the Dockstore. Default is an empty list.
+json_files: List of JSON format parameter file paths to upload to the Dockstore. Default is an empty list.
+filename_map: Mapping of parameter filenames on local file system vs. filename path as to appear in</p>
+<blockquote>
+<div><p>the Dockstore once the file is uploaded. Default is an empty map meaning that each file will be uploaded into
+the Dockstore using its basename.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.upload_json_file">
+<span class="sig-name descname"><span class="pre">upload_json_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dockstore_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.upload_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload local JSON file “param_filename” to the hosted by Dockstore workflow.</p>
+<p>If “dockstore_filename” is an empty string then “param_filename” is uploaded into
+the Dockstore using its basename.</p>
+<p>To remove the file from the registered application just upload file of an empy content to the Dockstore.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreAppCatalog.upload_parameter_file">
+<span class="sig-name descname"><span class="pre">upload_parameter_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dockstore_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreAppCatalog.upload_parameter_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload local workflow parameter file “param_filename” to the hosted by Dockstore workflow.</p>
+<p>If “dockstore_filename” is an empty string than “param_filename” is uploaded into
+the Dockstore using its basename.</p>
+<p>To remove the file from the registered application just upload file of empy content to the Dockstore.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreApplicationPackage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">DockstoreApplicationPackage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_repository</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Dockstore.cwl'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_published</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">_Nothing.NOTHING</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dockstore_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreApplicationPackage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#unity_sds_client.services.application_service.ApplicationPackage" title="unity_sds_client.services.application_service.ApplicationPackage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApplicationPackage</span></code></a></p>
+<p>Adds extra information only available to a application package stored within Dockstore</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreApplicationPackage.dockstore_info">
+<span class="sig-name descname"><span class="pre">dockstore_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreApplicationPackage.dockstore_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreSourceMethod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">DockstoreSourceMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreSourceMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Encapsulates the enum strings that Dockstore uses for source control methods, translates from URL</p>
+<p>Values come from repo:
+<a class="reference external" href="https://github.com/dockstore/dockstore">https://github.com/dockstore/dockstore</a></p>
+<p>File:
+dockstore/dockstore-common/src/main/java/io/dockstore/common/SourceControl.java</p>
+<p>Parsing from a manualRegister in Dockstore occurs here:
+<a class="reference external" href="https://github.com/dockstore/dockstore/blob/7c4c08b9eed85334d5998bb02bc5b651f95e1f15/dockstore-webservice/src/main/java/io/dockstore/webservice/resources/WorkflowResource.java#L1298">https://github.com/dockstore/dockstore/blob/7c4c08b9eed85334d5998bb02bc5b651f95e1f15/dockstore-webservice/src/main/java/io/dockstore/webservice/resources/WorkflowResource.java#L1298</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreSourceMethod.BITBUCKET">
+<span class="sig-name descname"><span class="pre">BITBUCKET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bitbucket.org'</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreSourceMethod.BITBUCKET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreSourceMethod.DOCKSTORE">
+<span class="sig-name descname"><span class="pre">DOCKSTORE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dockstore.org'</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreSourceMethod.DOCKSTORE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreSourceMethod.GITHUB">
+<span class="sig-name descname"><span class="pre">GITHUB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'github.com'</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreSourceMethod.GITHUB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.DockstoreSourceMethod.GITLAB">
+<span class="sig-name descname"><span class="pre">GITLAB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gitlab.com'</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.DockstoreSourceMethod.GITLAB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.HostedWorkflowError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">HostedWorkflowError</span></span><a class="headerlink" href="#unity_sds_client.services.application_service.HostedWorkflowError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An error occuring when attempting to create a hosted workflow</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.WorkflowType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.application_service.</span></span><span class="sig-name descname"><span class="pre">WorkflowType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.application_service.WorkflowType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Encapsulates the types of workflows that Unity supports. This may be a subset of
+what the application catalog supports.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.services.application_service.WorkflowType.CWL">
+<span class="sig-name descname"><span class="pre">CWL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CWL'</span></em><a class="headerlink" href="#unity_sds_client.services.application_service.WorkflowType.CWL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.services.data_service">
+<span id="unity-sds-client-services-data-service-module"></span><h2>unity_sds_client.services.data_service module<a class="headerlink" href="#module-unity_sds_client.services.data_service" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.data_service.DataService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.data_service.</span></span><span class="sig-name descname"><span class="pre">DataService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession" title="unity_sds_client.unity_session.UnitySession"><span class="pre">UnitySession</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.data_service.DataService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The DataService class is a wrapper to the data endpoint(s) within Unity. This wrapper interfaces with the DAPA endpoints.</p>
+<p>The DataService class allows for the querying of data collections and data files within those collections.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.data_service.DataService.create_collection">
+<span class="sig-name descname"><span class="pre">create_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection:</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'unity_sds_client.resources.collection.Collection'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.data_service.DataService.create_collection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.data_service.DataService.define_custom_metadata">
+<span class="sig-name descname"><span class="pre">define_custom_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.data_service.DataService.define_custom_metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.data_service.DataService.get_collection_data">
+<span class="sig-name descname"><span class="pre">get_collection_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection:</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'unity_sds_client.resources.collection.Collection'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit=10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_stac=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.data_service.DataService.get_collection_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.data_service.DataService.get_collections">
+<span class="sig-name descname"><span class="pre">get_collections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_stac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.data_service.DataService.get_collections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of collections</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of returned collections</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.services.health_service">
+<span id="unity-sds-client-services-health-service-module"></span><h2>unity_sds_client.services.health_service module<a class="headerlink" href="#module-unity_sds_client.services.health_service" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.health_service.HealthService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.health_service.</span></span><span class="sig-name descname"><span class="pre">HealthService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession" title="unity_sds_client.unity_session.UnitySession"><span class="pre">UnitySession</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.health_service.HealthService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The HealthService class is a wrapper to Unity’s Health API endpoints.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.health_service.HealthService.generate_health_status_report">
+<span class="sig-name descname"><span class="pre">generate_health_status_report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.health_service.HealthService.generate_health_status_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a generated report of health status information</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.health_service.HealthService.get_health_status">
+<span class="sig-name descname"><span class="pre">get_health_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.health_service.HealthService.get_health_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of services and their respective health status</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.health_service.HealthService.print_health_status">
+<span class="sig-name descname"><span class="pre">print_health_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.health_service.HealthService.print_health_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the health status report</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.services.process_service">
+<span id="unity-sds-client-services-process-service-module"></span><h2>unity_sds_client.services.process_service module<a class="headerlink" href="#module-unity_sds_client.services.process_service" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.services.process_service.ProcessService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.services.process_service.</span></span><span class="sig-name descname"><span class="pre">ProcessService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession" title="unity_sds_client.unity_session.UnitySession"><span class="pre">UnitySession</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.process_service.ProcessService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The ProcessService class is a wrapper to Unity’s Science Processing Service endpoints.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.process_service.ProcessService.deploy_process">
+<span class="sig-name descname"><span class="pre">deploy_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.process_service.ProcessService.deploy_process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.process_service.ProcessService.get_jobs">
+<span class="sig-name descname"><span class="pre">get_jobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unity_sds_client.resources.html#unity_sds_client.resources.process.Process" title="unity_sds_client.resources.process.Process"><span class="pre">Process</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.process_service.ProcessService.get_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a process deployed within SPS</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.process_service.ProcessService.get_process">
+<span class="sig-name descname"><span class="pre">get_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="unity_sds_client.resources.html#unity_sds_client.resources.process.Process" title="unity_sds_client.resources.process.Process"><span class="pre">Process</span></a></span></span><a class="headerlink" href="#unity_sds_client.services.process_service.ProcessService.get_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a process deployed within SPS</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.process_service.ProcessService.get_processes">
+<span class="sig-name descname"><span class="pre">get_processes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="unity_sds_client.resources.html#unity_sds_client.resources.process.Process" title="unity_sds_client.resources.process.Process"><span class="pre">Process</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#unity_sds_client.services.process_service.ProcessService.get_processes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of processes already deployed within SPS</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.services">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-unity_sds_client.services" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">unity-sds-client</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">unity_sds_client</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="unity_sds_client.html">unity_sds_client package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">unity_sds_client</a><ul>
+  <li><a href="unity_sds_client.html">unity_sds_client package</a><ul>
+      <li>Previous: <a href="unity_sds_client.resources.html" title="previous chapter">unity_sds_client.resources package</a></li>
+      <li>Next: <a href="unity_sds_client.utils.html" title="next chapter">unity_sds_client.utils package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, unity.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/unity_sds_client.services.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,63 @@
+unity\_sds\_client package
+==========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   unity_sds_client.resources
+   unity_sds_client.services
+   unity_sds_client.utils
+
+Submodules
+----------
+
+unity\_sds\_client.unity module
+-------------------------------
+
+.. automodule:: unity_sds_client.unity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.unity\_environments module
+---------------------------------------------
+
+.. automodule:: unity_sds_client.unity_environments
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.unity\_exception module
+------------------------------------------
+
+.. automodule:: unity_sds_client.unity_exception
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.unity\_services module
+-----------------------------------------
+
+.. automodule:: unity_sds_client.unity_services
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.unity\_session module
+----------------------------------------
+
+.. automodule:: unity_sds_client.unity_session
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: unity_sds_client
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,61 @@
+unity\_sds\_client.resources package
+====================================
+
+Submodules
+----------
+
+unity\_sds\_client.resources.collection module
+----------------------------------------------
+
+.. automodule:: unity_sds_client.resources.collection
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.resources.data\_file module
+----------------------------------------------
+
+.. automodule:: unity_sds_client.resources.data_file
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.resources.dataset module
+-------------------------------------------
+
+.. automodule:: unity_sds_client.resources.dataset
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.resources.job module
+---------------------------------------
+
+.. automodule:: unity_sds_client.resources.job
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.resources.job\_status module
+-----------------------------------------------
+
+.. automodule:: unity_sds_client.resources.job_status
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.resources.process module
+-------------------------------------------
+
+.. automodule:: unity_sds_client.resources.process
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: unity_sds_client.resources
+   :members:
+   :undoc-members:
+   :show-inheritance:

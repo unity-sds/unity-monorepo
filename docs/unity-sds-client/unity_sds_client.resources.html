@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>unity_sds_client.resources package &#8212; unity-sds-client 0.6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=add265a1"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="unity_sds_client.services package" href="unity_sds_client.services.html" />
+    <link rel="prev" title="unity_sds_client package" href="unity_sds_client.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="unity-sds-client-resources-package">
+<h1>unity_sds_client.resources package<a class="headerlink" href="#unity-sds-client-resources-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-unity_sds_client.resources.collection">
+<span id="unity-sds-client-resources-collection-module"></span><h2>unity_sds_client.resources.collection module<a class="headerlink" href="#module-unity_sds_client.resources.collection" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.resources.collection.Collection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.resources.collection.</span></span><span class="sig-name descname"><span class="pre">Collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.collection.Collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Collection object contains metadata about a collection within the Unity system.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.collection.Collection.add_dataset">
+<span class="sig-name descname"><span class="pre">add_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#unity_sds_client.resources.dataset.Dataset" title="unity_sds_client.resources.dataset.Dataset"><span class="pre">Dataset</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.collection.Collection.add_dataset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.collection.Collection.data_files">
+<span class="sig-name descname"><span class="pre">data_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.collection.Collection.data_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to list all assets (data, metdata, etc)
+:param type: List of “stac asset roles” to filter on. commonly [“data”] is of most importance
+:type type: List of Strings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of returned datafiles</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.collection.Collection.data_locations">
+<span class="sig-name descname"><span class="pre">data_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.collection.Collection.data_locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to list all asset locations (data, metdata, etc)
+:param type: List of “stac asset roles” to filter on. commonly [“data”] is of most importance
+:type type: List of Strings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of returned asset locations</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>locations</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="unity_sds_client.resources.collection.Collection.datasets">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">datasets</span></span><a class="headerlink" href="#unity_sds_client.resources.collection.Collection.datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to return the included datasets from a collection object.</p>
+<dl class="simple">
+<dt>Returns</dt><dd><dl class="simple">
+<dt>dataset</dt><dd><p>List of dataset objects</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.collection.Collection.from_stac">
+<span class="sig-name descname"><span class="pre">from_stac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.collection.Collection.from_stac" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method for reading stac and converting it into a unity collection object. This is usually the result of a stage-in operation. stac formats supported are “GEOJSON Feature Collections” and STAC Catalogs with referenced item files.
+:param stac_file: The location of the stac file to read.
+:type stac_file: String</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A collection object including defined datasets</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#unity_sds_client.resources.collection.Collection" title="unity_sds_client.resources.collection.Collection">Collection</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.collection.Collection.is_uri">
+<span class="sig-name descname"><span class="pre">is_uri</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.collection.Collection.is_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.collection.Collection.to_stac">
+<span class="sig-name descname"><span class="pre">to_stac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.collection.Collection.to_stac" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method for writing stac and converting it from a unity collection object. The caller is responsible for providing a collection, datasets and datafiles along with the output location of the data.
+:param collection: The colleciton object to convert into stac catalog + stac item files.
+:type collection: Collection
+:param stac_file: The location of the stac file to read.
+:type stac_file: String</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.resources.data_file">
+<span id="unity-sds-client-resources-data-file-module"></span><h2>unity_sds_client.resources.data_file module<a class="headerlink" href="#module-unity_sds_client.resources.data_file" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.resources.data_file.DataFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.resources.data_file.</span></span><span class="sig-name descname"><span class="pre">DataFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.data_file.DataFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Collection object contains metadata about a collection within the Unity system.</p>
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.resources.dataset">
+<span id="unity-sds-client-resources-dataset-module"></span><h2>unity_sds_client.resources.dataset module<a class="headerlink" href="#module-unity_sds_client.resources.dataset" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.resources.dataset.Dataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.resources.dataset.</span></span><span class="sig-name descname"><span class="pre">Dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creation_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Dataset object contains metadata about a collection within the Unity system, and also is a container for the data_files within a dataset.</p>
+<p>A Dataset can be made up of one or more files. A data file is the most common data_file wihtin a dataset. Other examples include metadata, browse imagery, checksums, etc.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.dataset.Dataset.add_data_file">
+<span class="sig-name descname"><span class="pre">add_data_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datafile:</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'unity_sds_client.resources.data_file.DataFile'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.dataset.Dataset.add_data_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds a data file to a dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>datafile</strong> (<a class="reference internal" href="#unity_sds_client.resources.data_file.DataFile" title="unity_sds_client.resources.data_file.DataFile"><em>DataFile</em></a>) – a unity_sds_client.resource.datafile object containing the location of data products.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.dataset.Dataset.add_property">
+<span class="sig-name descname"><span class="pre">add_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.dataset.Dataset.add_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds a custom metadata property to a dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>String</em>) – The property name to be set</p></li>
+<li><p><strong>Value</strong> (<em>Object</em>) – the property value to be set</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.resources.job">
+<span id="unity-sds-client-resources-job-module"></span><h2>unity_sds_client.resources.job module<a class="headerlink" href="#module-unity_sds_client.resources.job" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job.Job">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.resources.job.</span></span><span class="sig-name descname"><span class="pre">Job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession" title="unity_sds_client.unity_session.UnitySession"><span class="pre">UnitySession</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#unity_sds_client.resources.job_status.JobStatus" title="unity_sds_client.resources.job_status.JobStatus"><span class="pre">JobStatus</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.job.Job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job.Job.dismiss">
+<span class="sig-name descname"><span class="pre">dismiss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.job.Job.dismiss" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job.Job.get_result">
+<span class="sig-name descname"><span class="pre">get_result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.job.Job.get_result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job.Job.get_status">
+<span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.job.Job.get_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.resources.job_status">
+<span id="unity-sds-client-resources-job-status-module"></span><h2>unity_sds_client.resources.job_status module<a class="headerlink" href="#module-unity_sds_client.resources.job_status" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job_status.JobStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.resources.job_status.</span></span><span class="sig-name descname"><span class="pre">JobStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.job_status.JobStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>The JobServices class is used to specify a job status.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job_status.JobStatus.ACCEPTED">
+<span class="sig-name descname"><span class="pre">ACCEPTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'accepted'</span></em><a class="headerlink" href="#unity_sds_client.resources.job_status.JobStatus.ACCEPTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job_status.JobStatus.DISMISSED">
+<span class="sig-name descname"><span class="pre">DISMISSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dismissed'</span></em><a class="headerlink" href="#unity_sds_client.resources.job_status.JobStatus.DISMISSED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job_status.JobStatus.FAILED">
+<span class="sig-name descname"><span class="pre">FAILED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'failed'</span></em><a class="headerlink" href="#unity_sds_client.resources.job_status.JobStatus.FAILED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job_status.JobStatus.RUNNING">
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'running'</span></em><a class="headerlink" href="#unity_sds_client.resources.job_status.JobStatus.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job_status.JobStatus.SUCCESSFUL">
+<span class="sig-name descname"><span class="pre">SUCCESSFUL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'successful'</span></em><a class="headerlink" href="#unity_sds_client.resources.job_status.JobStatus.SUCCESSFUL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.job_status.JobStatus.from_status">
+<span class="sig-name descname"><span class="pre">from_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.job_status.JobStatus.from_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.resources.process">
+<span id="unity-sds-client-resources-process-module"></span><h2>unity_sds_client.resources.process module<a class="headerlink" href="#module-unity_sds_client.resources.process" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.resources.process.Process">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.resources.process.</span></span><span class="sig-name descname"><span class="pre">Process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession" title="unity_sds_client.unity_session.UnitySession"><span class="pre">UnitySession</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abstract</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_control_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.process.Process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.process.Process.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#unity_sds_client.resources.job.Job" title="unity_sds_client.resources.job.Job"><span class="pre">Job</span></a></span></span><a class="headerlink" href="#unity_sds_client.resources.process.Process.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;param data:
+&#64;return Job:</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-unity_sds_client.resources">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-unity_sds_client.resources" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">unity-sds-client</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">unity_sds_client</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="unity_sds_client.html">unity_sds_client package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">unity_sds_client</a><ul>
+  <li><a href="unity_sds_client.html">unity_sds_client package</a><ul>
+      <li>Previous: <a href="unity_sds_client.html" title="previous chapter">unity_sds_client package</a></li>
+      <li>Next: <a href="unity_sds_client.services.html" title="next chapter">unity_sds_client.services package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, unity.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/unity_sds_client.resources.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

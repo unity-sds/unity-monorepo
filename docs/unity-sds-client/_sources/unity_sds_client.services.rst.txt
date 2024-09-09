@@ -1,0 +1,45 @@
+unity\_sds\_client.services package
+===================================
+
+Submodules
+----------
+
+unity\_sds\_client.services.application\_service module
+-------------------------------------------------------
+
+.. automodule:: unity_sds_client.services.application_service
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.services.data\_service module
+------------------------------------------------
+
+.. automodule:: unity_sds_client.services.data_service
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.services.health\_service module
+--------------------------------------------------
+
+.. automodule:: unity_sds_client.services.health_service
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+unity\_sds\_client.services.process\_service module
+---------------------------------------------------
+
+.. automodule:: unity_sds_client.services.process_service
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: unity_sds_client.services
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>unity_sds_client &#8212; unity-sds-client 0.6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=add265a1"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="unity_sds_client package" href="unity_sds_client.html" />
+    <link rel="prev" title="unity-sds-client documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="unity-sds-client">
+<h1>unity_sds_client<a class="headerlink" href="#unity-sds-client" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="unity_sds_client.html">unity_sds_client package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.resources.html">unity_sds_client.resources package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.resources.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.resources.html#module-unity_sds_client.resources.collection">unity_sds_client.resources.collection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.resources.html#module-unity_sds_client.resources.data_file">unity_sds_client.resources.data_file module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.resources.html#module-unity_sds_client.resources.dataset">unity_sds_client.resources.dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.resources.html#module-unity_sds_client.resources.job">unity_sds_client.resources.job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.resources.html#module-unity_sds_client.resources.job_status">unity_sds_client.resources.job_status module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.resources.html#module-unity_sds_client.resources.process">unity_sds_client.resources.process module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.resources.html#module-unity_sds_client.resources">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.services.html">unity_sds_client.services package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.services.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.services.html#module-unity_sds_client.services.application_service">unity_sds_client.services.application_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.services.html#module-unity_sds_client.services.data_service">unity_sds_client.services.data_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.services.html#module-unity_sds_client.services.health_service">unity_sds_client.services.health_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.services.html#module-unity_sds_client.services.process_service">unity_sds_client.services.process_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.services.html#module-unity_sds_client.services">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.utils.html">unity_sds_client.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.utils.html#module-unity_sds_client.utils.http">unity_sds_client.utils.http module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.utils.html#module-unity_sds_client.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html#module-unity_sds_client.unity">unity_sds_client.unity module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity.Unity"><code class="docutils literal notranslate"><span class="pre">Unity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity.Unity.client"><code class="docutils literal notranslate"><span class="pre">Unity.client()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity.Unity.set_project"><code class="docutils literal notranslate"><span class="pre">Unity.set_project()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity.Unity.set_venue"><code class="docutils literal notranslate"><span class="pre">Unity.set_venue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity.Unity.set_venue_id"><code class="docutils literal notranslate"><span class="pre">Unity.set_venue_id()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html#module-unity_sds_client.unity_environments">unity_sds_client.unity_environments module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_environments.UnityEnvironments"><code class="docutils literal notranslate"><span class="pre">UnityEnvironments</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_environments.UnityEnvironments.DEV"><code class="docutils literal notranslate"><span class="pre">UnityEnvironments.DEV</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_environments.UnityEnvironments.PROD"><code class="docutils literal notranslate"><span class="pre">UnityEnvironments.PROD</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_environments.UnityEnvironments.TEST"><code class="docutils literal notranslate"><span class="pre">UnityEnvironments.TEST</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html#module-unity_sds_client.unity_exception">unity_sds_client.unity_exception module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_exception.UnityException"><code class="docutils literal notranslate"><span class="pre">UnityException</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html#module-unity_sds_client.unity_services">unity_sds_client.unity_services module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_services.UnityServices"><code class="docutils literal notranslate"><span class="pre">UnityServices</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_services.UnityServices.APPLICATION_SERVICE"><code class="docutils literal notranslate"><span class="pre">UnityServices.APPLICATION_SERVICE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_services.UnityServices.DATA_SERVICE"><code class="docutils literal notranslate"><span class="pre">UnityServices.DATA_SERVICE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_services.UnityServices.HEALTH_SERVICE"><code class="docutils literal notranslate"><span class="pre">UnityServices.HEALTH_SERVICE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_services.UnityServices.PROCESS_SERVICE"><code class="docutils literal notranslate"><span class="pre">UnityServices.PROCESS_SERVICE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html#module-unity_sds_client.unity_session">unity_sds_client.unity_session module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnityAuth"><code class="docutils literal notranslate"><span class="pre">UnityAuth</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnityAuth.auth_json"><code class="docutils literal notranslate"><span class="pre">UnityAuth.auth_json</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnityAuth.get_token"><code class="docutils literal notranslate"><span class="pre">UnityAuth.get_token()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession"><code class="docutils literal notranslate"><span class="pre">UnitySession</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession.get_auth"><code class="docutils literal notranslate"><span class="pre">UnitySession.get_auth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession.get_config"><code class="docutils literal notranslate"><span class="pre">UnitySession.get_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession.get_service_endpoint"><code class="docutils literal notranslate"><span class="pre">UnitySession.get_service_endpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession.get_unity_href"><code class="docutils literal notranslate"><span class="pre">UnitySession.get_unity_href()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="unity_sds_client.html#unity_sds_client.unity_session.UnitySession.get_venue_id"><code class="docutils literal notranslate"><span class="pre">UnitySession.get_venue_id()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html#module-unity_sds_client">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">unity-sds-client</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">unity_sds_client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unity_sds_client.html">unity_sds_client package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">unity-sds-client documentation</a></li>
+      <li>Next: <a href="unity_sds_client.html" title="next chapter">unity_sds_client package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, unity.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,21 @@
+unity\_sds\_client.utils package
+================================
+
+Submodules
+----------
+
+unity\_sds\_client.utils.http module
+------------------------------------
+
+.. automodule:: unity_sds_client.utils.http
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: unity_sds_client.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
