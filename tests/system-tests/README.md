@@ -64,7 +64,7 @@ This guide provides a quick way to get started with our project. Please see our 
 
 1. Install the required libraries:
   ```
-   poery install
+   poetry install
   ```
 
 <!-- ☝️ Replace with a numbered list of how to set up your software prior to running ☝️ -->
