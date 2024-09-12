@@ -20,23 +20,28 @@ paths:
   /ads-acb/mcp-clone:
     get:
       summary: Begins the MCP Clone process
-      parameters:
-        - in: body
-          name: clone_url
-          schema:
-            type: string
-          required: true
-        - in: body
-          name: apg_tag
-          schema:
-            type: string
-          required: false
-        - in: body
-          name: uag_tag
-          schema:
-            type: string
-          required: false
-
+      requestBody:
+        description: For API parameters clone_url (required), apg_tag (optional), and uag_tag (optional)
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clone_url:
+                  type: string
+                  description: the url of a public git repository from which to build an app-package, e.g. https://github.com/unity-sds/unity-example-application
+                  example: https://github.com/unity-sds/unity-example-application
+                apg_tag:
+                  type: string
+                  description: the tag (version) of https://github.com/unity-sds/app-pack-generator used in build process with default value 0.4.1
+                  example: 0.4.1
+                uag_tag:
+                  type: string
+                  description: the tag (version) of https://github.com/unity-sds/unity-app-generator used in build process with default value 0.3.0
+                  example: 0.3.0
+              required:
+                - clone_url
       responses:
         '200':
           description: Successfully submitted a job
@@ -49,7 +54,7 @@ paths:
                     type: string
                   log_group_name:
                     type: string
-                  apg_tag:
-		    type: string
-                  uag_tag:
+                  apg_tag:         # app-pack-gen version (tag) used in build process
+                    type: string
+                  uag_tag:         # unity-app-gen version (tag) used in build process
                     type: string
