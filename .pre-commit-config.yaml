@@ -21,7 +21,7 @@ repos:
         args:
           - --allow-missing-credentials
       - id: check-toml # Checks toml files for parsable syntax.
-
+  # unity-py markdown lint
   # Ignored because it caused exceptions with no clear indication as to the problem
   #- repo: https://github.com/igorshubovych/markdownlint-cli
   #  rev: "v0.39.0"

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "unity-sds-client"
-version = "0.5.1"
+version = "0.6.0"
 description = "Unity-Py is a Python client to simplify interactions with NASA's Unity Platform."
 authors = ["Anil Natha, Mike Gangl"]
 readme = "README.md"
@@ -10,6 +10,9 @@ exclude = ['img', 'tests']
 packages = [
     { include = "unity_sds_client" },
 ]
+
+[tool.poetry-monorepo-dependency-plugin]
+enable = true
 
 #Used to fix path dependencies referencing develop=true (e.g. within the mono-repo)
 [tool.poetry-monorepo.deps]
@@ -22,6 +25,7 @@ giturlparse = "^0.10.0"
 pystac = "^1.7.3"
 unity-sps-ogc-processes-api-python-client = "^1.0.0"
 #unity-sps-ogc-processes-api-python-client = {path = "../unity-sps-ogc-processes-api-client-python", develop = true}
+unity-sds-apgs-client = {path = "../app-package-build-client", develop = true}
 jsonschema = "^4.22.0"
 
 
