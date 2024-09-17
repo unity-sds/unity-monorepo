@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 ### Fixed
 ### Changed
-* Changed Health Service to report information from updated Health API endpoint
-* Minor changes to the Health Service Status report
+* Changed Health Service to report information from updated Health API endpoint.
+* Minor changes to the Health Service Status report.
+* Updated health JSON schema definition to match updated output from Health API endpoint.
 ### Removed
 ### Security
 ### Deprecated
