@@ -89,24 +89,22 @@ class Process(object):
             api_instance = unity_sps_ogc_processes_api_python_client.ProcessesApi(api_client)
             process_id = self.id
             response = None
-            prefer = "respond-async"
+            prefer = "respond-async" # TODO should be an argument
             execute_workflows = ExecuteWorkflows.from_dict(data)
-            headers = {"Prefer": prefer}
             try:
                 api_response = api_instance.execute_processes_process_id_execution_post(
                     process_id,
                     response=response,
                     prefer=prefer,
                     execute_workflows=execute_workflows,
-                    _headers=headers
                 ) # add auth
-                return api_response
+                api_response_dict = {key: value for key, value in api_response.anyof_schema_2_validator}
                 return Job(
                             self._session,
                             self._endpoint,
-                            api_response.process_id,
-                            api_response.job_id,
-                            JobStatus(api_response.status)
+                            api_response_dict["process_id"],
+                            api_response_dict["job_id"],
+                            JobStatus(api_response_dict["status"])
                     )
 
             except NotFoundException as nfe:
