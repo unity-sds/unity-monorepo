@@ -183,7 +183,7 @@ font-style: italic;
     <div class="app-desc">Service for application package generation</div>
     <div class="app-desc">More information: <a href="https://openapi-generator.tech">https://openapi-generator.tech</a></div>
     <div class="app-desc">Contact Info: <a href="team@openapitools.org">team@openapitools.org</a></div>
-    <div class="app-desc">Version: 1.0.0</div>
+    <div class="app-desc">Version: 0.2.0</div>
     <div class="app-desc">BasePath:</div>
     <div class="license-info">All rights reserved</div>
     <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
@@ -211,15 +211,20 @@ font-style: italic;
     <div class="method-notes"></div>
 
 
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
 
-
-    <h3 class="field-label">Request headers</h3>
+    <h3 class="field-label">Request body</h3>
     <div class="field-items">
-      <div class="param">clone_url (required)</div>
+      <div class="param">_ads_acb_mcp_clone_get_request <a href="#_ads_acb_mcp_clone_get_request">_ads_acb_mcp_clone_get_request</a> (required)</div>
 
-      <div class="param-desc"><span class="param-type">Header Parameter</span> &mdash;  default: null </div>
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
 
     </div>  <!-- field-items -->
+
 
 
 
@@ -234,7 +239,9 @@ font-style: italic;
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
+  "apg_tag" : "apg_tag",
   "log_group_name" : "log_group_name",
+  "uag_tag" : "uag_tag",
   "clone_url" : "clone_url"
 }</code></pre>
 
@@ -258,6 +265,7 @@ font-style: italic;
   <h3>Table of Contents</h3>
   <ol>
     <li><a href="#_ads_acb_mcp_clone_get_200_response"><code>_ads_acb_mcp_clone_get_200_response</code> - </a></li>
+    <li><a href="#_ads_acb_mcp_clone_get_request"><code>_ads_acb_mcp_clone_get_request</code> - </a></li>
   </ol>
 
   <div class="model">
@@ -266,6 +274,17 @@ font-style: italic;
     <div class="field-items">
       <div class="param">clone_url (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">log_group_name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">apg_tag (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">uag_tag (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_ads_acb_mcp_clone_get_request"><code>_ads_acb_mcp_clone_get_request</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">clone_url </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> the url of a public git repository from which to build an app-package, e.g. https://github.com/unity-sds/unity-example-application </div>
+<div class="param">apg_tag (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> the tag (version) of https://github.com/unity-sds/app-pack-generator used in build process with default value 0.4.1 </div>
+<div class="param">uag_tag (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> the tag (version) of https://github.com/unity-sds/unity-app-generator used in build process with default value 0.3.0 </div>
     </div>  <!-- field-items -->
   </div>
   </body>
