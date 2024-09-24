@@ -1,4 +1,11 @@
+"""
+The HealthService module contains those utilities related to the 
+Unity Health Services Infrastructure.
+"""
+
+import requests
 from unity_sds_client.unity_session import UnitySession
+from unity_sds_client.utils.http import get_headers
 
 class HealthService(object):
     """
@@ -7,7 +14,8 @@ class HealthService(object):
 
     def __init__(
         self,
-        session:UnitySession
+        session:UnitySession,
+        endpoint: str = None
     ):
         """
         Initialize the HealthService class.
@@ -23,7 +31,9 @@ class HealthService(object):
             List of applications and their health statses
         """
 
-        self._health_statuses = None
+        self._session = session
+        if endpoint is None:
+            self.endpoint = self._session.get_unity_href()
 
     def __str__(self):
         return self.generate_health_status_report()
@@ -33,57 +43,32 @@ class HealthService(object):
         Returns a list of services and their respective health status
         """
 
-        # Get Health Information
-        # Stubbed in health data until Health API endpoint is available
-        self._health_statuses = [
-          {
-            "service": "airflow",
-            "landingPage":"https://unity.jpl.nasa.gov/project/venue/processing/ui",
-            "healthChecks": [
-              {
-                "status": "HEALTHY",
-                "date": "2024-04-09T18:01:08Z"
-              }
-            ]
-          },
-          {
-            "service": "jupyter",
-            "landingPage":"https://unity.jpl.nasa.gov/project/venue/ads/jupyter",
-            "healthChecks": [
-              {
-                "status": "HEALTHY",
-                "date": "2024-04-09T18:01:08Z"
-              }
-            ]
-          },
-          {
-            "service": "other_service",
-            "landingPage":"https://unity.jpl.nasa.gov/project/venue/other_service",
-            "healthChecks": [
-              {
-                "status": "UNHEALTHY",
-                "date": "2024-04-09T18:01:08Z"
-              }
-            ]
-          }
-        ]
+        token = self._session.get_auth().get_token()
+        project = self._session.get_project()
+        venue = self._session.get_venue()
+        url = self.endpoint + f"{project}/{venue}/management/api/health_checks"
 
-        return self._health_statuses
-    
+        headers = get_headers(token, {
+            'Content-type': 'application/json'
+        })
+        response = requests.get(url, headers=headers, timeout=60)
+
+        return response.json()
+
     def generate_health_status_report(self):
         """
         Return a generated report of health status information
         """
 
-        if self._health_statuses is None:
-            self.get_health_status()
+        health_statuses = self.get_health_status()
 
         health_status_title = "HEALTH STATUS REPORT"
         report = f"\n\n{health_status_title}\n"
         report = report + len(health_status_title) * "-" + "\n\n"
-        for service in self._health_statuses:
-            service_name = service["service"]
-            report = report + f"{service_name}\n"
+        for service in health_statuses["services"]:
+            service_name = service["componentName"]
+            landing_page_url = service["landingPageUrl"]
+            report = report + f"{service_name} ({landing_page_url})\n"
             for status in service["healthChecks"]:
                 service_status = status["status"]
                 service_status_date = status["date"]

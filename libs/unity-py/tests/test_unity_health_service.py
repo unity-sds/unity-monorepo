@@ -3,11 +3,12 @@ This module contains a set of tests is to ensure that the
 Unity Health Service is functional.
 """
 
+import json
 import pytest
 
 from unity_sds_client.unity import Unity
+from unity_sds_client.unity_environments import UnityEnvironments
 from unity_sds_client.unity_services import UnityServices
-import json
 from jsonschema import validate
 
 
@@ -25,11 +26,12 @@ def test_health_status_retrieval():
     Test that health statuses can be retrieved using the health service.
     """
     print("Example health status check")
-    s = Unity()
+    s = Unity(environment=UnityEnvironments.DEV)
+    s.set_project("unity")
+    s.set_venue("dev")
     health_service = s.client(UnityServices.HEALTH_SERVICE)
     health_statuses = health_service.get_health_status()
-
-    f = open('../../schemas/health-service/health-services.schema.json')
+    f = open('../../schemas/health-service/health-services.schema.json', encoding='utf-8')
     schema = json.load(f)
 
     validate(instance=health_statuses, schema=schema)
@@ -41,18 +43,22 @@ def test_health_status_printing():
     """
     Test that health statuses can be printed using the health service.
     """
-    print("Example health status check")
-    s = Unity()
+    s = Unity(environment=UnityEnvironments.DEV)
+    s.set_project("unity")
+    s.set_venue("dev")
     health_service = s.client(UnityServices.HEALTH_SERVICE)
+
+    print("Example health status output using health service object:")
     health_service.print_health_status()
 
 @pytest.mark.regression
 def test_health_service_printing():
     """
-    Test that when the health service client is printed, it outputs
-    the health status information
+    Test that health statuses can be printed using the unity object
     """
-    print("Example health status printing of health service object.")
-    s = Unity()
-    health_service = s.client(UnityServices.HEALTH_SERVICE)
-    print(health_service)
+    s = Unity(environment=UnityEnvironments.DEV)
+    s.set_project("unity")
+    s.set_venue("dev")
+
+    print("Example health status output using unity object:")
+    print(s)

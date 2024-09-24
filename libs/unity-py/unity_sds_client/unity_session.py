@@ -97,6 +97,20 @@ class UnitySession(object):
         """
         return self._config
 
+    def get_project(self):
+        if self._project is None:
+            raise UnityException("session variables project and venue or venue_id are required to interact with a "
+                                 "processing service.")
+        else:
+            return self._project
+
+    def get_venue(self):
+        if self._venue is None:
+            raise UnityException("session variables project and venue or venue_id are required to interact with a "
+                                 "processing service.")
+        else:
+            return self._venue
+
     def get_venue_id(self):
         if self._venue_id is None:
             if self._project is None or self._venue is None:
