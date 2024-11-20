@@ -9,7 +9,7 @@ Feature: MDPS_2_REQ-33
   Scenario: Confirm results from data catalog:get_collection_data()
     Given I have a token to authenticate with Unity Services
     When a collection lookup request is made to the DAPA endpoint 
-    Then one and only one collection is returned
+    Then a valid STAC document is returned
 
 #  #Access the {root}/collections/collection/items endpoint
 #  @shared
