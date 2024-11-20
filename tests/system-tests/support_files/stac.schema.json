@@ -1,0 +1,312 @@
+{
+   "$schema" : "http://json-schema.org/schema#",
+   "properties" : {
+      "features" : {
+         "items" : {
+            "properties" : {
+               "assets" : {
+                  "properties" : {
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.bin" : {
+                        "properties" : {
+                           "description" : {
+                              "type" : "string"
+                           },
+                           "href" : {
+                              "type" : "string"
+                           },
+                           "roles" : {
+                              "items" : {
+                                 "type" : "string"
+                              },
+                              "type" : "array"
+                           },
+                           "title" : {
+                              "type" : "string"
+                           }
+                        },
+                        "required" : [
+                           "description",
+                           "href",
+                           "roles",
+                           "title"
+                        ],
+                        "type" : "object"
+                     },
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.cmr.xml" : {
+                        "properties" : {
+                           "description" : {
+                              "type" : "string"
+                           },
+                           "href" : {
+                              "type" : "string"
+                           },
+                           "roles" : {
+                              "items" : {
+                                 "type" : "string"
+                              },
+                              "type" : "array"
+                           },
+                           "title" : {
+                              "type" : "string"
+                           }
+                        },
+                        "required" : [
+                           "description",
+                           "href",
+                           "roles",
+                           "title"
+                        ],
+                        "type" : "object"
+                     },
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.hdr" : {
+                        "properties" : {
+                           "description" : {
+                              "type" : "string"
+                           },
+                           "href" : {
+                              "type" : "string"
+                           },
+                           "roles" : {
+                              "items" : {
+                                 "type" : "string"
+                              },
+                              "type" : "array"
+                           },
+                           "title" : {
+                              "type" : "string"
+                           }
+                        },
+                        "required" : [
+                           "description",
+                           "href",
+                           "roles",
+                           "title"
+                        ],
+                        "type" : "object"
+                     },
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.json" : {
+                        "properties" : {
+                           "description" : {
+                              "type" : "string"
+                           },
+                           "href" : {
+                              "type" : "string"
+                           },
+                           "roles" : {
+                              "items" : {
+                                 "type" : "string"
+                              },
+                              "type" : "array"
+                           },
+                           "title" : {
+                              "type" : "string"
+                           }
+                        },
+                        "required" : [
+                           "description",
+                           "href",
+                           "roles",
+                           "title"
+                        ],
+                        "type" : "object"
+                     },
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.png" : {
+                        "properties" : {
+                           "description" : {
+                              "type" : "string"
+                           },
+                           "href" : {
+                              "type" : "string"
+                           },
+                           "roles" : {
+                              "items" : {
+                                 "type" : "string"
+                              },
+                              "type" : "array"
+                           },
+                           "title" : {
+                              "type" : "string"
+                           }
+                        },
+                        "required" : [
+                           "description",
+                           "href",
+                           "roles",
+                           "title"
+                        ],
+                        "type" : "object"
+                     }
+                  },
+                  "required" : [
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.bin",
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.cmr.xml",
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.hdr",
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.json",
+                     "SISTER_EMIT_L2A_CORFL_20240103T131936_001.png"
+                  ],
+                  "type" : "object"
+               },
+               "bbox" : {
+                  "items" : {
+                     "type" : "number"
+                  },
+                  "type" : "array"
+               },
+               "collection" : {
+                  "type" : "string"
+               },
+               "geometry" : {
+                  "properties" : {
+                     "coordinates" : {
+                        "items" : {
+                           "type" : "number"
+                        },
+                        "type" : "array"
+                     },
+                     "type" : {
+                        "type" : "string"
+                     }
+                  },
+                  "required" : [
+                     "coordinates",
+                     "type"
+                  ],
+                  "type" : "object"
+               },
+               "id" : {
+                  "type" : "string"
+               },
+               "links" : {
+                  "items" : {
+                     "properties" : {
+                        "href" : {
+                           "type" : "string"
+                        },
+                        "rel" : {
+                           "type" : "string"
+                        },
+                        "title" : {
+                           "type" : "string"
+                        },
+                        "type" : {
+                           "type" : "string"
+                        }
+                     },
+                     "required" : [
+                        "href",
+                        "rel"
+                     ],
+                     "type" : "object"
+                  },
+                  "type" : "array"
+               },
+               "properties" : {
+                  "properties" : {
+                     "created" : {
+                        "type" : "string"
+                     },
+                     "datetime" : {
+                        "type" : "string"
+                     },
+                     "end_datetime" : {
+                        "type" : "string"
+                     },
+                     "provider" : {
+                        "type" : "string"
+                     },
+                     "start_datetime" : {
+                        "type" : "string"
+                     },
+                     "status" : {
+                        "type" : "string"
+                     },
+                     "updated" : {
+                        "type" : "string"
+                     }
+                  },
+                  "required" : [
+                     "created",
+                     "datetime",
+                     "end_datetime",
+                     "provider",
+                     "start_datetime",
+                     "status",
+                     "updated"
+                  ],
+                  "type" : "object"
+               },
+               "stac_extensions" : {
+                  "type" : "array"
+               },
+               "stac_version" : {
+                  "type" : "string"
+               },
+               "type" : {
+                  "type" : "string"
+               }
+            },
+            "required" : [
+               "assets",
+               "bbox",
+               "collection",
+               "geometry",
+               "id",
+               "links",
+               "properties",
+               "stac_extensions",
+               "stac_version",
+               "type"
+            ],
+            "type" : "object"
+         },
+         "type" : "array"
+      },
+      "links" : {
+         "items" : {
+            "properties" : {
+               "href" : {
+                  "type" : "string"
+               },
+               "rel" : {
+                  "type" : "string"
+               }
+            },
+            "required" : [
+               "href",
+               "rel"
+            ],
+            "type" : "object"
+         },
+         "type" : "array"
+      },
+      "numberMatched" : {
+         "properties" : {
+            "total_size" : {
+               "type" : "integer"
+            }
+         },
+         "required" : [
+            "total_size"
+         ],
+         "type" : "object"
+      },
+      "numberReturned" : {
+         "type" : "integer"
+      },
+      "stac_version" : {
+         "type" : "string"
+      },
+      "type" : {
+         "type" : "string"
+      }
+   },
+   "required" : [
+      "features",
+      "links",
+      "numberMatched",
+      "numberReturned",
+      "stac_version",
+      "type"
+   ],
+   "type" : "object"
+}
