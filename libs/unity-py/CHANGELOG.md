@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
-
+* updated poetry build for 'version' workflow
 ### Changed
 
     Updated the usage of the OGC Processes Client to conform more closely to OGC Processes API spec.
