@@ -2,14 +2,18 @@
 
 DESTROY=""
 RUN_TESTS=""
+RUN_BDD_TEST=false
+USE_TESTRAIL=No
 PROJECT_NAME=""
 VENUE_NAME=""
 MC_VERSION="latest"
+GH_BRANCH="main"
 DEPLOYMENT_START_TIME=$(date +%s)
 CONFIG_FILE="marketplace_config.yaml"  # Set default config file
 # Function to display usage instructions
 usage() {
-    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--config-file <CONFIG_FILE>]"
+    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
+    echo "    --run-bdd-tests and --run-tests are independent from one another. But --testrail is considered only if --run-bbd-tests is active. Default for both --run-bdd-tests and --testrail are false."
     exit 1
 }
 
@@ -46,6 +50,36 @@ while [[ $# -gt 0 ]]; do
             esac
             shift 2
             ;;
+        --run-bdd-tests)
+            case "$2" in
+                true)
+                    RUN_BDD_TESTS=true
+                    ;;
+                false)
+                    RUN_BDD_TESTS=false
+                    ;;
+                *)
+                    echo "Invalid argument for --run-bdd-tests. Please specify 'true' or 'false'." >&2
+                    exit 1
+                    ;;
+            esac
+            shift 2
+            ;;
+        --testrail)
+            case "$2" in
+                true)
+                    USE_TESTRAIL=Yes
+                    ;;
+                false)
+                    USE_TESTRAIL=No
+                    ;;
+                *)
+                    echo "Invalid argument for --testrail. Please specify 'true' or 'false'." >&2
+                    exit 1
+                    ;;
+            esac
+            shift 2
+            ;;
         --project-name)
             PROJECT_NAME="$2"
             shift 2
@@ -60,6 +94,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --config-file)
             CONFIG_FILE="$2"
+            shift 2
+            ;;
+        --repo-branch)
+            GH_BRANCH="$2"
             shift 2
             ;;
         *)
@@ -90,9 +128,13 @@ fi
 #
 echo "Checking for existing deployment for (project=${PROJECT_NAME}, venue=${VENUE_NAME}) ..."
 aws ssm get-parameter --name "/unity/${PROJECT_NAME}/${VENUE_NAME}/deployment/status" 2>ssm_lookup.txt
-if [[ `grep "ParameterNotFound" ssm_lookup.txt | wc -l` == "1" ]]; then
+if grep -q "ParameterNotFound" ssm_lookup.txt; then
     echo "Existing deployment not found.  Continuing with deployment..."
     rm ssm_lookup.txt
+elif grep -q "ExpiredTokenException" ssm_lookup.txt; then
+    echo "ERROR: AWS credentials have expired or are invalid. Please renew and restart."
+    rm ssm_lookup.txt
+    exit 1
 else
     echo "ERROR: A deployment appears to already exist for project=${PROJECT_NAME}, venue=${VENUE_NAME}."
     echo "       Please cleanup the resources for this deployment, before continuing!"
@@ -132,15 +174,19 @@ rm out.txt
 echo "RUN ARGUMENTS: "
 echo "  - Destroy stack at end of script? $DESTROY"
 echo "  - Run tests?                      $RUN_TESTS"
+echo "  - Run BDD tests?                  $RUN_BDD_TESTS"
+echo "  - Use testrail?                   $USE_TESTRAIL"
 echo "  - Project Name:                   $PROJECT_NAME"
 echo "  - Venue Name:                     $VENUE_NAME"
 echo "  - MC Version:                     $MC_VERSION"
 echo "  - Config File:                    $CONFIG_FILE"
+echo "  - Github Branch :                 $GH_BRANCH"
 
 echo "---------------------------------------------------------"
 
 export STACK_NAME="unity-management-console-${PROJECT_NAME}-${VENUE_NAME}"
-export GH_BRANCH=main
+# GH_BRANCH defaults to main unless explicitly set on command line
+export GH_BRANCH="${GH_BRANCH}"
 TODAYS_DATE=$(date '+%F_%H-%M')
 LOG_DIR=nightly_logs/log_${TODAYS_DATE}
 
@@ -217,7 +263,7 @@ start_time=$(date +%s)
 
 aws cloudformation describe-stack-events --stack-name ${STACK_NAME} >> cloudformation_events.txt
 
-sleep 420
+# sleep 420
 
 # Get MC URL from SSM (Management Console populates this value)
 export SSM_MC_URL="/unity/${PROJECT_NAME}/${VENUE_NAME}/management/httpd/loadbalancer-url"
@@ -420,9 +466,40 @@ if [ $SMOKE_TEST_STATUS -eq 0 ]; then
     else
       echo "Not running Selenium tests. (--run-tests false)"
     fi
+ 
 else
     echo "Smoke test failed or could not be verified. Skipping tests."
     echo "Smoke test failed or could not be verified. Skipping tests." >> nightly_output.txt
+fi
+
+if [[ "$RUN_BDD_TESTS" == "true" ]]; then
+    echo "Running BDD tests..."
+
+    # Install behave if not installed
+    pip3 list | grep "behave " > out.txt
+    if ! grep -q "behave " out.txt; then
+      echo "Installing behave..."
+      pip3 install behave
+    fi
+
+    # Install behave-testrail-reporter if needed and not installed
+    if [[ "$USE_TESTRAIL" == "true" ]]; then
+      pip3 list | grep "behave-testrail-reporter" > out.txt
+      if ! grep -q "behave-testrail-reporter" out.txt; then
+        echo "Installing behave-testrail-reporter..."
+        pip3 install behave-testrail-reporter
+      fi
+    fi
+
+    # set up gherkin/behave environment
+    source ./set_test_params.sh
+
+    # run gherkin/behave tests
+    ./system_tests/regression_test.sh
+
+else
+    echo "Not running BDD tests. (--run-bdd-tests false)"
+    echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
 fi
 
 # Decide on resource destruction based on the smoke test result or DESTROY flag
