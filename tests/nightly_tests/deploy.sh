@@ -108,7 +108,7 @@ escaped_config_content=$(echo "$config_content" | sed 's/"/\\"/g')
 # Modify the CloudFormation create-stack command
 aws cloudformation create-stack \
   --stack-name ${STACK_NAME} \
-  --template-body file://../cloudformation-template/unity-mc.main.template.yaml \
+  --template-body file://./cloudformation-template/unity-mc.main.template.yaml \
   --capabilities CAPABILITY_IAM \
   --parameters \
     ParameterKey=VPCID,ParameterValue=${VPC_ID_VAL} \
