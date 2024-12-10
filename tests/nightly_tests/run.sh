@@ -11,6 +11,7 @@ GH_BRANCH="main"
 DEPLOYMENT_START_TIME=$(date +%s)
 CONFIG_FILE="marketplace_config.yaml"  # Set default config file
 # Function to display usage instructions
+# TODO: refine the command line selection of tests, e.g. use behave tags for BDD testing and implicit tags for other (e.g. selenium) testing
 usage() {
     echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
     echo "    --run-bdd-tests and --run-tests are independent from one another. But --testrail is considered only if --run-bbd-tests is active. Default for both --run-bdd-tests and --testrail are false."
@@ -495,7 +496,7 @@ if [[ "$RUN_BDD_TESTS" == "true" ]]; then
     source ./set_test_params.sh
 
     # run gherkin/behave tests
-    ./system_tests/regression_test.sh
+    ../system_tests/regression_test.sh
 
 else
     echo "Not running BDD tests. (--run-bdd-tests false)"
