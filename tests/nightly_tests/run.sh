@@ -9,11 +9,12 @@ VENUE_NAME=""
 MC_VERSION="latest"
 GH_BRANCH="main"
 DEPLOYMENT_START_TIME=$(date +%s)
+MAMBA_ENVIRONMENT=""
 CONFIG_FILE="marketplace_config.yaml"  # Set default config file
 # Function to display usage instructions
 # TODO: refine the command line selection of tests, e.g. use behave tags for BDD testing and implicit tags for other (e.g. selenium) testing
 usage() {
-    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
+    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>] [--env <mamba environment>]"
     echo "    --run-bdd-tests and --run-tests are independent from one another. But --testrail is considered only if --run-bbd-tests is active. Default for both --run-bdd-tests and --testrail are false."
     exit 1
 }
@@ -101,6 +102,12 @@ while [[ $# -gt 0 ]]; do
             GH_BRANCH="$2"
             shift 2
             ;;
+        --env)
+	    MAMBA_ENVIRONMENT="$2"
+	    echo "Executing tests in the mamba environment $MAMBA_ENVIRONMENT"
+	    mamba activate $MAMBA_ENVIRONMENT
+	    shift 2
+	    ;;
         *)
             echo "Invalid option: $1" >&2
             exit 1
@@ -236,7 +243,7 @@ fi
 #
 git config --global user.email ${GITHUB_USEREMAIL_VAL}
 git config --global user.name ${GITHUB_USERNAME_VAL}
-git remote set-url origin https://oauth2:${GITHUB_TOKEN_VAL}@github.com/unity-sds/unity-cs-infra.git
+git remote set-url origin https://oauth2:${GITHUB_TOKEN_VAL}@github.com/unity-sds/unity-monorepo.git
 
 rm -f nightly_output.txt
 rm -f cloudformation_events.txt
@@ -246,7 +253,7 @@ NIGHTLY_HASH=$(git rev-parse --short HEAD)
 echo "Repo Hash (Nightly Test):     [$NIGHTLY_HASH]" >> nightly_output.txt
 echo "Repo Hash (Nightly Test):     [$NIGHTLY_HASH]"
 
-## update self (unity-cs-infra repository)
+## update self (unity-monorepo repository)
 git pull origin ${GH_BRANCH}
 git checkout ${GH_BRANCH}
 
@@ -521,17 +528,21 @@ cat CF_EVENTS.txt
 CF_EVENTS=$(cat CF_EVENTS.txt)
 
 # The rest of your script, including posting to Slack, can go here
-# Ensure to only post to Slack if tests were run successfully
-if [[ "$RUN_TESTS" == "true" ]]; then
+# Ensure to only post to Slack if tests were run 
+if [[ "$RUN_TESTS" == "true" ]] || [[ "$RUN_BDD_TESTS" == "true"]]; then
 
   OUTPUT=$(cat nightly_output.txt)
-  GITHUB_LOGS_URL="https://github.com/unity-sds/unity-cs-infra/tree/${GH_BRANCH}/nightly_tests/${LOG_DIR}"
+  GITHUB_LOGS_URL="https://github.com/unity-sds/unity-monorepo/tree/${GH_BRANCH}/nightly_tests/${LOG_DIR}"
   
   # Post results to Slack
   curl -X POST -H 'Content-type: application/json' \
   --data '{"cloudformation_summary": "'"${OUTPUT}"'", "cloudformation_events": "'"${CF_EVENTS}"'", "logs_url": "'"${GITHUB_LOGS_URL}"'"}' \
   ${SLACK_URL_VAL}
 else
-    echo "Not posting results to slack (--run-tests)"
+    echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
 fi
 
+if ! [[ -z "$MAMBA_ENVIRONMENT" ]]; then
+  echo "Deactivating mamba environment."
+  mamba deactivate
+fi
