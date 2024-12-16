@@ -9,12 +9,11 @@ VENUE_NAME=""
 MC_VERSION="latest"
 GH_BRANCH="main"
 DEPLOYMENT_START_TIME=$(date +%s)
-MAMBA_ENVIRONMENT=""
 CONFIG_FILE="marketplace_config.yaml"  # Set default config file
 # Function to display usage instructions
 # TODO: refine the command line selection of tests, e.g. use behave tags for BDD testing and implicit tags for other (e.g. selenium) testing
 usage() {
-    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>] [--env <mamba environment>]"
+    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
     echo "    --run-bdd-tests and --run-tests are independent from one another. But --testrail is considered only if --run-bbd-tests is active. Default for both --run-bdd-tests and --testrail are false."
     exit 1
 }
@@ -102,12 +101,6 @@ while [[ $# -gt 0 ]]; do
             GH_BRANCH="$2"
             shift 2
             ;;
-        --env)
-	    MAMBA_ENVIRONMENT="$2"
-	    echo "Executing tests in the mamba environment $MAMBA_ENVIRONMENT"
-	    mamba activate $MAMBA_ENVIRONMENT
-	    shift 2
-	    ;;
         *)
             echo "Invalid option: $1" >&2
             exit 1
@@ -540,9 +533,4 @@ if [[ "$RUN_TESTS" == "true" ]] || [[ "$RUN_BDD_TESTS" == "true"]]; then
   ${SLACK_URL_VAL}
 else
     echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
-fi
-
-if ! [[ -z "$MAMBA_ENVIRONMENT" ]]; then
-  echo "Deactivating mamba environment."
-  mamba deactivate
 fi
