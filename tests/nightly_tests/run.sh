@@ -496,7 +496,7 @@ if [[ "$RUN_BDD_TESTS" == "true" ]]; then
     source ./set_test_params.sh
 
     # run gherkin/behave tests
-    ../system_tests/regression_test.sh
+    source ${BASE_TEST_DIR}/regression_test.sh
 
 else
     echo "Not running BDD tests. (--run-bdd-tests false)"
@@ -522,7 +522,7 @@ CF_EVENTS=$(cat CF_EVENTS.txt)
 
 # The rest of your script, including posting to Slack, can go here
 # Ensure to only post to Slack if tests were run 
-if [[ "$RUN_TESTS" == "true" ]] || [[ "$RUN_BDD_TESTS" == "true"]]; then
+if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
 
   OUTPUT=$(cat nightly_output.txt)
   GITHUB_LOGS_URL="https://github.com/unity-sds/unity-monorepo/tree/${GH_BRANCH}/nightly_tests/${LOG_DIR}"
