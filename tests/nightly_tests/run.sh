@@ -451,23 +451,9 @@ if [ $SMOKE_TEST_STATUS -eq 0 ]; then
       cp selenium_nightly_output.txt "nightly_output_$TODAYS_DATE.txt"
       mv nightly_output_$TODAYS_DATE.txt ${LOG_DIR}
       mv selenium_unity_images/* ${LOG_DIR}
-      
-      #Delete logs older then 2 weeks
-      bash delete_old_logs.sh
-      
-      # Push the output logs/screenshots to Github for auditing purposes
-      echo "Pushing test results to ${LOG_DIR}..."
-      git add nightly_logs/
-      git add "${LOG_DIR}/nightly_output_$TODAYS_DATE.txt"
-      git add ${LOG_DIR}/*
-      git commit -m "Add nightly output for $TODAYS_DATE"
-      git pull origin ${GH_BRANCH}
-      git checkout ${GH_BRANCH}
-      git push origin ${GH_BRANCH}
     else
       echo "Not running Selenium tests. (--run-tests false)"
     fi
- 
 else
     echo "Smoke test failed or could not be verified. Skipping tests."
     echo "Smoke test failed or could not be verified. Skipping tests." >> nightly_output.txt
@@ -501,6 +487,23 @@ if [[ "$RUN_BDD_TESTS" == "true" ]]; then
 else
     echo "Not running BDD tests. (--run-bdd-tests false)"
     echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
+fi
+
+if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
+    # cleanup logs and commit to git
+
+    #Delete logs older then 2 weeks
+    bash delete_old_logs.sh
+      
+    # Push the output logs/screenshots to Github for auditing purposes
+    echo "Pushing test results to ${LOG_DIR}..."
+    git add nightly_logs/
+    git add "${LOG_DIR}/nightly_output_$TODAYS_DATE.txt"
+    git add ${LOG_DIR}/*
+    git commit -m "Add nightly output for $TODAYS_DATE"
+    git pull origin ${GH_BRANCH}
+    git checkout ${GH_BRANCH}
+    git push origin ${GH_BRANCH}
 fi
 
 # Decide on resource destruction based on the smoke test result or DESTROY flag
