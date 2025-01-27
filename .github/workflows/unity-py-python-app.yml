@@ -99,7 +99,7 @@ jobs:
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2.0.0
         with:
-          poetry-version: "1.5.1"
+          poetry-version: "1.8.3"
       # Commented out the version bump code. Will publish new unity-py version to pypi on push to main.
       # This means we are always releasing. This will fail if the version already exists in Pypi.
       # We must ensure that the version has been updated.
