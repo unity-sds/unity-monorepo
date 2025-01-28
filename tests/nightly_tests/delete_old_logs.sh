@@ -1,6 +1,6 @@
 #!/bin/bash
 # Directory containing the log directories
-LOG_DIR="/home/ubuntu/unity-monorepo/nightly_tests/nightly_logs"
+LOG_DIR="/home/ubuntu/unity-monorepo/tests/nightly_tests/nightly_logs"
 
 # Print current date and time 
 echo "Current date and time: $(date)"
