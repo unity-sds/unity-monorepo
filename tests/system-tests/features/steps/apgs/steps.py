@@ -17,15 +17,18 @@ def step_impl(context):
         )
     environ = environ.lower()
 
+    # Config override - may be None
+    config_file_override = os.environ.get("UNITY_CONFIG_OVERRRIDE_FILE")
+
     if "dev" in environ:
         print("Starting Development Session")
-        s = Unity(UnityEnvironments.DEV)
+        s = Unity(UnityEnvironments.DEV, config_file_override)
     elif "test" in environ:
         print("Starting Test Session")
-        s = Unity(UnityEnvironments.TEST)
+        s = Unity(UnityEnvironments.TEST, config_file_override)
     elif "prod" in environ:
         print("Starting Production Session")
-        s = Unity(UnityEnvironments.PROD)
+        s = Unity(UnityEnvironments.PROD, config_file_override)
     else:
         raise Exception(
             "no environment included as a run tag. Expected one of [develop, test, prod]"
