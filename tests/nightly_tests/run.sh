@@ -9,11 +9,12 @@ VENUE_NAME=""
 MC_VERSION="latest"
 GH_BRANCH="main"
 DEPLOYMENT_START_TIME=$(date +%s)
+MC_SHA=""
 CONFIG_FILE="marketplace_config.yaml"  # Set default config file
 # Function to display usage instructions
 # TODO: refine the command line selection of tests, e.g. use behave tags for BDD testing and implicit tags for other (e.g. selenium) testing
 usage() {
-    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
+    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
     echo "    --run-bdd-tests and --run-tests are independent from one another. But --testrail is considered only if --run-bbd-tests is active. Default for both --run-bdd-tests and --testrail are false."
     exit 1
 }
@@ -101,6 +102,10 @@ while [[ $# -gt 0 ]]; do
             GH_BRANCH="$2"
             shift 2
             ;;
+        --mc-sha)
+            MC_SHA="$2"
+            shift 2
+            ;;
         *)
             echo "Invalid option: $1" >&2
             exit 1
@@ -180,11 +185,13 @@ echo "  - Use testrail?                   $USE_TESTRAIL"
 echo "  - Project Name:                   $PROJECT_NAME"
 echo "  - Venue Name:                     $VENUE_NAME"
 echo "  - MC Version:                     $MC_VERSION"
+echo "  - MC SHA:                         $MC_SHA"
 echo "  - Config File:                    $CONFIG_FILE"
 echo "  - Github Branch :                 $GH_BRANCH"
 
 echo "---------------------------------------------------------"
 
+export MC_SHA="${MC_SHA}"
 export STACK_NAME="unity-management-console-${PROJECT_NAME}-${VENUE_NAME}"
 # GH_BRANCH defaults to main unless explicitly set on command line
 export GH_BRANCH="${GH_BRANCH}"
@@ -245,6 +252,7 @@ mkdir -p ${LOG_DIR}
 NIGHTLY_HASH=$(git rev-parse --short HEAD)
 echo "Repo Hash (Nightly Test):     [$NIGHTLY_HASH]" >> nightly_output.txt
 echo "Repo Hash (Nightly Test):     [$NIGHTLY_HASH]"
+echo "Management Console SHA:       [$MC_SHA]"
 
 ## update self (unity-monorepo repository)
 git pull origin ${GH_BRANCH}
@@ -253,7 +261,7 @@ git checkout ${GH_BRANCH}
 #
 # Deploy the Management Console using CloudFormation
 #
-bash deploy.sh --stack-name "${STACK_NAME}" --project-name "${PROJECT_NAME}" --venue-name "${VENUE_NAME}" --mc-version "${MC_VERSION}" --config-file "$CONFIG_FILE"
+bash deploy.sh --stack-name "${STACK_NAME}" --project-name "${PROJECT_NAME}" --venue-name "${VENUE_NAME}" --mc-version "${MC_VERSION}" --config-file "$CONFIG_FILE" --mc-sha "$MC_SHA"
 
 echo "Deploying Management Console..." >> nightly_output.txt
 echo "Deploying Management Console..."
