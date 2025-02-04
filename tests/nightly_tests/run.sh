@@ -516,6 +516,8 @@ fi
 
 # Decide on resource destruction based on the smoke test result or DESTROY flag
 if [[ "$DESTROY" == "true" ]] || [ $SMOKE_TEST_STATUS -ne 0 ]; then
+  echo "Waiting 15 minutes before reclaiming resources."
+  sleep 15m
   echo "Destroying resources..."
   bash destroy.sh --project-name "${PROJECT_NAME}" --venue-name "${VENUE_NAME}"
 else
