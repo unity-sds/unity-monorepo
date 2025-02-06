@@ -52,8 +52,9 @@ jobs:
       if: steps.changes.outputs.src == 'true'
       run: |
         unity_py_proposed_version=`poetry version -s`
-        echo "curl -s -o /dev/null -w \"%{http_code}\" https://pypi.org/project/unity-sds-client/$unity_py_proposed_version/"
-        status_code=`curl -s -o /dev/null -w "%{http_code}" https://pypi.org/project/unity-sds-client/$unity_py_proposed_version/`
+        #  https://pypi.org/pypi/unity-sds-client/0.8.0/json
+        echo "curl -s -o /dev/null -w \"%{http_code}\" https://pypi.org/pypi/unity-sds-client/$unity_py_proposed_version/json"
+        status_code=`curl -s -o /dev/null -w \"%{http_code}\" https://pypi.org/pypi/unity-sds-client/$unity_py_proposed_version/json`
         echo "Received status code of $status_code"
         if ((status_code == 200)); then
           echo "Version already exists."
