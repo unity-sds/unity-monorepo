@@ -191,11 +191,17 @@ class DataService(object):
         if response.status_code != 200:
             raise UnityException("Error adding custom metadata: " + response.message)
 
-    #
-    #Delete single granule from a given Collection
-    #
-    def delete_collection_data(self, collection: type = Collection, granule_id: str = None):
-        #Must provide granule_id
+    def delete_collection_item(self, collection: type = Collection, granule_id: str = None):
+        """
+            Delete a granule from given a collection
+            Parameters
+            -------
+            collection: Collection
+                The collection object associated to the granule to delete
+            granule_id: String
+                The granule id to delete
+
+    	""" 
         if (granule_id == "") or (granule_id is None):
             raise Exception("Error deleting collection data: Please provide granule ID")
 
@@ -207,3 +213,13 @@ class DataService(object):
             print(response.status_code)
             if response.status_code != 200:
                 raise UnityException("Error deleting collection: " + response.reason)   
+
+    def delete_dataset(self, dataset: type = Dataset):
+        """
+            Delete an item from a Collection given Dataset object  
+            Parameters
+            ----------
+            dataset: Dataset
+        """
+    
+        self.delete_collection_item(Collection(dataset.collection_id), dataset.id)
