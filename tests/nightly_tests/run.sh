@@ -497,21 +497,24 @@ else
     echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
 fi
 
-if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
-    # cleanup logs and commit to git
+if [[ "y" == "n" ]]; then
+    # No longer committing logs, for now.
+    if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
+        # cleanup logs and commit to git
 
-    #Delete logs older then 2 weeks
-    bash delete_old_logs.sh
+        #Delete logs older then 2 weeks
+        bash delete_old_logs.sh
       
-    # Push the output logs/screenshots to Github for auditing purposes
-    echo "Pushing test results to ${LOG_DIR}..."
-    git add nightly_logs/
-    git add "${LOG_DIR}/nightly_output_$TODAYS_DATE.txt"
-    git add ${LOG_DIR}/*
-    git commit -m "Add nightly output for $TODAYS_DATE"
-    git pull origin ${GH_BRANCH}
-    git checkout ${GH_BRANCH}
-    git push origin ${GH_BRANCH}
+        # Push the output logs/screenshots to Github for auditing purposes
+        echo "Pushing test results to ${LOG_DIR}..."
+        git add nightly_logs/
+        git add "${LOG_DIR}/nightly_output_$TODAYS_DATE.txt"
+        git add ${LOG_DIR}/*
+        git commit -m "Add nightly output for $TODAYS_DATE"
+        git pull origin ${GH_BRANCH}
+        git checkout ${GH_BRANCH}
+        git push origin ${GH_BRANCH}
+    fi
 fi
 
 # Decide on resource destruction based on the smoke test result or DESTROY flag
