@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [0.8.1] - 2025-02-10
+### Added
+
+### Fixed
+
+### Changed
+
+* Updated the the OGC Processes API Jupyter Notebook to provide more detail.
+
+### Removed
+
+### Security
+
+### Deprecated
+
+=======
 ## [0.8.0] - 2025-1-14
 
 ### Added
@@ -13,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-    Updated the unity-py to include the Data Service Delete.
+* Updated the unity-py to include the Data Service Delete.
 
 ### Removed
 
@@ -26,10 +43,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
+
 * updated poetry build for 'version' workflow
+
 ### Changed
 
-    Updated the usage of the OGC Processes Client to conform more closely to OGC Processes API spec.
+* Updated the usage of the OGC Processes Client to conform more closely to OGC Processes API spec.
 
 ### Removed
 
