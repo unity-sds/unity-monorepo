@@ -390,6 +390,24 @@ what the application catalog supports.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.data_service.DataService.delete_collection_item">
+<span class="sig-name descname"><span class="pre">delete_collection_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection:</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'unity_sds_client.resources.collection.Collection'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">granule_id:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.data_service.DataService.delete_collection_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a granule from given a collection
+:param collection: The collection object associated to the granule to delete
+:type collection: Collection
+:param granule_id: The granule id to delete
+:type granule_id: String</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.services.data_service.DataService.delete_dataset">
+<span class="sig-name descname"><span class="pre">delete_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset:</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'unity_sds_client.resources.dataset.Dataset'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.data_service.DataService.delete_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete an item from a Collection given Dataset object
+:param dataset:
+:type dataset: Dataset</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="unity_sds_client.services.data_service.DataService.get_collection_data">
 <span class="sig-name descname"><span class="pre">get_collection_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection:</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'unity_sds_client.resources.collection.Collection'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit=10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_stac=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.services.data_service.DataService.get_collection_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
