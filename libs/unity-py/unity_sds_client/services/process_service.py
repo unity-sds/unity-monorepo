@@ -62,11 +62,11 @@ class ProcessService(object):
         )
         with unity_sps_ogc_processes_api_python_client.ApiClient(configuration) as api_client:
             # Create an instance of the API class
-            api_instance = unity_sps_ogc_processes_api_python_client.DefaultApi(api_client)
+            api_instance = unity_sps_ogc_processes_api_python_client.ProcessesApi(api_client)
 
             try:
                 # Retrieve the list of available processes
-                api_response = api_instance.process_list_processes_get()  # add auth
+                api_response = api_instance.get_processes_processes_get()  # add auth
                 for process in api_response.processes:
                     processes.append(
                         Process(
@@ -82,7 +82,7 @@ class ProcessService(object):
                     )
             except Exception as e:
                 print(traceback.format_exc())
-                print("Exception when calling DefaultApi->process_list_processes_get: %s\n" % e)
+                print("Exception when calling ProcessesApi->get_processes_processes_get: %s\n" % e)
         #
         return processes
 
@@ -100,11 +100,11 @@ class ProcessService(object):
         )
         with unity_sps_ogc_processes_api_python_client.ApiClient(configuration) as api_client:
             # Create an instance of the API class
-            api_instance = unity_sps_ogc_processes_api_python_client.DefaultApi(api_client)
+            api_instance = unity_sps_ogc_processes_api_python_client.ProcessesApi(api_client)
 
             try:
                 # Retrieve the list of available processes
-                process_output = api_instance.process_description_processes_process_id_get(process_id)  # add auth
+                process_output = api_instance.get_process_description_processes_process_id_get(process_id)  # add auth
                 return Process(
                     self._session,
                     self.endpoint,
@@ -120,7 +120,7 @@ class ProcessService(object):
                 raise UnityException(nfe.body)
             except Exception as e:
                 print(traceback.format_exc())
-                print("Exception when calling DefaultApi->process_list_processes_get: %s\n" % e)
+                print("Exception when calling ProcessesApi->get_process_description_processes_process_id_get: %s\n" % e)
 
     def get_jobs(self, process: Process = None):
 
@@ -136,11 +136,11 @@ class ProcessService(object):
         )
         with unity_sps_ogc_processes_api_python_client.ApiClient(configuration) as api_client:
             # Create an instance of the API class
-            api_instance = unity_sps_ogc_processes_api_python_client.DefaultApi(api_client)
+            api_instance = unity_sps_ogc_processes_api_python_client.JobsApi(api_client)
 
             try:
                 # Retrieve the list of available processes
-                job_output = api_instance.job_list_jobs_get()  # add auth
+                job_output = api_instance.get_jobs_jobs_get()  # add auth
                 for j in job_output.jobs:
                     jobs.append(
                         Job(
@@ -156,7 +156,7 @@ class ProcessService(object):
                 raise UnityException(nfe.body)
             except Exception as e:
                 print(traceback.format_exc())
-                print("Exception when calling DefaultApi->process_list_processes_get: %s\n" % e)
+                print("Exception when calling JobsApi->get_jobs_jobs_get: %s\n" % e)
 
         return jobs
 

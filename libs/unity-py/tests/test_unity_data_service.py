@@ -1,6 +1,7 @@
 from unity_sds_client.unity import Unity
 from unity_sds_client.unity_exception import UnityException
 from unity_sds_client.unity_session import UnitySession
+from unity_sds_client.unity import UnityEnvironments
 from unity_sds_client.resources.collection import Collection
 from unity_sds_client.unity_services import UnityServices as Services
 
@@ -48,3 +49,4 @@ def test_collection_creation(cleanup_update_test):
     s.set_venue("test")
     ds = s.client(Services.DATA_SERVICE)
     ds.create_collection(Collection("urn:nasa:unity:unity:test:my_collection_id"), True)
+
