@@ -190,3 +190,36 @@ class DataService(object):
                                 params={"venue": self._session._venue}, json=metadata)
         if response.status_code != 200:
             raise UnityException("Error adding custom metadata: " + response.message)
+
+    def delete_collection_item(self, collection: type = Collection, granule_id: str = None):
+        """
+            Delete a granule from given a collection
+            Parameters
+            -------
+            collection: Collection
+                The collection object associated to the granule to delete
+            granule_id: String
+                The granule id to delete
+
+    	""" 
+        if (granule_id == "") or (granule_id is None):
+            raise Exception("Error deleting collection data: Please provide granule ID")
+
+        else:
+            url = f'{self.endpoint}am-uds-dapa/collections/{collection.collection_id}/items/{granule_id}/'        
+            token = self._session.get_auth().get_token()        
+            header = {"Authorization": f"Bearer {token}"}
+            response = requests.delete(url=url, headers=header)
+            print(response.status_code)
+            if response.status_code != 200:
+                raise UnityException("Error deleting collection: " + response.reason)   
+
+    def delete_dataset(self, dataset: type = Dataset):
+        """
+            Delete an item from a Collection given Dataset object  
+            Parameters
+            ----------
+            dataset: Dataset
+        """
+    
+        self.delete_collection_item(Collection(dataset.collection_id), dataset.id)

@@ -1,0 +1,37 @@
+{
+  "type": "Feature",
+  "stac_version": "1.0.0",
+  "stac_extensions": [],
+  "id": "urn:nasa:unity:emit:dev:my_test_collection_id2___1",
+  "geometry": null,
+  "properties": {
+    "datetime": "2025-01-15T21:26:11.604091Z",
+    "start_datetime": "2025-01-15T21:26:11.604091+00:00",
+    "end_datetime": "2025-01-15T21:26:11.604993+00:00",
+    "created": "2025-01-15T21:26:11.605018+00:00",
+    "updated": "2025-01-15T21:26:11.605237Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "./catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "./catalog.json",
+      "type": "application/json"
+    }
+  ],
+  "assets": {
+    "test_data_item.hdr": {
+      "href": "test_data_item.hdr",
+      "title": "hdr file",
+      "description": "",
+      "roles": [
+        "data"
+      ]
+    }
+  },
+  "collection": "urn:nasa:unity:emit:dev:my_test_collection_id2___1"
+}
