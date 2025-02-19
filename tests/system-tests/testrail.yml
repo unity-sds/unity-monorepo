@@ -1,0 +1,6 @@
+base_url: https://cae-testrail.jpl.nasa.gov/testrail
+projects:
+  - name: 'System Integration and Test'
+    id: 243
+    suite_id: 33505
+    allowed_branch_pattern: '.*'
