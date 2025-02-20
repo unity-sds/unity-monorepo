@@ -2,20 +2,20 @@
 
 DESTROY=""
 RUN_TESTS=""
-RUN_BDD_TEST=false
-USE_TESTRAIL=No
 PROJECT_NAME=""
 VENUE_NAME=""
-MC_VERSION="latest"
-GH_BRANCH="main"
+LATEST=""
+MC_VERSION="null"
 DEPLOYMENT_START_TIME=$(date +%s)
-MC_SHA=""
+MC_SHA="null"
 CONFIG_FILE="marketplace_config.yaml"  # Set default config file
+MONITORING_LAMBDA_VERSION=""
+APIGATEWAY_VERSION=""
+PROXY_VERSION=""
+UI_VERSION=""
 # Function to display usage instructions
-# TODO: refine the command line selection of tests, e.g. use behave tags for BDD testing and implicit tags for other (e.g. selenium) testing
 usage() {
-    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
-    echo "    --run-bdd-tests and --run-tests are independent from one another. But --testrail is considered only if --run-bbd-tests is active. Default for both --run-bdd-tests and --testrail are false."
+    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--latest <true|false>] [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>]"
     exit 1
 }
 
@@ -52,36 +52,6 @@ while [[ $# -gt 0 ]]; do
             esac
             shift 2
             ;;
-        --run-bdd-tests)
-            case "$2" in
-                true)
-                    RUN_BDD_TESTS=true
-                    ;;
-                false)
-                    RUN_BDD_TESTS=false
-                    ;;
-                *)
-                    echo "Invalid argument for --run-bdd-tests. Please specify 'true' or 'false'." >&2
-                    exit 1
-                    ;;
-            esac
-            shift 2
-            ;;
-        --testrail)
-            case "$2" in
-                true)
-                    USE_TESTRAIL=Yes
-                    ;;
-                false)
-                    USE_TESTRAIL=No
-                    ;;
-                *)
-                    echo "Invalid argument for --testrail. Please specify 'true' or 'false'." >&2
-                    exit 1
-                    ;;
-            esac
-            shift 2
-            ;;
         --project-name)
             PROJECT_NAME="$2"
             shift 2
@@ -98,12 +68,33 @@ while [[ $# -gt 0 ]]; do
             CONFIG_FILE="$2"
             shift 2
             ;;
-        --repo-branch)
-            GH_BRANCH="$2"
-            shift 2
+        --latest)
+            LATEST="true"
+            MC_VERSION="latest"
+            MONITORING_LAMBDA_VERSION="latest"
+            APIGATEWAY_VERSION="latest"
+            PROXY_VERSION="latest"
+            UI_VERSION="latest"
+            shift 1
             ;;
         --mc-sha)
             MC_SHA="$2"
+            shift 2
+            ;;
+        --unity-cs-monitoring-lambda-version)
+            MONITORING_LAMBDA_VERSION="$2"
+            shift 2
+            ;;
+        --unity-apigateway-version)
+            APIGATEWAY_VERSION="$2"
+            shift 2
+            ;;
+        --unity-proxy-version)
+            PROXY_VERSION="$2"
+            shift 2
+            ;;
+        --unity-ui-version)
+            UI_VERSION="$2"
             shift 2
             ;;
         *)
@@ -134,13 +125,9 @@ fi
 #
 echo "Checking for existing deployment for (project=${PROJECT_NAME}, venue=${VENUE_NAME}) ..."
 aws ssm get-parameter --name "/unity/${PROJECT_NAME}/${VENUE_NAME}/deployment/status" 2>ssm_lookup.txt
-if grep -q "ParameterNotFound" ssm_lookup.txt; then
+if [[ `grep "ParameterNotFound" ssm_lookup.txt | wc -l` == "1" ]]; then
     echo "Existing deployment not found.  Continuing with deployment..."
     rm ssm_lookup.txt
-elif grep -q "ExpiredTokenException" ssm_lookup.txt; then
-    echo "ERROR: AWS credentials have expired or are invalid. Please renew and restart."
-    rm ssm_lookup.txt
-    exit 1
 else
     echo "ERROR: A deployment appears to already exist for project=${PROJECT_NAME}, venue=${VENUE_NAME}."
     echo "       Please cleanup the resources for this deployment, before continuing!"
@@ -175,26 +162,28 @@ if ! grep -q selenium out.txt; then
     pip3 install selenium
 fi
 
+# Check if yq is installed
+if ! command -v yq &> /dev/null; then
+    echo "Installing yq..."
+    sudo snap install yq
+fi
+
 rm out.txt
 
 echo "RUN ARGUMENTS: "
 echo "  - Destroy stack at end of script? $DESTROY"
 echo "  - Run tests?                      $RUN_TESTS"
-echo "  - Run BDD tests?                  $RUN_BDD_TESTS"
-echo "  - Use testrail?                   $USE_TESTRAIL"
 echo "  - Project Name:                   $PROJECT_NAME"
 echo "  - Venue Name:                     $VENUE_NAME"
 echo "  - MC Version:                     $MC_VERSION"
 echo "  - MC SHA:                         $MC_SHA"
 echo "  - Config File:                    $CONFIG_FILE"
-echo "  - Github Branch :                 $GH_BRANCH"
+echo "  - Monitoring Lambda Version:      $MONITORING_LAMBDA_VERSION"
 
 echo "---------------------------------------------------------"
 
-export MC_SHA="${MC_SHA}"
 export STACK_NAME="unity-management-console-${PROJECT_NAME}-${VENUE_NAME}"
-# GH_BRANCH defaults to main unless explicitly set on command line
-export GH_BRANCH="${GH_BRANCH}"
+export GH_BRANCH="520-dev"
 TODAYS_DATE=$(date '+%F_%H-%M')
 LOG_DIR=nightly_logs/log_${TODAYS_DATE}
 
@@ -243,7 +232,7 @@ fi
 #
 git config --global user.email ${GITHUB_USEREMAIL_VAL}
 git config --global user.name ${GITHUB_USERNAME_VAL}
-git remote set-url origin https://oauth2:${GITHUB_TOKEN_VAL}@github.com/unity-sds/unity-monorepo.git
+git remote set-url origin https://oauth2:${GITHUB_TOKEN_VAL}@github.com/unity-sds/unity-cs-infra.git
 
 rm -f nightly_output.txt
 rm -f cloudformation_events.txt
@@ -252,16 +241,17 @@ mkdir -p ${LOG_DIR}
 NIGHTLY_HASH=$(git rev-parse --short HEAD)
 echo "Repo Hash (Nightly Test):     [$NIGHTLY_HASH]" >> nightly_output.txt
 echo "Repo Hash (Nightly Test):     [$NIGHTLY_HASH]"
-echo "Management Console SHA:       [$MC_SHA]"
+echo "Management Console Version:        [$MC_VERSION]"
+echo "Management Console SHA:        [$MC_SHA]"
 
-## update self (unity-monorepo repository)
+## update self (unity-cs-infra repository)
 git pull origin ${GH_BRANCH}
 git checkout ${GH_BRANCH}
 
 #
 # Deploy the Management Console using CloudFormation
 #
-bash deploy.sh --stack-name "${STACK_NAME}" --project-name "${PROJECT_NAME}" --venue-name "${VENUE_NAME}" --mc-version "${MC_VERSION}" --config-file "$CONFIG_FILE" --mc-sha "$MC_SHA"
+bash deploy.sh --stack-name "${STACK_NAME}" --project-name "${PROJECT_NAME}" --venue-name "${VENUE_NAME}" --mc-version "${MC_VERSION}" --config-file "$CONFIG_FILE" --mc-sha "$MC_SHA" ${LATEST:+--latest} ${MONITORING_LAMBDA_VERSION:+--unity-cs-monitoring-lambda-version "$MONITORING_LAMBDA_VERSION"} ${APIGATEWAY_VERSION:+--unity-apigateway-version "$APIGATEWAY_VERSION"} ${PROXY_VERSION:+--unity-proxy-version "$PROXY_VERSION"} ${UI_VERSION:+--unity-ui-version "$UI_VERSION"}
 
 echo "Deploying Management Console..." >> nightly_output.txt
 echo "Deploying Management Console..."
@@ -272,7 +262,7 @@ start_time=$(date +%s)
 
 aws cloudformation describe-stack-events --stack-name ${STACK_NAME} >> cloudformation_events.txt
 
-# sleep 420
+sleep 420
 
 # Get MC URL from SSM (Management Console populates this value)
 export SSM_MC_URL="/unity/${PROJECT_NAME}/${VENUE_NAME}/management/httpd/loadbalancer-url"
@@ -459,6 +449,19 @@ if [ $SMOKE_TEST_STATUS -eq 0 ]; then
       cp selenium_nightly_output.txt "nightly_output_$TODAYS_DATE.txt"
       mv nightly_output_$TODAYS_DATE.txt ${LOG_DIR}
       mv selenium_unity_images/* ${LOG_DIR}
+      
+      #Delete logs older then 2 weeks
+      bash delete_old_logs.sh
+      
+      # Push the output logs/screenshots to Github for auditing purposes
+      echo "Pushing test results to ${LOG_DIR}..."
+      git add nightly_logs/
+      git add "${LOG_DIR}/nightly_output_$TODAYS_DATE.txt"
+      git add ${LOG_DIR}/*
+      git commit -m "Add nightly output for $TODAYS_DATE"
+      git pull origin ${GH_BRANCH}
+      git checkout ${GH_BRANCH}
+      git push origin ${GH_BRANCH}
     else
       echo "Not running Selenium tests. (--run-tests false)"
     fi
@@ -467,60 +470,8 @@ else
     echo "Smoke test failed or could not be verified. Skipping tests." >> nightly_output.txt
 fi
 
-if [[ "$RUN_BDD_TESTS" == "true" ]]; then
-    echo "Running BDD tests..."
-
-    # Install behave if not installed
-    pip3 list | grep "behave " > out.txt
-    if ! grep -q "behave " out.txt; then
-      echo "Installing behave..."
-      pip3 install behave
-    fi
-
-    # Install behave-testrail-reporter if needed and not installed
-    if [[ "$USE_TESTRAIL" == "true" ]]; then
-      pip3 list | grep "behave-testrail-reporter" > out.txt
-      if ! grep -q "behave-testrail-reporter" out.txt; then
-        echo "Installing behave-testrail-reporter..."
-        pip3 install behave-testrail-reporter
-      fi
-    fi
-
-    # set up gherkin/behave environment
-    source ./set_test_params.sh
-
-    # run gherkin/behave tests
-    source ${BASE_TEST_DIR}/regression_test.sh
-
-else
-    echo "Not running BDD tests. (--run-bdd-tests false)"
-    echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
-fi
-
-if [[ "y" == "n" ]]; then
-    # No longer committing logs, for now.
-    if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
-        # cleanup logs and commit to git
-
-        #Delete logs older then 2 weeks
-        bash delete_old_logs.sh
-      
-        # Push the output logs/screenshots to Github for auditing purposes
-        echo "Pushing test results to ${LOG_DIR}..."
-        git add nightly_logs/
-        git add "${LOG_DIR}/nightly_output_$TODAYS_DATE.txt"
-        git add ${LOG_DIR}/*
-        git commit -m "Add nightly output for $TODAYS_DATE"
-        git pull origin ${GH_BRANCH}
-        git checkout ${GH_BRANCH}
-        git push origin ${GH_BRANCH}
-    fi
-fi
-
 # Decide on resource destruction based on the smoke test result or DESTROY flag
 if [[ "$DESTROY" == "true" ]] || [ $SMOKE_TEST_STATUS -ne 0 ]; then
-  echo "Waiting 15 minutes before reclaiming resources."
-  sleep 15m
   echo "Destroying resources..."
   bash destroy.sh --project-name "${PROJECT_NAME}" --venue-name "${VENUE_NAME}"
 else
@@ -537,16 +488,17 @@ cat CF_EVENTS.txt
 CF_EVENTS=$(cat CF_EVENTS.txt)
 
 # The rest of your script, including posting to Slack, can go here
-# Ensure to only post to Slack if tests were run 
-if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
+# Ensure to only post to Slack if tests were run successfully
+if [[ "$RUN_TESTS" == "true" ]]; then
 
   OUTPUT=$(cat nightly_output.txt)
-  GITHUB_LOGS_URL="https://github.com/unity-sds/unity-monorepo/tree/${GH_BRANCH}/nightly_tests/${LOG_DIR}"
+  GITHUB_LOGS_URL="https://github.com/unity-sds/unity-cs-infra/tree/${GH_BRANCH}/nightly_tests/${LOG_DIR}"
   
   # Post results to Slack
   curl -X POST -H 'Content-type: application/json' \
   --data '{"cloudformation_summary": "'"${OUTPUT}"'", "cloudformation_events": "'"${CF_EVENTS}"'", "logs_url": "'"${GITHUB_LOGS_URL}"'"}' \
   ${SLACK_URL_VAL}
 else
-    echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
+    echo "Not posting results to slack (--run-tests)"
 fi
+
