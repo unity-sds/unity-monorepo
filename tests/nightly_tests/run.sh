@@ -193,8 +193,7 @@ echo "---------------------------------------------------------"
 
 export MC_SHA="${MC_SHA}"
 export STACK_NAME="unity-management-console-${PROJECT_NAME}-${VENUE_NAME}"
-# GH_BRANCH defaults to main unless explicitly set on command line
-export GH_BRANCH="${GH_BRANCH}"
+export GH_BRANCH="main"
 TODAYS_DATE=$(date '+%F_%H-%M')
 LOG_DIR=nightly_logs/log_${TODAYS_DATE}
 
