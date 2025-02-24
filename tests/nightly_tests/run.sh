@@ -513,8 +513,6 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
         echo "Pushing test results to ${LOG_S3_PATH}..."
         if aws s3 cp ${LOG_DIR} ${LOG_S3_PATH}/${LOG_DIR} --recursive; then
             echo "Test results successfully pushed to S3."
-            # clean up log dir
-            rm -r $LOG_DIR
         else
             echo "Error pushing test results to S3. Log files remain locally in ${LOG_DIR}"
         fi
