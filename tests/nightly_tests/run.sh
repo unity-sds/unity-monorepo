@@ -522,8 +522,10 @@ echo "$EVENTS" > CF_EVENTS.txt
 cat CF_EVENTS.txt
 CF_EVENTS=$(cat CF_EVENTS.txt)
 
+#
+# Clean up logs and push up to S3 if configured
+#
 if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
-    # cleanup logs and push up to S3
 
     # Delete logs older then 2 weeks, if any
     bash delete_old_logs.sh
