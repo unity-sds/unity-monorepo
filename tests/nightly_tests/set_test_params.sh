@@ -29,17 +29,17 @@ export UNITY_USER=$(get_ssm_val "$UNITY_USER_SSM")
 UNITY_PASSWORD_SSM="${SSM_PREFIX}/password"
 export UNITY_PASSWORD=$(get_ssm_val "$UNITY_PASSWORD_SSM")
 
-DOCKSTORE_API_SSM="${SSM_PREFIX}/dockstore/api"
-export DOCKSTORE_API=$(get_ssm_val "$DOCKSTORE_API_SSM")
+# DOCKSTORE_API_SSM="${SSM_PREFIX}/dockstore/api"
+# export DOCKSTORE_API=$(get_ssm_val "$DOCKSTORE_API_SSM")
 
-DOCKSTORE_TOKEN_SSM="${SSM_PREFIX}/dockstore/token"
-export DOCKSTORE_TOKEN=$(get_ssm_val "$DOCKSTORE_TOKEN_SSM")
+# DOCKSTORE_TOKEN_SSM="${SSM_PREFIX}/dockstore/token"
+# export DOCKSTORE_TOKEN=$(get_ssm_val "$DOCKSTORE_TOKEN_SSM")
 
-AIRFLOW_USER_SSM="${SSM_PREFIX}/airflow/user"
-export AIRFLOW_USER=$(get_ssm_val "$AIRFLOW_USER_SSM")
+# AIRFLOW_USER_SSM="${SSM_PREFIX}/airflow/user"
+# export AIRFLOW_USER=$(get_ssm_val "$AIRFLOW_USER_SSM")
 
-AIRFLOW_PASS_SSM="${SSM_PREFIX}/airflow/pass"
-export AIRFLOW_PASS=$(get_ssm_val "$AIRFLOW_PASS_SSM")
+# AIRFLOW_PASS_SSM="${SSM_PREFIX}/airflow/pass"
+# export AIRFLOW_PASS=$(get_ssm_val "$AIRFLOW_PASS_SSM")
 
 # ---------------------------------------
 # Test runtime
