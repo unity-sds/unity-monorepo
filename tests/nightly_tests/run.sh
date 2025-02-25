@@ -10,11 +10,12 @@ MC_VERSION="latest"
 GH_BRANCH="main"
 DEPLOYMENT_START_TIME=$(date +%s)
 MC_SHA=""
+LOG_S3_PATH=""
 CONFIG_FILE="marketplace_config.yaml"  # Set default config file
 # Function to display usage instructions
 # TODO: refine the command line selection of tests, e.g. use behave tags for BDD testing and implicit tags for other (e.g. selenium) testing
 usage() {
-    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
+    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--log-s3-path <LOG_S3_PATH>] [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
     echo "    --run-bdd-tests and --run-tests are independent from one another. But --testrail is considered only if --run-bbd-tests is active. Default for both --run-bdd-tests and --testrail are false."
     exit 1
 }
@@ -88,6 +89,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --venue-name)
             VENUE_NAME="$2"
+            shift 2
+            ;;
+        --log-s3-path)
+            LOG_S3_PATH="$2"
             shift 2
             ;;
         --mc-version)
@@ -496,28 +501,9 @@ else
     echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
 fi
 
-if [[ "y" == "n" ]]; then
-    # No longer committing logs, for now.
-    if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
-        # cleanup logs and commit to git
-
-        #Delete logs older then 2 weeks
-        bash delete_old_logs.sh
-      
-        # Push the output logs/screenshots to Github for auditing purposes
-        echo "Pushing test results to ${LOG_DIR}..."
-        git add nightly_logs/
-        git add "${LOG_DIR}/nightly_output_$TODAYS_DATE.txt"
-        git add ${LOG_DIR}/*
-        git commit -m "Add nightly output for $TODAYS_DATE"
-        git pull origin ${GH_BRANCH}
-        git checkout ${GH_BRANCH}
-        git push origin ${GH_BRANCH}
-    fi
-fi
-
 # Decide on resource destruction based on the smoke test result or DESTROY flag
 if [[ "$DESTROY" == "true" ]] || [ $SMOKE_TEST_STATUS -ne 0 ]; then
+  # This sleep appears to eliminate a timine issue w/ DynamoDB and the terraform lock file.
   echo "Waiting 15 minutes before reclaiming resources."
   sleep 15m
   echo "Destroying resources..."
@@ -534,6 +520,27 @@ EVENTS=$(cat CF_EVENTS.txt |grep -v ResourceProperties)
 echo "$EVENTS" > CF_EVENTS.txt
 cat CF_EVENTS.txt
 CF_EVENTS=$(cat CF_EVENTS.txt)
+
+#
+# Clean up logs and push up to S3 if configured
+#
+if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
+
+    # Delete logs older then 2 weeks, if any
+    bash delete_old_logs.sh
+
+    if [[ -n $LOG_S3_PATH ]]; then
+        # Push the output logs/screenshots to S3 for review/auditing purposesa
+        echo "Pushing test results to ${LOG_S3_PATH}..."
+        if aws s3 cp ${LOG_DIR} ${LOG_S3_PATH}/${LOG_DIR} --recursive; then
+            echo "Test results successfully pushed to S3."
+        else
+            echo "Error pushing test results to S3. Log files remain locally in ${LOG_DIR}"
+        fi
+    else
+        echo "Not pushing results to S3 because no log-s3-path was specified on the command line. Log files remian locally in ${LOG_DIR}"
+    fi
+fi
 
 # The rest of your script, including posting to Slack, can go here
 # Ensure to only post to Slack if tests were run 
