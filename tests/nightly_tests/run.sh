@@ -313,7 +313,7 @@ start_time=$(date +%s)
 
 aws cloudformation describe-stack-events --stack-name ${STACK_NAME} >> cloudformation_events.txt
 
-# sleep 420
+sleep 400
 
 # Get MC URL from SSM (Management Console populates this value)
 export SSM_MC_URL="/unity/${PROJECT_NAME}/${VENUE_NAME}/management/httpd/loadbalancer-url"
