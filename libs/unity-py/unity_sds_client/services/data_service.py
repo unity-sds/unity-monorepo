@@ -1,6 +1,8 @@
 import re
 import requests
 
+from datetime import datetime, timezone
+
 from unity_sds_client.unity_exception import UnityException
 from unity_sds_client.unity_session import UnitySession
 from unity_sds_client.resources.collection import Collection
@@ -120,36 +122,11 @@ class DataService(object):
             "type": "Collection",
             "id": submission_collection_id,
             "stac_version": "1.0.0",
-            "description": "TODO",
+            "description": "Collection " + submission_collection_id,
             "providers": [
                 {"name": "unity"}
             ],
-            "links": [
-                {
-                    "rel": "root",
-                    "href": "./collection.json?bucket=unknown_bucket&regex=%7BcmrMetadata.Granule.Collection.ShortName%7D___%7BcmrMetadata.Granule.Collection.VersionId%7D",
-                    "type": "application/json",
-                    "title": "test_file01.nc"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=protected&regex=%5Etest_file.%2A%5C.nc%24",
-                    "type": "data",
-                    "title": "test_file01.nc"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=protected&regex=%5Etest_file.%2A%5C.nc%5C.cas%24",
-                    "type": "metadata",
-                    "title": "test_file01.nc.cas"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=private&regex=%5Etest_file.%2A%5C.cmr%5C.xml%24",
-                    "type": "metadata",
-                    "title": "test_file01.cmr.xml"
-                }
-            ],
+            "links": [],
             "stac_extensions": [],
             "extent": {
                 "spatial": {
@@ -165,8 +142,8 @@ class DataService(object):
                 "temporal": {
                     "interval": [
                         [
-                            "2022-10-04T00:00:00.000Z",
-                            "2022-10-04T23:59:59.999Z"
+                            datetime.now(timezone.utc).isoformat(),
+                            datetime.now(timezone.utc).isoformat()
                         ]
                     ]
                 }
@@ -188,8 +165,9 @@ class DataService(object):
             url = self.endpoint + f'am-uds-dapa/collections'
             token = self._session.get_auth().get_token()
             response = requests.post(url, headers={"Authorization": "Bearer " + token},  json=collection_json)
+
             if response.status_code != 202:
-                raise UnityException("Error creating collection: " + response.message)
+                raise UnityException(f"Error creating collection: " + response.text")
 
         return collection_json
 
@@ -202,7 +180,7 @@ class DataService(object):
         response = requests.put(url, headers={"Authorization": "Bearer " + token},
                                 params={"venue": self._session._venue}, json=metadata)
         if response.status_code != 200:
-            raise UnityException("Error adding custom metadata: " + response.message)
+            raise UnityException("Error adding custom metadata: " + response.text)
 
     def delete_collection_item(self, collection: type = Collection, granule_id: str = None):
         """
