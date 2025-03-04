@@ -1,3 +1,4 @@
+import re
 import requests
 
 from unity_sds_client.unity_exception import UnityException
@@ -6,6 +7,8 @@ from unity_sds_client.resources.collection import Collection
 from unity_sds_client.resources.dataset import Dataset
 from unity_sds_client.resources.data_file import DataFile
 
+# All capitals to match the unity-dataservices stage-out convention
+UNITY_COLLECTION_INVARIANT_PREFIX = "URN:NASA:UNITY"
 
 class DataService(object):
     """
@@ -95,19 +98,27 @@ class DataService(object):
         if collection is None:
             raise UnityException("Invalid collection provided.")
 
-        # test version Information?
-
         # Test collection ID name: project and venue
         if self._session._project is None or self._session._venue is None:
             raise UnityException("To create a collection, the Unity session Project and Venue must be set!")
 
-        if not collection.collection_id.startswith(f"urn:nasa:unity:{self._session._project}:{self._session._venue}"):
-            raise UnityException(f"Collection Identifiers must start with urn:nasa:unity:{self._session._project}:{self._session._venue}")
+        # Enusure the collection ID contains a prefix that conforms to expectations, testing in a case insensitive manner
+        # But promoting to the preferred case
+        submission_collection_id = collection.collection_id
 
-        collection = {
-            "title": "Collection " + collection.collection_id,
+        if not re.search(rf'^{UNITY_COLLECTION_INVARIANT_PREFIX}', submission_collection_id, re.IGNORECASE):
+            raise UnityException(f"Collection Identifiers must start with {UNITY_COLLECTION_INVARIANT_PREFIX}")
+
+        # Make the prefix conform to expected formatting (case) to ensure consistency across services
+        submission_collection_id = re.sub(rf'^{UNITY_COLLECTION_INVARIANT_PREFIX}', UNITY_COLLECTION_INVARIANT_PREFIX, submission_collection_id, flags=re.IGNORECASE)
+
+        if not submission_collection_id.startswith(f"{UNITY_COLLECTION_INVARIANT_PREFIX}:{self._session._project}:{self._session._venue}"):
+            raise UnityException(f"Collection Identifiers must start with {UNITY_COLLECTION_INVARIANT_PREFIX}:{self._session._project}:{self._session._venue}")
+
+        collection_json = {
+            "title": "Collection " + submission_collection_id,
             "type": "Collection",
-            "id": collection.collection_id,
+            "id": submission_collection_id,
             "stac_version": "1.0.0",
             "description": "TODO",
             "providers": [
@@ -176,9 +187,11 @@ class DataService(object):
         if not dry_run:
             url = self.endpoint + f'am-uds-dapa/collections'
             token = self._session.get_auth().get_token()
-            response = requests.post(url, headers={"Authorization": "Bearer " + token},  json=collection)
+            response = requests.post(url, headers={"Authorization": "Bearer " + token},  json=collection_json)
             if response.status_code != 202:
                 raise UnityException("Error creating collection: " + response.message)
+
+        return collection_json
 
     def define_custom_metadata(self, metadata: dict):
         if self._session._project is None or self._session._venue is None:
