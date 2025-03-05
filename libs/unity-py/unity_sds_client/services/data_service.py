@@ -167,7 +167,7 @@ class DataService(object):
             response = requests.post(url, headers={"Authorization": "Bearer " + token},  json=collection_json)
 
             if response.status_code != 202:
-                raise UnityException(f"Error creating collection: " + response.text")
+                raise UnityException(f"Error creating collection: " + response.text)
 
         return collection_json
 
