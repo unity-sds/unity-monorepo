@@ -11,7 +11,7 @@ populate_if_not_exists_ssm_param() {
     local name=$5
     local suggestedDefault=$6
     echo "populate_if_not_exists_ssm_param: ${key} ..."
-    aws ssm get-parameter --name "$key" 2>ssm_lookup.txt
+    aws ssm get-parameter --name "$key" > /dev/null 2>ssm_lookup.txt
     if [[ `grep "ParameterNotFound" ssm_lookup.txt | wc -l` == "1" ]]; then
         echo "SSM param ${key} not found."
         echo "Suggested value to use here: ${suggestedDefault}"
@@ -49,7 +49,7 @@ create_ssm_param() {
     local capVersion=$4
     local component=$5
     local name=$6
-echo "Creating SSM parameter : ${key} = ${value} ..."
+echo "Creating SSM parameter : ${key}"
     aws ssm put-parameter --name "${key}" --value "${value}" --type String \
     --tags \
     "Key=Venue,Value=${VENUE_NAME}" \
@@ -61,7 +61,7 @@ echo "Creating SSM parameter : ${key} = ${value} ..."
     "Key=Proj,Value=${PROJECT_NAME}" \
     "Key=CreatedBy,Value=cs" \
     "Key=Env,Value=${VENUE_NAME}" \
-    "Key=Stack,Value=${component}" 2>/dev/null
+    "Key=Stack,Value=${component}" &>/dev/null
     # TODO: Is there a SSM Description field (to add above)?
     if [ $? -ne 0 ]; then
         echo "ERROR: SSM create failed for $key"
@@ -78,8 +78,8 @@ refresh_ssm_param() {
     local capVersion=$4
     local component=$5
     local name=$6
-    delete_ssm_param "${key}"
-    create_ssm_param "${key}" "${value}" "${capability}" "${capVersion}" "${component}" "${name}"
+    delete_ssm_param "${key}" &> /dev/null
+    create_ssm_param "${key}" "${value}" "${capability}" "${capVersion}" "${component}" "${name}" &> /dev/null
 }
 
 get_ssm_val() {
