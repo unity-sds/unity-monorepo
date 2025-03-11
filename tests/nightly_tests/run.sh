@@ -333,6 +333,7 @@ COMPONENT_JSON=$(aws ssm get-parameter --name ${SSM_COMPONENT_PARAM} --query "Pa
 LANDING_PAGE_URL=$(echo $COMPONENT_JSON | jq -r '.landingPageUrl')
 echo "Component Landing Page URL: ${LANDING_PAGE_URL}"
 
+
 # Extract just the hostname with debug prints
 STEP1=$(echo $MANAGEMENT_CONSOLE_URL | sed 's|^http://||' | sed 's|^HTTP://||')
 
@@ -446,24 +447,21 @@ else
   echo "Not checking if docker is installed (--run-tests false)."
 fi # END IF RUN-TESTS
 
-#
-# Wait until a succesful HTTP code is being returned
-# from the load balancer, indicating the Management Console is accessible
-#
-interval=10  # polling interval in seconds
-max_attempts=50
-attempt=1
-while [ $attempt -le $max_attempts ]; do
-    response_code=$(curl -s -o /dev/null -w "%{http_code}" "$MANAGEMENT_CONSOLE_URL")
-    if [[ $response_code =~ ^[2-3][0-9]{2}$ ]]; then
-        echo "Success! HTTP response code $response_code received."
-        break
+# Run the Selenium test with the landing page URL and 300-second timeout
+echo "Running Management Console verification test..."
+python3 tests/nightly_tests/test_landing_page.py "${LANDING_PAGE_URL}" 300
+TEST_RESULT=$?
+
+if [ $TEST_RESULT -ne 0 ]; then
+    echo "ERROR: Management Console verification failed"
+    if [[ "$DESTROY" == "true" ]]; then
+        echo "Proceeding with resource destruction due to --destroy flag"
     else
-        echo "Attempt $attempt to reach Management Console via httpd -- Received HTTP response code $response_code. Retrying in $interval seconds..."
-        sleep $interval
-        ((attempt++))
+        echo "Exiting due to verification failure"
+        exit 1
     fi
-done
+fi
+
 # End the timer
 end_time=$(date +%s)
 
