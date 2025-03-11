@@ -137,7 +137,7 @@ while [[ $# -gt 0 ]]; do
             PROXY_VERSION="$2"
             shift 2
             ;;
-        --unity-ui-version)
+        --unity-portal-version)
             UI_VERSION="$2"
             shift 2
             ;;
@@ -302,7 +302,7 @@ git checkout ${GH_BRANCH}
 #
 # Deploy the Management Console using CloudFormation
 #
-bash deploy.sh --stack-name "${STACK_NAME}" --project-name "${PROJECT_NAME}" --venue-name "${VENUE_NAME}" --mc-version "${MC_VERSION}" --config-file "$CONFIG_FILE" --mc-sha "$MC_SHA" ${LATEST:+--latest} ${MONITORING_LAMBDA_VERSION:+--unity-cs-monitoring-lambda-version "$MONITORING_LAMBDA_VERSION"} ${APIGATEWAY_VERSION:+--unity-apigateway-version "$APIGATEWAY_VERSION"} ${PROXY_VERSION:+--unity-proxy-version "$PROXY_VERSION"} ${UI_VERSION:+--unity-ui-version "$UI_VERSION"}
+bash deploy.sh --stack-name "${STACK_NAME}" --project-name "${PROJECT_NAME}" --venue-name "${VENUE_NAME}" --mc-version "${MC_VERSION}" --config-file "$CONFIG_FILE" --mc-sha "$MC_SHA" ${LATEST:+--latest} ${MONITORING_LAMBDA_VERSION:+--unity-cs-monitoring-lambda-version "$MONITORING_LAMBDA_VERSION"} ${APIGATEWAY_VERSION:+--unity-apigateway-version "$APIGATEWAY_VERSION"} ${PROXY_VERSION:+--unity-proxy-version "$PROXY_VERSION"} ${UI_VERSION:+--unity-portal-version "$UI_VERSION"}
 
 echo "Deploying Management Console..." >> nightly_output.txt
 echo "Deploying Management Console..."

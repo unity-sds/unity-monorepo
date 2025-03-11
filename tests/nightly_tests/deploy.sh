@@ -68,7 +68,7 @@ while [[ $# -gt 0 ]]; do
             PROXY_VERSION="$2"
             shift 2
             ;;
-        --unity-ui-version)
+        --unity-portal-version)
             UI_VERSION="$2"
             shift 2
             ;;
@@ -106,15 +106,25 @@ echo "Deploying Cloudformation stack..."
 
 # Read and parse the config file using yq
 if [ -f "$CONFIG_FILE" ]; then
-    # Extract ManagementConsole values if present
+    # Extract ManagementConsole values if present, but only if not already set via command line
     if yq eval '.ManagementConsole' "$CONFIG_FILE" &>/dev/null; then
-        MC_SHA=$(yq eval '.ManagementConsole.sha // ""' "$CONFIG_FILE")
-        if [ -z "$MC_SHA" ]; then
+        # Only set MC_SHA from config file if it wasn't provided as a command line argument
+        if [ "$MC_SHA" = "null" ]; then
+            MC_SHA=$(yq eval '.ManagementConsole.sha // ""' "$CONFIG_FILE")
+            if [ -z "$MC_SHA" ]; then
+                MC_SHA="null"
+            fi
+        fi
+        
+        # Only set MC_VERSION if not already set via command line
+        if [ -z "$MC_VERSION" ] || [ "$MC_VERSION" = "null" ]; then
+            MC_VERSION=$(yq eval '.ManagementConsole.release' "$CONFIG_FILE")
+        fi
+    else
+        # Only set to null if not already set via command line
+        if [ "$MC_SHA" = "null" ]; then
             MC_SHA="null"
         fi
-        MC_VERSION=$(yq eval '.ManagementConsole.release' "$CONFIG_FILE")
-    else
-        MC_SHA="null"
     fi
     
     # Get YAML content without ManagementConsole section and update versions if --latest
@@ -139,9 +149,9 @@ if [ -f "$CONFIG_FILE" ]; then
         escaped_config_content=$(echo "$escaped_config_content" | yq eval '.MarketplaceItems |= map(select(.name == "unity-proxy") |= . * {"version": "'$PROXY_VERSION'"})' -)
     fi
 
-    # Update UI version if specified
+    # Update Portal version if specified
     if [ -n "$UI_VERSION" ]; then
-        escaped_config_content=$(echo "$escaped_config_content" | yq eval '.MarketplaceItems |= map(select(.name == "unity-ui") |= . * {"version": "'$UI_VERSION'"})' -)
+        escaped_config_content=$(echo "$escaped_config_content" | yq eval '.MarketplaceItems |= map(select(.name == "unity-portal") |= . * {"version": "'$UI_VERSION'"})' -)
     fi
     
     # Log MC version/SHA before deployment
