@@ -405,51 +405,47 @@ fi
 rm $TEMP_CONFIG_FILE
 rm $TEMP_FULL_CONFIG
 
-if [[ "$RUN_TESTS" == "true" ]]; then
-  echo "Checking if Docker is installed..."
-  #
-  # Check if Docker is installed
-  #
-  if ! command -v docker &> /dev/null; then
-    echo "Docker not installed. Installing Docker..."
+echo "Checking if Docker is installed..."
+#
+# Check if Docker is installed
+#
+if ! command -v docker &> /dev/null; then
+  echo "Docker not installed. Installing Docker..."
 
-    # Add Docker's official GPG key
-    sudo apt-get update
-    sudo apt-get install -y ca-certificates curl gnupg
-    sudo install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+  # Add Docker's official GPG key
+  sudo apt-get update
+  sudo apt-get install -y ca-certificates curl gnupg
+  sudo install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-    # Add the repository to Apt sources
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update
+  # Add the repository to Apt sources
+  echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt-get update
 
-    # Install Docker
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    sudo systemctl start docker
-    sleep 10
-
-    echo "Docker installed successfully."
-  else
-    echo "Docker already installed [OK]"
-  fi
-
-  sudo docker pull selenium/standalone-chrome
-  echo "Launching selenium docker..."
-  CONTAINER_ID=$(sudo docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome)
+  # Install Docker
+  sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  sudo systemctl start docker
   sleep 10
 
-  cp nightly_output.txt selenium_nightly_output.txt
+  echo "Docker installed successfully."
 else
-  echo "Not checking if docker is installed (--run-tests false)."
-fi # END IF RUN-TESTS
+  echo "Docker already installed [OK]"
+fi
+
+sudo docker pull selenium/standalone-chrome
+echo "Launching selenium docker..."
+CONTAINER_ID=$(sudo docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome)
+sleep 10
+
+cp nightly_output.txt selenium_nightly_output.txt
 
 # Run the Selenium test with the landing page URL and 300-second timeout
 echo "Running Management Console verification test..."
-python3 tests/nightly_tests/test_landing_page.py "${LANDING_PAGE_URL}" 300
+python3 test_landing_page.py "${LANDING_PAGE_URL}" 300
 TEST_RESULT=$?
 
 if [ $TEST_RESULT -ne 0 ]; then
