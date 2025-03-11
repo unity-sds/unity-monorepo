@@ -325,6 +325,14 @@ RAW_SSM_VALUE=$(aws ssm get-parameter --name ${SSM_MC_URL} --query "Parameter.Va
 export MANAGEMENT_CONSOLE_URL="${RAW_SSM_VALUE}"
 echo "Management Console URL: ${MANAGEMENT_CONSOLE_URL}"
 
+# Get the component landing page URL from SSM
+export SSM_COMPONENT_PARAM="/unity/${PROJECT_NAME}/${VENUE_NAME}/component/management-console"
+
+# Get the raw SSM parameter value and extract landing page URL using jq
+COMPONENT_JSON=$(aws ssm get-parameter --name ${SSM_COMPONENT_PARAM} --query "Parameter.Value" --output text)
+LANDING_PAGE_URL=$(echo $COMPONENT_JSON | jq -r '.landingPageUrl')
+echo "Component Landing Page URL: ${LANDING_PAGE_URL}"
+
 # Extract just the hostname with debug prints
 STEP1=$(echo $MANAGEMENT_CONSOLE_URL | sed 's|^http://||' | sed 's|^HTTP://||')
 
