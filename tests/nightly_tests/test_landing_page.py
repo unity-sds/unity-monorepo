@@ -44,6 +44,7 @@ def setup_driver():
         command_executor='http://localhost:4444/wd/hub',
         options=chrome_options
     )
+    driver.set_page_load_timeout(30)  # Set page load timeout to 30 seconds
     return driver
 
 def test_landing_page(landing_page_url, max_time_seconds=300, interval=10):
@@ -64,7 +65,11 @@ def test_landing_page(landing_page_url, max_time_seconds=300, interval=10):
             driver = setup_driver()
             
             print(f"Navigating to {landing_page_url}")
-            driver.get(landing_page_url)
+            try:
+                driver.get(landing_page_url)
+            except selenium.common.exceptions.TimeoutException:
+                print("Page load timed out - site may not be ready yet")
+                raise  # Re-raise to trigger retry
             
             # Wait for username field and login form
             username_field = WebDriverWait(driver, 20).until(
