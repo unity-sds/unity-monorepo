@@ -9,5 +9,5 @@ MarketplaceItems:
     version: 24.4-stable
   - name: unity-proxy
     version: 24.4-stable
-  - name: unity-ui
+  - name: unity-portal
     version: 24.4-stable
