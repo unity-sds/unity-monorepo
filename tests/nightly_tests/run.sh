@@ -436,6 +436,14 @@ else
   echo "Docker already installed [OK]"
 fi
 
+echo "Cleaning up any existing Selenium containers..."
+existing_containers=$(sudo docker ps -a --filter "ancestor=selenium/standalone-chrome" --format "{{.ID}}")
+if [ ! -z "$existing_containers" ]; then
+    echo "Stopping and removing existing Selenium containers..."
+    sudo docker stop $existing_containers
+    sudo docker rm $existing_containers
+fi
+
 sudo docker pull selenium/standalone-chrome
 echo "Launching selenium docker..."
 CONTAINER_ID=$(sudo docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome)
