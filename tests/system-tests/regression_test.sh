@@ -7,7 +7,7 @@
 # Run the pacakge via ogc
 # behave features/sps/wpst.feature -t test
 
-if [[ -z $BASE_TEST_DIR} ]]; then
+if [[ -z $BASE_TEST_DIR ]]; then
     BASE_TEST_DIR =`pwd`
 fi
 
