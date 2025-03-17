@@ -19,14 +19,14 @@ enable = true
 [tool.poetry-monorepo.deps]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 requests = "^2.28.0"
 tenacity = "^8.0.1"
 giturlparse = "^0.10.0"
-pystac = "^1.7.3"
 unity-sps-ogc-processes-api-python-client ="^2.0.1"
 unity-sds-apgs-client = {path = "../app-package-build-client", develop = true}
 jsonschema = "^4.22.0"
+mdps-ds-lib="1.1.1.dev401"
 
 
 [tool.poetry.dev-dependencies]
