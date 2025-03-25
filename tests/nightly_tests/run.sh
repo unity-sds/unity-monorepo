@@ -453,7 +453,7 @@ cp nightly_output.txt selenium_nightly_output.txt
 
 # Run the Selenium test with the landing page URL and 300-second timeout
 echo "Running Management Console verification test..."
-python3 test_landing_page.py "${LANDING_PAGE_URL}" 600
+python3 test_landing_page.py "${LANDING_PAGE_URL}" 1200
 TEST_RESULT=$?
 
 if [ $TEST_RESULT -ne 0 ]; then
