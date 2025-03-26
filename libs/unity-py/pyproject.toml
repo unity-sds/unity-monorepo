@@ -26,7 +26,7 @@ giturlparse = "^0.10.0"
 unity-sps-ogc-processes-api-python-client ="^2.0.1"
 unity-sds-apgs-client = {path = "../app-package-build-client", develop = true}
 jsonschema = "^4.22.0"
-mdps-ds-lib="1.1.1.dev401"
+mdps-ds-lib="1.1.1.dev500"
 
 
 [tool.poetry.dev-dependencies]
