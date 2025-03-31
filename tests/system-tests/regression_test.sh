@@ -1,6 +1,11 @@
 #
 # Order matters here!
 #
+
+if [[ -z $BASE_TEST_DIR ]]; then
+    BASE_TEST_DIR =`pwd`
+fi
+
 #
 # Test Application Catalog
 #
@@ -21,10 +26,6 @@ behave features/sps/cwl.feature -t test
 
 # Run the pacakge via ogc
 # behave features/sps/wpst.feature -t test
-
-if [[ -z $BASE_TEST_DIR ]]; then
-    BASE_TEST_DIR =`pwd`
-fi
 
 #
 # U-DS Tests after Application executes successfully
