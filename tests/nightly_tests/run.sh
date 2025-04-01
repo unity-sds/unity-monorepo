@@ -433,7 +433,7 @@ if [[ "$RUN_TESTS" == "true" ]]; then
   CONTAINER_ID=$(sudo docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome)
   sleep 10
 
-  cp nightly_output.txt selenium_nightly_output.txt
+  cp nightly_output.txt testing_nightly_output.txt
 else
   echo "Not checking if docker is installed (--run-tests false)."
 fi # END IF RUN-TESTS
@@ -488,7 +488,7 @@ if [ $SMOKE_TEST_STATUS -eq 0 ]; then
     if [[ "$RUN_TESTS" == "true" ]]; then
       # Place the rest of your script here that should only run if smoke_test.py succeeds
       echo "Running Selenium tests..."
-      pytest test_selenium_mc.py -v --tb=short >> selenium_nightly_output.txt 2>&1
+      pytest test_selenium_mc.py -v --tb=short >> testing_nightly_output.txt 2>&1
       
       # Concatenate makereport_output.txt to nightly_output.txt
       cat makereport_output.txt >> nightly_output.txt
@@ -496,10 +496,6 @@ if [ $SMOKE_TEST_STATUS -eq 0 ]; then
       # Cleanup and log management
       echo "Stopping Selenium docker container..."
       sudo docker stop $CONTAINER_ID
-
-      cp selenium_nightly_output.txt "nightly_output_$TODAYS_DATE.txt"
-      mv nightly_output_$TODAYS_DATE.txt ${LOG_DIR}
-      mv selenium_unity_images/* ${LOG_DIR}
     else
       echo "Not running Selenium tests. (--run-tests false)"
     fi
@@ -531,16 +527,36 @@ if [[ "$RUN_BDD_TESTS" == "true" ]]; then
     source ./set_test_params.sh
 
     # run gherkin/behave tests
-    source ${BASE_TEST_DIR}/regression_test.sh
+    source ${BASE_TEST_DIR}/regression_test.sh &> behave_nightly_output.txt
+    cat behave_nightly_output.txt >> testing_nightly_output.txt
+    cat behave_nightly_output.txt >> nightly_output.txt
 
 else
     echo "Not running BDD tests. (--run-bdd-tests false)"
     echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
 fi
 
+# The rest of your script, including posting to Slack, can go here
+# Ensure to only post to Slack if tests were run 
+if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
+
+  cp testing_nightly_output.txt "nightly_output_$TODAYS_DATE.txt"
+  mv nightly_output_$TODAYS_DATE.txt ${LOG_DIR}
+  mv selenium_unity_images/* ${LOG_DIR}
+
+  OUTPUT=$(cat nightly_output.txt)
+  
+  # Post results to Slack
+  curl -X POST -H 'Content-type: application/json' \
+  --data '{"cloudformation_summary": "'"${OUTPUT}"'", "cloudformation_events": "'"${CF_EVENTS}"'", "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'"}' \
+  ${SLACK_URL_VAL}
+else
+    echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
+fi
+
 # Decide on resource destruction based on the smoke test result or DESTROY flag
 if [[ "$DESTROY" == "true" ]] || [ $SMOKE_TEST_STATUS -ne 0 ]; then
-  # This sleep appears to eliminate a timine issue w/ DynamoDB and the terraform lock file.
+  # This sleep appears to eliminate a timing issue w/ DynamoDB and the terraform lock file.
   echo "Waiting 15 minutes before reclaiming resources."
   sleep 15m
   echo "Destroying resources..."
@@ -579,17 +595,3 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
     fi
 fi
 
-# The rest of your script, including posting to Slack, can go here
-# Ensure to only post to Slack if tests were run 
-if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
-
-  OUTPUT=$(cat nightly_output.txt)
-  GITHUB_LOGS_URL="https://github.com/unity-sds/unity-monorepo/tree/${GH_BRANCH}/nightly_tests/${LOG_DIR}"
-  
-  # Post results to Slack
-  curl -X POST -H 'Content-type: application/json' \
-  --data '{"cloudformation_summary": "'"${OUTPUT}"'", "cloudformation_events": "'"${CF_EVENTS}"'", "logs_url": "'"${GITHUB_LOGS_URL}"'"}' \
-  ${SLACK_URL_VAL}
-else
-    echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
-fi
