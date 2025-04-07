@@ -3,6 +3,8 @@ This module contains a set of tests is to ensure that the
 Unity Health Service is functional.
 """
 
+from unittest.mock import patch, Mock
+
 import json
 import pytest
 
@@ -39,7 +41,14 @@ def test_health_status_printing():
     health_service = s.client(UnityServices.HEALTH_SERVICE)
 
     print("Example health status output using health service object:")
-    health_service.print_health_status()
+
+    mock_data_file_path = 'tests/test_files/health_api_mock_data.json'
+    with open(mock_data_file_path, encoding='utf-8') as f_mock_data:
+        mock_get_patcher = patch('unity_sds_client.services.health_service.requests.get')
+        mock_get = mock_get_patcher.start()
+        mock_get.return_value = Mock(status_code = 200)
+        mock_get.return_value.json.return_value = json.load(f_mock_data)
+        health_service.print_health_status()
 
 @pytest.mark.regression
 def test_health_service_printing():
@@ -51,4 +60,10 @@ def test_health_service_printing():
     s.set_venue("dev")
 
     print("Example health status output using unity object:")
-    print(s)
+    mock_data_file_path = 'tests/test_files/health_api_mock_data.json'
+    with open(mock_data_file_path, encoding='utf-8') as f_mock_data:
+        mock_get_patcher = patch('unity_sds_client.services.health_service.requests.get')
+        mock_get = mock_get_patcher.start()
+        mock_get.return_value = Mock(status_code = 200)
+        mock_get.return_value.json.return_value = json.load(f_mock_data)
+        print(s)
