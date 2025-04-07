@@ -73,13 +73,13 @@ class HealthService(object):
             landing_page_url = service["landingPageUrl"]
             report = report + f"{service_name}\n"
             report = report + f"{service_description}\n"
-            report = report + f"Service URL: {landing_page_url}\n"
-            report = report + f"Service Category: {service_category}\n"
-            report = report + f"Service Type: {service_type}\n"
+            report = report + f"URL: {landing_page_url}\n"
+            report = report + f"Category: {service_category}\n"
+            report = report + f"Type: {service_type}\n"
             for status in service["healthChecks"]:
                 service_status = status["status"]
                 service_status_date = status["date"]
-                report = report + f"{service_status_date}: {service_status}\n"
+                report = report + f"Health Status as of {service_status_date}: {service_status}\n"
             report = report + "\n"
 
         return report
