@@ -67,14 +67,21 @@ class HealthService(object):
         report = report + len(health_status_title) * "-" + "\n\n"
         for service in health_statuses["services"]:
             service_name = service["componentName"]
+            service_category = service["componentCategory"]
+            service_type = service["componentType"]
+            service_description = service["description"]
             landing_page_url = service["landingPageUrl"]
-            report = report + f"{service_name} ({landing_page_url})\n"
+            report = report + f"{service_name}\n"
+            report = report + f"{service_description}\n"
+            report = report + f"Service URL: {landing_page_url}\n"
+            report = report + f"Service Category: {service_category}\n"
+            report = report + f"Service Type: {service_type}\n"
             for status in service["healthChecks"]:
                 service_status = status["status"]
                 service_status_date = status["date"]
                 report = report + f"{service_status_date}: {service_status}\n"
             report = report + "\n"
-        
+
         return report
 
     def print_health_status(self):

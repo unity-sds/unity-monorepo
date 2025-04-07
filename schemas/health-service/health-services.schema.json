@@ -4,58 +4,69 @@
   "properties": {
     "services": {
       "type": "array",
-      "items": [
-        {
-          "type": "object",
-          "properties": {
-            "componentName": {
-              "type": "string"
-            },
-            "ssmKey": {
-              "type": "string"
-            },
-            "healthCheckUrl": {
-              "type": "string"
-            },
-            "landingPageUrl": {
-              "type": "string"
-            },
-            "healthChecks": {
-              "type": "array",
-              "items": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "enum": ["HEALTHY", "UNHEALTHY"]
-                    },
-                    "httpResponseCode": {
-                      "type": "string"
-                    },
-                    "date": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "status",
-                    "httpResponseCode",
-                    "date"
-                  ]
-                }
-              ]
-            }
+      "items": {
+        "type": "object",
+        "properties": {
+          "componentName": {
+            "type": "string"
           },
-          "required": [
-            "componentName",
-            "ssmKey",
-            "healthCheckUrl",
-            "landingPageUrl",
-            "healthChecks"
-          ]
-        }
-      ]
+          "componentCategory": {
+            "type": "string",
+            "enum": ["administration", "catalogs", "development", "infrastructure", "processing", "general"]
+          },
+          "componentType": {
+            "type": "string",
+            "enum": ["api", "ui", "unknown"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "ssmKey": {
+            "type": "string"
+          },
+          "healthCheckUrl": {
+            "type": "string"
+          },
+          "landingPageUrl": {
+            "type": "string"  
+          },
+          "healthChecks": {
+            "type": "array",
+            "items": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["HEALTHY", "UNHEALTHY"]
+                  },
+                  "httpResponseCode": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "status",
+                  "httpResponseCode",
+                  "date"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "componentName",
+          "componentCategory",
+          "componentType",
+          "ssmKey",
+          "healthCheckUrl",
+          "landingPageUrl",
+          "healthChecks"
+        ]
+      }
     }
   },
   "required": [
