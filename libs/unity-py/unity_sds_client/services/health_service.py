@@ -51,7 +51,12 @@ class HealthService(object):
         headers = get_headers(token, {
             'Content-type': 'application/json'
         })
-        response = requests.get(url, headers=headers, timeout=60)
+
+        try:
+            response = requests.get(url, headers=headers, timeout=60)
+            response.raise_for_status()
+        except requests.HTTPError as exception:
+            raise exception
 
         return response.json()
 
@@ -60,11 +65,16 @@ class HealthService(object):
         Return a generated report of health status information
         """
 
-        health_statuses = self.get_health_status()
-
         health_status_title = "HEALTH STATUS REPORT"
         report = f"\n\n{health_status_title}\n"
         report = report + len(health_status_title) * "-" + "\n\n"
+
+        try:
+            health_statuses = self.get_health_status()
+        except requests.HTTPError as error:
+            report = report + f"Error encountered with Health API Endpoint ({error.response.status_code})\n"
+            return report
+
         for service in health_statuses["services"]:
             service_name = service["componentName"]
             service_category = service["componentCategory"]
