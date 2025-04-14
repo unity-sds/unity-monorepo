@@ -1,46 +1,66 @@
-import requests
-
+from mdps_ds_lib.ds_client.auth_token.token_abstract import TokenAbstract
+from mdps_ds_lib.ds_client.ds_client_admin import DsClientAdmin
+from mdps_ds_lib.ds_client.ds_client_user import DsClientUser
+from pystac import Item, Collection
+from unity_sds_client.resources.collection import Collection as UnityCollection
+from unity_sds_client.resources.data_file import DataFile
+from unity_sds_client.resources.dataset import Dataset
 from unity_sds_client.unity_exception import UnityException
 from unity_sds_client.unity_session import UnitySession
-from unity_sds_client.resources.collection import Collection
-from unity_sds_client.resources.dataset import Dataset
-from unity_sds_client.resources.data_file import DataFile
+import warnings
+
+class UnitySessionToken(TokenAbstract):
+
+    def __init__(self, unity_session: UnitySession) -> None:
+        super().__init__()
+        self.__unity_session = unity_session
+
+    def get_token(self):
+        return self.__unity_session.get_auth().get_token()
 
 
-class DataService(object):
+class DataService(DsClientUser, DsClientAdmin):
     """
     The DataService class is a wrapper to the data endpoint(s) within Unity. This wrapper interfaces with the DAPA endpoints.
 
     The DataService class allows for the querying of data collections and data files within those collections.
     """
 
-    def __init__(
-        self,
-        session: UnitySession,
-        endpoint: str = None,
-    ):
-        """Initialize the DataService class.
+    def __init__(self, session: UnitySession, endpoint: str = None, ds_stage: str = 'am-uds-dapa'):
+        endpoint = endpoint[:-1] if endpoint.endswith('/') else endpoint
+        super().__init__(UnitySessionToken(session), endpoint, ds_stage)
+        self.__session = session
+        self.urn, self.org, self.project = 'org', 'nasa', 'unity'
 
-        Parameters
-        ----------
-        session : UnitySession
-            Description of parameter `session`.
-        endpoint : str
-            The endpoint used to access the data service API. This is usually
-            shared across Unity Environments, but can be overridden. Defaults to
-            "None", and will be read from the configuration if not set.
+        # self.project, self.tenant, self.tenant_venue = self.__session.get_project(), self.__session.get_venue(), self.__session.get_venue_id()
 
-        Returns
-        -------
-        DataService
-            the Data Service object.
+    # @property
+    # def project(self):
+    #     return self.__session.get_project()
+    #
+    # @property
+    # def tenant(self):
+    #     return self.__session.get_venue()
+    #
+    # @property
+    # def tenant_venue(self):
+    #     return self.__session.get_venue_id()
 
-        """
-        self._session = session
-        if endpoint is None:
-            self.endpoint = self._session.get_unity_href()
+    def __update_setting(self, complete_collection_id: str):
+        split_id = complete_collection_id.split(':')
+        if len(split_id) != 6:
+            raise UnityException(f'invalid MDPS format: <urn>:<org>:<project>:<tenant>:<venue>:<collection-id>')
+
+        pure_collection_id = split_id[-1]
+        self.urn, self.org, self.project, self.tenant, self.tenant_venue = split_id[0], split_id[1], split_id[2], split_id[3], split_id[4]
+        if '___' in pure_collection_id:
+            self.collection, self.collection_venue = pure_collection_id.split('___')
+        else:
+            self.collection = pure_collection_id
+        return self
 
     def get_collections(self, limit=10, output_stac=False):
+        warnings.warn("get_collections is deprecated and will be removed in future versions. Use query_collections instead.", category=DeprecationWarning, stacklevel=2)
         """Returns a list of collections
 
         Returns
@@ -49,149 +69,62 @@ class DataService(object):
             List of returned collections
 
         """
-        url = self.endpoint + "am-uds-dapa/collections"
-        token = self._session.get_auth().get_token()
-        response = requests.get(url, headers={"Authorization": "Bearer " + token}, params={"limit": limit})
-        if output_stac:
-            return response.json()
+        try:
+            result = self.query_collections(limit)
+            if output_stac:
+                return result
+            result = [UnityCollection(k['id']) for k in result['features']]
+        except Exception as e:
+            raise UnityException(e)
+        return result
 
-        # build collection objects here
-        collections = []
-        for data_set in response.json()['features']:
-            collections.append(Collection(data_set['id']))
-
-        return collections
-
-    def get_collection_data(self, collection: type = Collection, limit=10, filter: str = None, output_stac=False):
+    def get_collection_data(self, collection:UnityCollection, limit=10, filter: str = None, output_stac=False):
+        warnings.warn("get_collection_data is deprecated and will be removed in future versions. Use query_granules instead.", category=DeprecationWarning, stacklevel=2)
         datasets = []
-        url = self.endpoint + f'am-uds-dapa/collections/{collection.collection_id}/items'
-        token = self._session.get_auth().get_token()
-        params = {"limit": limit}
-        if filter is not None:
-            params["filter"] = filter
-        response = requests.get(url, headers={"Authorization": "Bearer " + token}, params=params)
-        if output_stac:
-            return response.json()
-        results = response.json()['features']
-        
-        for dataset in results:
-            ds = Dataset(dataset['id'], collection.collection_id, dataset['properties']['start_datetime'], dataset['properties']['end_datetime'], dataset['properties']['created'], properties=dataset['properties'])
+        try:
+            self.__update_setting(collection.collection_id)
+            result = self.query_granules(limit=limit, filter=filter)
+            if output_stac:
+                return result
+            # result = [Item.from_dict(k) for k in result]
+            for dataset in result['features']:
+                ds = Dataset(dataset['id'], collection.collection_id, dataset['properties']['start_datetime'],
+                             dataset['properties']['end_datetime'], dataset['properties']['created'],
+                             properties=dataset['properties'])
 
-            for asset_key in dataset['assets']:
-                location = dataset['assets'][asset_key]['href']
-                file_type = dataset['assets'][asset_key].get('type', "")
-                title = dataset['assets'][asset_key].get('title', "")
-                description = dataset['assets'][asset_key].get('description', "")
-                roles = dataset['assets'][asset_key]["roles"] if "roles" in dataset['assets'][asset_key] else ["metadata"] if asset_key in ['metadata__cmr','metadata__data'] else [asset_key]
-                ds.add_data_file(DataFile(file_type, location, roles=roles, title=title, description=description))
+                for asset_key in dataset['assets']:
+                    location = dataset['assets'][asset_key]['href']
+                    file_type = dataset['assets'][asset_key].get('type', "")
+                    title = dataset['assets'][asset_key].get('title', "")
+                    description = dataset['assets'][asset_key].get('description', "")
+                    roles = dataset['assets'][asset_key]["roles"] if "roles" in dataset['assets'][asset_key] else [
+                        "metadata"] if asset_key in ['metadata__cmr', 'metadata__data'] else [asset_key]
+                    ds.add_data_file(DataFile(file_type, location, roles=roles, title=title, description=description))
 
-            datasets.append(ds)
+                datasets.append(ds)
 
+
+        except Exception as e:
+            raise UnityException(e)
         return datasets
 
-    def create_collection(self, collection: type = Collection, dry_run=False):
-
-        # Collection must not be None
-        if collection is None:
-            raise UnityException("Invalid collection provided.")
-
-        # test version Information?
-
-        # Test collection ID name: project and venue
-        if self._session._project is None or self._session._venue is None:
-            raise UnityException("To create a collection, the Unity session Project and Venue must be set!")
-
-        if not collection.collection_id.startswith(f"urn:nasa:unity:{self._session._project}:{self._session._venue}"):
-            raise UnityException(f"Collection Identifiers must start with urn:nasa:unity:{self._session._project}:{self._session._venue}")
-
-        collection = {
-            "title": "Collection " + collection.collection_id,
-            "type": "Collection",
-            "id": collection.collection_id,
-            "stac_version": "1.0.0",
-            "description": "TODO",
-            "providers": [
-                {"name": "unity"}
-            ],
-            "links": [
-                {
-                    "rel": "root",
-                    "href": "./collection.json?bucket=unknown_bucket&regex=%7BcmrMetadata.Granule.Collection.ShortName%7D___%7BcmrMetadata.Granule.Collection.VersionId%7D",
-                    "type": "application/json",
-                    "title": "test_file01.nc"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=protected&regex=%5Etest_file.%2A%5C.nc%24",
-                    "type": "data",
-                    "title": "test_file01.nc"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=protected&regex=%5Etest_file.%2A%5C.nc%5C.cas%24",
-                    "type": "metadata",
-                    "title": "test_file01.nc.cas"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=private&regex=%5Etest_file.%2A%5C.cmr%5C.xml%24",
-                    "type": "metadata",
-                    "title": "test_file01.cmr.xml"
-                }
-            ],
-            "stac_extensions": [],
-            "extent": {
-                "spatial": {
-                    "bbox": [
-                        [
-                            0,
-                            0,
-                            0,
-                            0
-                        ]
-                    ]
-                },
-                "temporal": {
-                    "interval": [
-                        [
-                            "2022-10-04T00:00:00.000Z",
-                            "2022-10-04T23:59:59.999Z"
-                        ]
-                    ]
-                }
-            },
-            "license": "proprietary",
-            "summaries": {
-                "granuleId": [
-                    "^test_file.*$"
-                ],
-                "granuleIdExtraction": [
-                    "(^test_file.*)(\\.nc|\\.nc\\.cas|\\.cmr\\.xml)"
-                ],
-                "process": [
-                    "stac"
-                ]
-            }
-        }
-        if not dry_run:
-            url = self.endpoint + f'am-uds-dapa/collections'
-            token = self._session.get_auth().get_token()
-            response = requests.post(url, headers={"Authorization": "Bearer " + token},  json=collection)
-            if response.status_code != 202:
-                raise UnityException("Error creating collection: " + response.message)
+    def create_collection(self, collection: UnityCollection, dry_run=False):
+        warnings.warn("create_collection is deprecated and will be removed in future versions. Use create_new_collection instead.", category=DeprecationWarning, stacklevel=2)
+        try:
+            self.__update_setting(collection.collection_id)
+            if dry_run:
+                return
+            self.create_new_collection()
+        except Exception as e:
+            raise UnityException(e)
+        return
 
     def define_custom_metadata(self, metadata: dict):
-        if self._session._project is None or self._session._venue is None:
-            raise UnityException("To add custom metadata, the Unity session Project and Venue must be set!")
+        self.add_tenant_database_index(metadata)
+        return
 
-        url = self.endpoint + f'am-uds-dapa/admin/custom_metadata/{self._session._project}'
-        token = self._session.get_auth().get_token()
-        response = requests.put(url, headers={"Authorization": "Bearer " + token},
-                                params={"venue": self._session._venue}, json=metadata)
-        if response.status_code != 200:
-            raise UnityException("Error adding custom metadata: " + response.message)
-
-    def delete_collection_item(self, collection: type = Collection, granule_id: str = None):
+    def delete_collection_item(self, collection: UnityCollection, granule_id: str = None):
+        warnings.warn("delete_collection_item is deprecated and will be removed in future versions. Use delete_single_granule instead.", category=DeprecationWarning, stacklevel=2)
         """
             Delete a granule from given a collection
             Parameters
@@ -201,25 +134,24 @@ class DataService(object):
             granule_id: String
                 The granule id to delete
 
-    	""" 
+    	"""
         if (granule_id == "") or (granule_id is None):
-            raise Exception("Error deleting collection data: Please provide granule ID")
+            raise UnityException("Error deleting collection data: Please provide granule ID")
+        try:
+            self.__update_setting(collection.collection_id)
+            self.granule = granule_id.replace(collection.collection_id, '')[1:] if granule_id.startswith(collection.collection_id) else granule_id
+            self.delete_single_granule()
+        except Exception as e:
+            raise UnityException("Error deleting collection: " + e)
+        return
 
-        else:
-            url = f'{self.endpoint}am-uds-dapa/collections/{collection.collection_id}/items/{granule_id}/'        
-            token = self._session.get_auth().get_token()        
-            header = {"Authorization": f"Bearer {token}"}
-            response = requests.delete(url=url, headers=header)
-            print(response.status_code)
-            if response.status_code != 200:
-                raise UnityException("Error deleting collection: " + response.reason)   
-
-    def delete_dataset(self, dataset: type = Dataset):
+    def delete_dataset(self, dataset: Dataset):
+        warnings.warn("delete_dataset is deprecated and will be removed in future versions. Use delete_single_granule instead.", category=DeprecationWarning, stacklevel=2)
         """
-            Delete an item from a Collection given Dataset object  
+            Delete an item from a Collection given Dataset object
             Parameters
             ----------
             dataset: Dataset
         """
-    
         self.delete_collection_item(Collection(dataset.collection_id), dataset.id)
+        return
