@@ -27,16 +27,6 @@ def step_impl(context, collection_name, filter=None):
     context.collection_data = cd
 
 
-@when("I query for the granules of {collection_name} from the data catalog")
-def step_impl(context, collection_name):
-    s = context.unity_session
-    data_manager = s.client(services.DATA_SERVICE)
-    print(f"Collection to query is {collection_name}")
-    cd = data_manager.get_collection_items(Collection(collection_name), filter = filter, limit=100, output_stac = True)
-    context.collection_name = collection_name
-    context.collection_data = cd
-
-
 @then("the response has 1 or more granules")
 def step_impl(context):
     assert (len(context.collection_data) > 0)
