@@ -39,4 +39,15 @@ def step_impl(context):
         raise Exception(message)
 
 
+@when("I query {collection_name} from the data catalog")
+def step_impl(context, collection_name):
+    s = context.unity_session
+    data_manager = s.client(services.DATA_SERVICE)
+    cd = data_manager.get_collection_data(Collection(collection_name))
+    context.collection_data = cd
+
+
+@then("the response has 1 or more granules")
+def step_impl(context):
+    assert (len(context.collection_data) > 0)
 

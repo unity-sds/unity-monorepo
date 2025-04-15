@@ -1,8 +1,8 @@
 Feature: Ensure granules can be found by their parent collections
 
   Scenario Outline: An existing collection is queried to ensure granules can be found using it
-
-    When i query <collection_name> from the data catalog
+    Given I have a token to authenticate with Unity Services
+    When I query <collection_name> from the data catalog
     Then the response has 1 or more granules
 
     @develop
