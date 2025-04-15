@@ -47,8 +47,3 @@ export UNITY_PASSWORD=$(get_ssm_val "$UNITY_PASSWORD_SSM")
 export BASE_TEST_DIR="`pwd`/../system-tests"
 export PYTHONPATH=${BASE_TEST_DIR}:${PYTHONPATH}
 export STAC_SCHEMA_FILE="${BASE_TEST_DIR}/support_files/stac.schema.json"
-
-# This one is temporary - the tests intend to be setup such that a collections
-# is ingested, test, retreive, test, delete, test - such that it is all
-# self contained.
-export STAC_COLLECTION_ID="urn:nasa:unity:unity:test:SBG-L2A_CORFL___1"
