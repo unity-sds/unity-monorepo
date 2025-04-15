@@ -10,15 +10,25 @@ from unity_sds_client.unity_services import UnityServices as services
 
 @given("I have a token to authenticate with Unity Services")  # noqa: F405
 def step_impl(context):
-    if "dev" in os.environ.get("UNITY_ENVIRONMENT").lower():
+    environ = os.environ.get("UNITY_ENVIRONMENT")
+    if environ is None:
+        raise Exception(
+            "No environment specified as an environment variable."
+        )
+    environ = environ.lower()
+
+    # Config override - may be None
+    config_file_override = os.environ.get("UNITY_CONFIG_OVERRRIDE_FILE")
+
+    if "dev" in environ:
         print("Starting Development Session")
-        s = Unity(UnityEnvironments.DEV)
-    elif "test" in os.environ.get("UNITY_ENVIRONMENT").lower():
+        s = Unity(UnityEnvironments.DEV, config_file_override)
+    elif "test" in environ:
         print("Starting Test Session")
-        s = Unity(UnityEnvironments.TEST)
-    elif "prod" in os.environ.get("UNITY_ENVIRONMENT").lower():
+        s = Unity(UnityEnvironments.TEST, config_file_override)
+    elif "prod" in environ:
         print("Starting Production Session")
-        s = Unity(UnityEnvironments.PROD)
+        s = Unity(UnityEnvironments.PROD, config_file_override)
     else:
         raise Exception(
             "no environment included as a run tag. Expected one of [develop, test, prod]"

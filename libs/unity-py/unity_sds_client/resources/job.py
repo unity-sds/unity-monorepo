@@ -79,10 +79,9 @@ class Job(object):
         )
         with unity_sps_ogc_processes_api_python_client.ApiClient(configuration) as api_client:
             # Create an instance of the API class
-            api_instance = unity_sps_ogc_processes_api_python_client.DefaultApi(api_client)
+            api_instance = unity_sps_ogc_processes_api_python_client.JobsApi(api_client)
             try:
-                # Retrieve the list of available processes
-                job = api_instance.status_jobs_job_id_get(self.id)  # add auth
+                job = api_instance.get_status_jobs_job_id_get(self.id)  # add auth
                 return Job(
                     self._session,
                     self._endpoint,
@@ -95,7 +94,7 @@ class Job(object):
                 raise UnityException(nfe.body)
             except Exception as e:
                 print(traceback.format_exc())
-                print("Exception when calling DefaultApi->process_list_processes_get: %s\n" % e)
+                print("Exception when calling JobsApi->get_status_jobs_job_id_get: %s\n" % e)
                 raise UnityException(e.body)
 
         return None
@@ -108,16 +107,16 @@ class Job(object):
             access_token=token
         )
         with unity_sps_ogc_processes_api_python_client.ApiClient(configuration) as api_client:
-            api_instance = unity_sps_ogc_processes_api_python_client.DefaultApi(api_client)
+            api_instance = unity_sps_ogc_processes_api_python_client.JobsApi(api_client)
             try:
-                job_result = api_instance.results_jobs_job_id_results_get(self.id)  # add auth
+                job_result = api_instance.get_result_jobs_job_id_results_get(self.id)  # add auth
                 return job_result
 
             except NotFoundException as nfe:
                 raise UnityException(nfe.body)
             except Exception as e:
                 print(traceback.format_exc())
-                print("Exception when calling DefaultApi->process_list_processes_get: %s\n" % e)
+                print("Exception when calling JobsApi->get_result_jobs_job_id_results_get: %s\n" % e)
                 raise UnityException(e.body)
         return None
 
@@ -129,7 +128,7 @@ class Job(object):
             access_token=token
         )
         with unity_sps_ogc_processes_api_python_client.ApiClient(configuration) as api_client:
-            api_instance = unity_sps_ogc_processes_api_python_client.DefaultApi(api_client)
+            api_instance = unity_sps_ogc_processes_api_python_client.JobsApi(api_client)
             try:
                 job = api_instance.dismiss_jobs_job_id_delete(self.id)  # add auth
                 return Job(
@@ -144,6 +143,6 @@ class Job(object):
                 raise UnityException(nfe.body)
             except Exception as e:
                 print(traceback.format_exc())
-                print("Exception when calling DefaultApi->process_list_processes_get: %s\n" % e)
+                print("Exception when calling JobsApi->dismiss_jobs_job_id_delete: %s\n" % e)
                 raise UnityException(e.body)
         return None
