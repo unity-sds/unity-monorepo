@@ -2,6 +2,7 @@ Feature: MDPS_2_REQ-33
   The data catalog shall return search results in STAC (SpatioTemporal Asset Catalogs) format
 
   # Positive test for the get_collection_data() endpoint
+  # This test should be parameterized...
   @shared
   @data-catalog
   @integration-test
@@ -11,21 +12,21 @@ Feature: MDPS_2_REQ-33
     When a collection lookup request is made to the DAPA endpoint 
     Then a valid STAC document is returned
 
-#  #Access the {root}/collections/collection/items endpoint
-#  @shared
-#  @data-catalog
-#  Scenario Outline: Confirm STAC-results from data catalog:get_items
-#    Given an authenticated Unity user
-#    And a collection in the unity <endpoint>
-#    When a request is made to the DAPA endpoint at <endpoint>
-#    Then the response is a STAC document
-#
-#    @develop
-#    Examples: endpoints
-#      | endpoint  |
-#      | https://github.com/unity-sds/unity-example-application.git |
-#
-#    @test
-#    Examples: endpoints
-#      | endpoint  |
-#      | https://github.com/unity-sds/unity-example-application.git |
+  # Access the {root}/collections/collection/items endpoint
+  @shared
+  @data-catalog
+  Scenario Outline: Confirm STAC-results from data catalog:get_items
+    Given I have a token to authenticate with Unity Services
+    And a collection in the unity <endpoint>
+    When a request is made to the DAPA endpoint at <endpoint>
+    Then a valid STAC document is returned
+
+    @develop
+    Examples: endpoints
+      | endpoint  |
+      | https://github.com/unity-sds/unity-example-application.git |
+
+    @test
+    Examples: endpoints
+      | endpoint  |
+      | https://github.com/unity-sds/unity-example-application.git |
