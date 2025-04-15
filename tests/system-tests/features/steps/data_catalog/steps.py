@@ -16,14 +16,31 @@ from unity_sds_client.unity_services import UnityServices as services
 
 from features.steps.import_steps import *
 
-@when("a collection lookup request is made to the DAPA endpoint")
-def step_impl(context):
+@when("I query {collection_name} from the data catalog")
+@when("I query {collection_name} from the data catalog with {filter}")
+def step_impl(context, collection_name, filter=None):
     s = context.unity_session
-    dataManager = s.client(services.DATA_SERVICE)
+    data_manager = s.client(services.DATA_SERVICE)
+    print(f"Collection to query is {collection_name}, and optional filter is {filter}")
+    cd = data_manager.get_collection_data(Collection(collection_name), filter = filter, limit=100, output_stac = True)
+    context.collection_name = collection_name
+    context.collection_data = cd
 
-    collection_id = get_value(context, 'COLLECTION_ID', mandatory=True)
-    print(f"Collection to manipulate is {collection_id}")
-    context.collection_data = dataManager.get_collection_data(Collection(collection_id), output_stac = True, limit=100, filter="updated >= '2024-03-18T00:00:00Z' and updated <= '2024-03-21T23:59:59Z'")
+
+@when("I query for the granules of {collection_name} from the data catalog")
+def step_impl(context, collection_name):
+    s = context.unity_session
+    data_manager = s.client(services.DATA_SERVICE)
+    print(f"Collection to query is {collection_name}")
+    cd = data_manager.get_collection_items(Collection(collection_name), filter = filter, limit=100, output_stac = True)
+    context.collection_name = collection_name
+    context.collection_data = cd
+
+
+@then("the response has 1 or more granules")
+def step_impl(context):
+    assert (len(context.collection_data) > 0)
+
 
 @then("a valid STAC document is returned")
 def step_impl(context):
@@ -34,20 +51,8 @@ def step_impl(context):
     try:
         validate(context.collection_data, schema=schema)
     except ValidationError as ve:
-        message = f"JSON for {get_value(context, 'COLLECTION_ID', mandatory=True)} failed validation for schema {schemaFileName}\n{ve}"
+        message = f"JSON for {context.collection_name} failed validation for schema {schemaFileName}\n{ve}"
         print(message)
         raise Exception(message)
 
-
-@when("I query {collection_name} from the data catalog")
-def step_impl(context, collection_name):
-    s = context.unity_session
-    data_manager = s.client(services.DATA_SERVICE)
-    cd = data_manager.get_collection_data(Collection(collection_name))
-    context.collection_data = cd
-
-
-@then("the response has 1 or more granules")
-def step_impl(context):
-    assert (len(context.collection_data) > 0)
 
