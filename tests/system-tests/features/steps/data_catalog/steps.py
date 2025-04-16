@@ -1,4 +1,5 @@
 import os
+import requests
 import json
 from jsonschema import validate, ValidationError
 
@@ -16,8 +17,8 @@ from unity_sds_client.unity_services import UnityServices as services
 
 from features.steps.import_steps import *
 
-@when("I query {collection_name} from the data catalog")
-@when("I query {collection_name} from the data catalog with {filter}")
+@when("I make a get_collection_data call for {collection_name}")
+@when("I make a get_collection_data call for {collection_name} with {filter}")
 def step_impl(context, collection_name, filter=None):
     s = context.unity_session
     data_manager = s.client(services.DATA_SERVICE)
@@ -46,3 +47,17 @@ def step_impl(context):
         raise Exception(message)
 
 
+@when("I make a get items request to the DAPA endpoint at {endpoint} for {collection_name}")
+@when("I make a get items request to the DAPA endpoint at {endpoint} for {collection_name} with filter {filter}")
+def step_impl(context, endpoint, collection_name, filter=None):
+    # Note this is largely verbatim from unity-py's data-service.py implementation of get_collection_data()
+    s = context.unity_session
+    url = endpoint + f'/am-uds-dapa/collections/{collection_name}/items'
+    token = s._session.get_auth().get_token()
+    params = {"limit" : 10}
+    if filter is not None:
+        params["filter"] = filter
+    response = requests.get(url, headers={"Authorization" : "Bearer " + token}, params=params)
+    print(response)
+
+    context.collection_data = response.json()

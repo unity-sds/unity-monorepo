@@ -8,7 +8,7 @@ Feature: MDPS_2_REQ-33
   @testrail-C4454761
   Scenario Outline: Confirm results from data catalog:get_collection_data()
     Given I have a token to authenticate with Unity Services
-    When I query <collection_name> from the data catalog with <filter>
+    When I make a get_collection_data call for <collection_name> with <filter>
     Then a valid STAC document is returned
 
     @test
@@ -17,21 +17,15 @@ Feature: MDPS_2_REQ-33
       | urn:nasa:unity:unity:test:SBG-L2A_CORFL___1 | updated >= '2024-03-18T00:00:00Z' and updated <= '2024-03-21T23:59:59Z' | test |
 
 
-  # Access the {root}/collections/collection/items endpoint
-  # @shared
-  # @data-catalog
-  # Scenario Outline: Confirm STAC-results from data catalog:get_items()
-    # Given I have a token to authenticate with Unity Services
-    # And a collection in the unity <endpoint>
-    # When a request is made to the DAPA endpoint at <endpoint>
-    # Then a valid STAC document is returned
+  # Access the {root}/collections/<collection_name>/items endpoint
+  @shared
+  @data-catalog
+  Scenario Outline: Confirm STAC-results from data catalog:get_items()
+    Given I have a token to authenticate with Unity Services
+    When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name> with filter <filter>
+    Then a valid STAC document is returned
 
-    # @develop
-    # Examples: endpoints
-      # | endpoint  |
-      # | https://github.com/unity-sds/unity-example-application.git |
-
-    # @test
-    # Examples: endpoints
-      # | endpoint  |
-      # | https://github.com/unity-sds/unity-example-application.git |
+    @test
+    Examples: endpoints
+      | endpoint | collection_name | filter | venue |
+      | https://api.test.mdps.mcp.nasa.gov | urn:nasa:unity:unity:test:SBG-L2A_CORFL___1 | updated >= '2024-03-18T00:00:00Z' and updated <= '2024-03-21T23:59:59Z' | test |
