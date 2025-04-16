@@ -26,32 +26,35 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   # @shared
   # @MDPS_2_REQ-30
   # @MDPS_2_REQ-31
-  # Scenario: List products by Collection
-    # Given a DAPA endpoint with a colleciton defined
-    # And the collection has one or more products associated with it
-    # And the caller has set authentication
-    # When a request is made to the DAPA items endpoint for the specified collection
-    # Then the response is a STAC document
-    # And the response returns an HTTP 200
-    # And the response includes one or more granules
-    # And each granule has a temporal extent
-    # And each granule has one or more data access links
+  Scenario Outline: List products by Collection
+    Given I have a token to authenticate with Unity Services
+    When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name> with filter <filter>
+    Then a valid STAC document is returned
+    And the response includes one or more granules
+    And each granule has a temporal extent
+    And each granule has one or more data access links
+
+    @test
+    Examples: endpoints
+      | endpoint | collection_name | filter | venue |
+      | https://api.test.mdps.mcp.nasa.gov | urn:nasa:unity:unity:test:SBG-L2A_CORFL___1 | updated >= '2024-03-18T00:00:00Z' and updated <= '2024-03-21T23:59:59Z' | test |
 
   # Access {root}/collections/{collectionId}/items?datetime=BeginningDate/EndingDate
   # @shared
   # @MDPS_2_REQ-34
   # @MDPS_2_REQ-35
-  # Scenario: Filter products by Collection and Time
-    # Given a DAPA endpoint with a colleciton defined
-    # And the collection has one or more products associated with it
-    # And the caller has set authentication
-    # When a request is made to the DAPA items endpoint for the specified collection and temporal range
-    # Then the response is a STAC document
-    # And the response returns an HTTP 200
-    # And the response includes one or more granules
-    # And each granule has a temporal extent
-    # And each granule has one or more data access links
-    # And no granuels listed are outside the range of the temporal extent specified
+  Scenario Outline: Filter products by Collection and Time
+    Given I have a token to authenticate with Unity Services
+    When I make a datetime filtered get items request to the DAPA endpoint at <endpoint> for <collection_name> with <beginning_date> and <ending_date>
+    Then a valid STAC document is returned
+    And the response includes one or more granules
+    And each granule has one or more data access links
+    And each granule is within the range of <beginning_date> and <ending_date>
+
+    @test
+    Examples: endpoints
+      | endpoint | collection_name | beginning_date | ending_date | venue |
+      | https://api.test.mdps.mcp.nasa.gov | urn:nasa:unity:unity:test:SBG-L2A_CORFL___1 | 2024-03-18T00:00:00Z | 2024-03-21T23:59:59Z | test |
 
   # @shared
   # @MDPS_2_REQ-35
