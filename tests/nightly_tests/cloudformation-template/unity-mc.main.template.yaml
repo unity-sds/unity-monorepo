@@ -507,7 +507,8 @@ Resources:
               command: !Sub |
                 set -ex \
                 && echo "running 02_install_service" \
-                && cp scripts/managementconsole.service /etc/systemd/system/managementconsole.service
+                && cp scripts/managementconsole.service /etc/systemd/system/managementconsole.service \
+                && cp scripts/managementconsole-update.service /etc/systemd/system/managementconsole-update.service
               cwd: /home/ubuntu/management-console
             03_run_management_console:
               command: !Sub |
