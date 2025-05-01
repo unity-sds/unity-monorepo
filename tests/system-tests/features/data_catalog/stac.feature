@@ -7,7 +7,7 @@ Feature: MDPS_2_REQ-33
   @integration-test
   @testrail-C4454761
   Scenario Outline: Confirm results from data catalog:get_collection_data()
-    Given I have a token to authenticate with Unity Services
+    Given I authenticate with Unity Services
     When I make a get_collection_data call for <collection_name> with <filter>
     Then a valid STAC document is returned
 
@@ -22,7 +22,7 @@ Feature: MDPS_2_REQ-33
   # @shared
   # @data-catalog
   # Scenario Outline: Confirm STAC-results from data catalog:get_items()
-    # Given I have a token to authenticate with Unity Services
+    # Given I authenticate with Unity Services
     # When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name> with filter <filter>
     # Then a valid STAC document is returned
 

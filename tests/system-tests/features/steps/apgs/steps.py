@@ -8,7 +8,7 @@ from unity_sds_client.unity import Unity, UnityEnvironments
 from unity_sds_client.unity_services import UnityServices as services
 
 
-@given("I have a token to authenticate with Unity Services")  # noqa: F405
+@given("I authenticate with Unity Services")  # noqa: F405
 def step_impl(context):
     environ = os.environ.get("UNITY_ENVIRONMENT")
     if environ is None:

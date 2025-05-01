@@ -4,7 +4,7 @@ Feature: MDPS_2_REQ-164, MDPS_2_REQ-165, MDPS_2_REQ-80, MDPS_2_REQ-81
 
   @apgs
   Scenario Outline: Successful Application Package Builds
-    Given I have a token to authenticate with Unity Services
+    Given I authenticate with Unity Services
     When I submit <repo_name> to the apgs build system
     Then the apgs build response is <result>
     And I wait for the apgs build to complete
@@ -24,13 +24,13 @@ Feature: MDPS_2_REQ-164, MDPS_2_REQ-165, MDPS_2_REQ-80, MDPS_2_REQ-81
 
   @apgs
   Scenario: Unsuccessful Application Package Builds from non-existent repo
-    Given I have a token to authenticate with Unity Services
+    Given I authenticate with Unity Services
     When I submit a non-existent repo to the apgs build system
     Then the apgs build response is fail
 
   @apgs
   Scenario: Unsuccessful Application Package Builds from mal-formed repo
-    Given I have a token to authenticate with Unity Services
+    Given I authenticate with Unity Services
     When I submit a mal-formed repo to the apgs build system
     # This will be success because the request is successful, but the build will be a failure.
     Then the apgs build response is success
