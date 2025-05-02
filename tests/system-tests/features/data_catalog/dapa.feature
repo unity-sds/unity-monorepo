@@ -10,12 +10,12 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   @MDPS_2_REQ-30
   @MDPS_2_REQ-35
   Scenario Outline: List Collections
-    Given I have a token to authenticate with Unity Services
+    Given I authenticate with Unity Services
     When I make a list collections request to the DAPA endpoint at <endpoint>
-    # Then a valid STAC document is returned
+    # Then the repsonse is a valid STAC document
     # And the response includes one or more collections
     Then the response includes one or more collections
-    And each collection has a collection identifier
+    And each collection in the response has a collection identifier
 
     @test
     Examples: endpoints
@@ -27,12 +27,12 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   # @MDPS_2_REQ-30
   # @MDPS_2_REQ-31
   Scenario Outline: List products by Collection
-    Given I have a token to authenticate with Unity Services
+    Given I authenticate with Unity Services
     When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name> with filter <filter>
-    Then a valid STAC document is returned
+    Then the repsonse is a valid STAC document
     And the response includes one or more granules
-    And each granule has a temporal extent
-    And each granule has one or more data access links
+    And each granule in the response has a temporal extent
+    And each granule in the response has one or more data access links
 
     @test
     Examples: endpoints
@@ -44,12 +44,12 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   # @MDPS_2_REQ-34
   # @MDPS_2_REQ-35
   Scenario Outline: Filter products by Collection and Time
-    Given I have a token to authenticate with Unity Services
+    Given I authenticate with Unity Services
     When I make a datetime filtered get items request to the DAPA endpoint at <endpoint> for <collection_name> with <beginning_date> and <ending_date>
-    Then a valid STAC document is returned
+    Then the repsonse is a valid STAC document
     And the response includes one or more granules
-    And each granule has one or more data access links
-    And each granule is within the range of <beginning_date> and <ending_date>
+    And each granule in the response has one or more data access links
+    And each granule in the response is within the range of <beginning_date> and <ending_date>
 
     @test
     Examples: endpoints
@@ -58,19 +58,35 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
 
   # @shared
   # @MDPS_2_REQ-35
-  # Scenario: Search on custom, project provided metadata
-    # Given a DAPA endpoint with a colleciton defined
-    # And the caller has set authentication
-    # And the collection has one or more products associated with it
-    # When a request is made to the DAPA items endpoint for the specified metadata
-    # Then the response is a STAC document
-    # And the response returns an HTTP 200
-    # And the response includes one or more collections
-    # And each collection has a collection Identifier
+  Scenario Outline: Search on custom, project provided metadata
+    Given I authenticate with Unity Services
+    When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name>
+    Then the repsonse is a valid STAC document
+    And the response includes one or more collections
+    And each collection in the response has a collection Identifier
 
+    @test
+    Examples: endpoints
+      | endpoint | collection_name |
+      | https://api.test.mdps.mcp.nasa.gov | urn:nasa:unity:unity:test:SBG-L2A_CORFL___1 |
 
   # For the near term, we should identify the access method as S3 access
-  # Scenario: Download product via S3
+  @AWS_test
+  Scenario Outline: Download product via S3
+    Given I authenticate with Unity Services
+    And I authenticate with AWS 
+    When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name>
+    # Then the repsonse is a valid STAC document
+    # And each granule in the response has one or more data access links
+    Then each granule in the response has one or more data access links
+    And the object is downloaded from S3 via the data access link in the response
+
+    @test
+    Examples: endpoints
+      | endpoint | collection_name |
+      | https://api.test.mdps.mcp.nasa.gov | urn:nasa:unity:unity:test:SBG-L2A_CORFL___1 |
+
+
     # Given a STAC Response Document specifying collection products with S3 links
     # And the caller has set up S3 authentication
     # When a user attempts to access a product data access link

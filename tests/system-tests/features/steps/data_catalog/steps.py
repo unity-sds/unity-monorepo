@@ -4,6 +4,8 @@ import requests
 import json
 from jsonschema import validate, ValidationError
 
+import boto3
+
 from behave import *  # noqa: F403
 from environment import get_value
 
@@ -33,12 +35,21 @@ def _send_request(unity_session, url, filter = None, limit = None):
 def _get_items_for_collection(context, endpoint, collection_name, filter = None):
     url = endpoint + f'/am-uds-dapa/collections/{collection_name}/items'
     response = _send_request(context.unity_session, url, filter)
+    print(f"{response.json()}")
     return response.json()
+
+
+@given("I authenticate with AWS")
+def step_impl(context):  # noqa: F403
+    sts_client = boto3.client('sts')
+    caller_identity = sts_client.get_caller_identity()
+    print(f"AWS caller identity: {caller_identity}")
+    context.sts_client = sts_client
 
 
 @when("I make a get_collection_data call for {collection_name}")
 @when("I make a get_collection_data call for {collection_name} with {filter}")
-def step_impl(context, collection_name, filter=None):
+def step_impl(context, collection_name, filter=None):  # noqa: F403
     s = context.unity_session
     data_manager = s.client(services.DATA_SERVICE)
     print(f"Collection to query is {collection_name}, and optional filter is {filter}")
@@ -49,14 +60,14 @@ def step_impl(context, collection_name, filter=None):
 
 @when("I make a get items request to the DAPA endpoint at {endpoint} for {collection_name}")
 @when("I make a get items request to the DAPA endpoint at {endpoint} for {collection_name} with filter {filter}")
-def step_impl(context, endpoint, collection_name, filter=None):
+def step_impl(context, endpoint, collection_name, filter=None):  # noqa: F403
     response = _get_items_for_collection(context, endpoint, collection_name, filter)
     context.collection_name = collection_name
     context.collection_data = response
 
 
 @when("I make a datetime filtered get items request to the DAPA endpoint at {endpoint} for {collection_name} with {beginning_date} and {ending_date}")
-def step_impl(context, endpoint, collection_name, beginning_date, ending_date):
+def step_impl(context, endpoint, collection_name, beginning_date, ending_date):  # noqa: F403
     filter = f"datetime >= '{beginning_date}' and datetime <= '{ending_date}'"
     response = _get_items_for_collection(context, endpoint, collection_name, filter)
     context.collection_name = collection_name
@@ -64,14 +75,14 @@ def step_impl(context, endpoint, collection_name, beginning_date, ending_date):
 
 
 @when("I make a list collections request to the DAPA endpoint at {endpoint}")
-def step_impl(context, endpoint):
+def step_impl(context, endpoint):  # noqa: F403
     url = endpoint + '/am-uds-dapa/collections'
     response = _send_request(context.unity_session, url)
     context.collection_data = response.json()
 
 
-@then("a valid STAC document is returned")
-def step_impl(context):
+@then("the response is a valid STAC document")
+def step_impl(context):  # noqa: F403
     schema_file_name = get_value(context, 'STAC_SCHEMA_FILE', mandatory=True)
     with open(schema_file_name) as schemaFile:
         schema = json.loads(schemaFile.read())
@@ -85,50 +96,68 @@ def step_impl(context):
 
 
 @then("the response includes one or more collections")
-def step_impl(context):
+def step_impl(context):  # noqa: F403
     assert (context.collection_data["numberMatched"] > 0)
 
 
 @then("the response includes one or more granules")
-def step_impl(context):
+def step_impl(context):  # noqa: F403
     assert (len(context.collection_data["features"]) > 0)
 
 
-@then("each granule has a temporal extent")
-def step_impl(context):
-    granules = context.collection_data["features"]
-    for granule in granules:
-        properties = granule.get("properties")
+@then("each granule in the response has a temporal extent")
+def step_impl(context):  # noqa: F403
+    feature = context.collection_data["features"]
+    for feature in features:
+        properties = feature.get("properties")
         start_datetime = properties.get("start_datetime") if properties is not None else None
         end_datetime = properties.get("end_datetime") if properties is not None else None
         assert(start_datetime is not None and end_datetime is not None)
 
 
-@then("each granule has one or more data access links")
-def step_impl(context):
-    granules = context.collection_data["features"]
-    for granule in granules:
-        links = granule.get("links")
-        assert(links is not None and len(links) > 0)
+@then("each granule in the response has one or more data access links")
+def step_impl(context):  # noqa: F403
+    features = context.collection_data["features"]
+    for feature in features:
+        assets = feature["assets"]
+        for asset_id, asset_metadata in assets.items():
+            href = asset_metadata.get("href")
+            assert(href is not None)
 
 
-@then("each collection has a collection identifier")
-def step_impl(context):
-    for collection in context.collection_data["features"]:
-         assert collection.get("id") is not None
+@then("each collection in the response has a collection identifier")
+def step_impl(context):  # noqa: F403
+    for feature in context.collection_data["features"]:
+         assert feature.get("id") is not None
 
 
-@then("each granule is within the range of {beginning_date} and {ending_date}")
-def step_impl(context, beginning_date, ending_date):
-    granules = context.collection_data["features"]
+@then("each granule in the response is within the range of {beginning_date} and {ending_date}")
+def step_impl(context, beginning_date, ending_date):  # noqa: F403
+    feature = context.collection_data["features"]
     beginning_datetime = datetime.strptime(beginning_date, "%Y-%m-%dT%H:%M:%SZ")
     ending_datetime = datetime.strptime(ending_date, "%Y-%m-%dT%H:%M:%SZ")
-    for granule in granules:
-        properties = granule.get("properties")
+    for feature in features:
+        properties = feature.get("properties")
         datetime_str = properties.get("datetime") if properties is not None else None
         assert(datetime_str is not None)
 
-        granule_datetime = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-        assert(granule_datetime >= beginning_datetime and granule_datetime <= ending_datetime)
+        feature_datetime = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+        assert(feature_datetime >= beginning_datetime and feature_datetime <= ending_datetime)
 
-        
+
+@then("the object is downloaded from S3 via the data access link in the response")
+def step_impl(context):  #noqa: F403
+    s3_client = boto3.client('s3')
+    features = context.collection_data["features"]
+    for feature in features:
+        assets = feature["assets"]
+        for asset_id, asset_metadata in assets.items():
+            hrefs = asset_metadata.get("href")
+            assert(hrefs is not None)
+            if isinstance(hrefs, str):
+                hrefs = [hrefs]
+            assert(len(hrefs) > 0)
+            for href in hrefs:
+                if href.startswith('s3://'):
+                    bucket,object_key = href[5:].split('/',maxsplit=1)
+                    head_info = s3_client.head_object(Bucket=bucket,Key=object_key)
