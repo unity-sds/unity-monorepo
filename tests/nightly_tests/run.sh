@@ -529,12 +529,23 @@ if [[ "$RUN_BDD_TESTS" == "true" ]]; then
     # run gherkin/behave tests
     source ${BASE_TEST_DIR}/regression_test.sh &> behave_nightly_output.txt
     cat behave_nightly_output.txt >> testing_nightly_output.txt
-    cat behave_nightly_output.txt >> nightly_output.txt
 
+    echo "BDD Summary: " >> nightly_output.txt
+    tail -4 behave_nightly_output.txt | grep "passed, " >> nightly_output.txt
+    tail -4 behave_nightly_output.txt | grep "Took " >> nightly_output.txt
 else
     echo "Not running BDD tests. (--run-bdd-tests false)"
     echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
 fi
+
+#
+# Parse and print out CloudFormation events
+#
+cat cloudformation_events.txt |sed 's/\s*},*//g' |sed 's/\s*{//g' |sed 's/\s*\]//' |sed 's/\\"//g' |sed 's/"//g' |sed 's/\\n//g' |sed 's/\\/-/g' |sed 's./.-.g' |sed 's.\\.-.g' |sed 's/\[//g' |sed 's/\]//g' |sed 's/  */ /g' |sed 's/%//g' |grep -v StackName |grep -v StackId |grep -v PhysicalResourceId > CF_EVENTS.txt
+EVENTS=$(cat CF_EVENTS.txt |grep -v ResourceProperties)
+echo "$EVENTS" > CF_EVENTS.txt
+cat CF_EVENTS.txt
+CF_EVENTS=$(cat CF_EVENTS.txt)
 
 # The rest of your script, including posting to Slack, can go here
 # Ensure to only post to Slack if tests were run 
@@ -545,13 +556,24 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
   mv selenium_unity_images/* ${LOG_DIR}
 
   OUTPUT=$(cat nightly_output.txt)
+  BDD_OUTPUT=$(cat behave_nightly_output.txt)
   
   # Post results to Slack
-  curl -X POST -H 'Content-type: application/json' \
-  --data '{"cloudformation_summary": "'"${OUTPUT}"'", "cloudformation_events": "'"${CF_EVENTS}"'", "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'"}' \
-  ${SLACK_URL_VAL}
+  curl_output=`curl -X POST -H 'Content-type: application/json' \
+  --data '{"cloudformation_summary": "'"${OUTPUT}"'", "cloudformation_events": "'"${CF_EVENTS}"'", "bdd_output" : "'"${BDD_OUTPUT}"'", "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'"}' \
+  ${SLACK_URL_VAL}`
+
+  echo "Curl response: ${curl_output}"
+  curl_result=`echo $curl_output | python -c "import sys, json; print(json.load(sys.stdin)['ok'])"`
+  if [[ "$curl_result" != "True" ]]; then
+    message=`echo "Error posting nightly test results: ${curl_output}." | jq -Ra .`
+    echo $message
+    curl -X POST -H 'Content-type: application/json' \
+    --data '{"cloudformation_summary" : '"${message}"'}' \
+    ${SLACK_URL_VAL}
+  fi
 else
-    echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
+  echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
 fi
 
 # Decide on resource destruction based on the smoke test result or DESTROY flag
@@ -564,15 +586,6 @@ if [[ "$DESTROY" == "true" ]] || [ $SMOKE_TEST_STATUS -ne 0 ]; then
 else
   echo "Not destroying resources. Smoke tests were successful and no destruction requested."
 fi
-
-#
-# Parse and print out CloudFormation events
-#
-cat cloudformation_events.txt |sed 's/\s*},*//g' |sed 's/\s*{//g' |sed 's/\s*\]//' |sed 's/\\"//g' |sed 's/"//g' |sed 's/\\n//g' |sed 's/\\/-/g' |sed 's./.-.g' |sed 's.\\.-.g' |sed 's/\[//g' |sed 's/\]//g' |sed 's/  */ /g' |sed 's/%//g' |grep -v StackName |grep -v StackId |grep -v PhysicalResourceId > CF_EVENTS.txt
-EVENTS=$(cat CF_EVENTS.txt |grep -v ResourceProperties)
-echo "$EVENTS" > CF_EVENTS.txt
-cat CF_EVENTS.txt
-CF_EVENTS=$(cat CF_EVENTS.txt)
 
 #
 # Clean up logs and push up to S3 if configured
