@@ -552,7 +552,7 @@ cat cloudformation_events.txt |sed 's/\s*},*//g' |sed 's/\s*{//g' |sed 's/\s*\]/
 EVENTS=$(cat CF_EVENTS.txt |grep -v ResourceProperties)
 echo "$EVENTS" > CF_EVENTS.txt
 cat CF_EVENTS.txt
-CF_EVENTS=$(cat CF_EVENTS.txt | jq -Ra .)
+CF_EVENTS=$(cat CF_EVENTS.txt | jq -Rsa .)
 
 # The rest of your script, including posting to Slack, can go here
 # Ensure to only post to Slack if tests were run 
@@ -562,8 +562,8 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
   mv nightly_output_$TODAYS_DATE.txt ${LOG_DIR}
   mv selenium_unity_images/* ${LOG_DIR}
 
-  OUTPUT=$(cat nightly_output.txt | jq -Ra .)
-  BDD_OUTPUT=$(cat behave_nightly_output.txt | jq -Ra .)
+  OUTPUT=$(cat nightly_output.txt | jq -Rsa .)
+  BDD_OUTPUT=$(cat behave_nightly_output.txt | jq -Rsa .)
   
   # Post results to Slack - OUTPUT, CF_EVENTS and BDD_OUTPUT have all been run through jq to ensure that any embedded JSON has been escaped
   curl_output=$(curl -X POST -H 'Content-type: application/json' \
