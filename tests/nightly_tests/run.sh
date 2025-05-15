@@ -210,6 +210,13 @@ if ! grep -q selenium out.txt; then
     pip3 install selenium
 fi
 
+# Install jq if not installed - this is used to escape any JSON embedded within the Slack data
+pip3 list | grep jq > out.txt
+if ! grep -q jq out.txt; then
+    echo "Installing jq..."
+    pip3 install jq
+fi
+
 # Check if yq is installed
 if ! command -v yq &> /dev/null; then
     echo "Installing yq..."
@@ -545,7 +552,7 @@ cat cloudformation_events.txt |sed 's/\s*},*//g' |sed 's/\s*{//g' |sed 's/\s*\]/
 EVENTS=$(cat CF_EVENTS.txt |grep -v ResourceProperties)
 echo "$EVENTS" > CF_EVENTS.txt
 cat CF_EVENTS.txt
-CF_EVENTS=$(cat CF_EVENTS.txt)
+CF_EVENTS=$(cat CF_EVENTS.txt | jq -Ra .)
 
 # The rest of your script, including posting to Slack, can go here
 # Ensure to only post to Slack if tests were run 
@@ -555,18 +562,18 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
   mv nightly_output_$TODAYS_DATE.txt ${LOG_DIR}
   mv selenium_unity_images/* ${LOG_DIR}
 
-  OUTPUT=$(cat nightly_output.txt)
-  BDD_OUTPUT=$(cat behave_nightly_output.txt)
+  OUTPUT=$(cat nightly_output.txt | jq -Ra .)
+  BDD_OUTPUT=$(cat behave_nightly_output.txt | jq -Ra .)
   
-  # Post results to Slack
-  curl_output=`curl -X POST -H 'Content-type: application/json' \
-  --data '{"cloudformation_summary": "'"${OUTPUT}"'", "cloudformation_events": "'"${CF_EVENTS}"'", "bdd_output" : "'"${BDD_OUTPUT}"'", "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'"}' \
-  ${SLACK_URL_VAL}`
+  # Post results to Slack - OUTPUT, CF_EVENTS and BDD_OUTPUT have all been run through jq to ensure that any embedded JSON has been escaped
+  curl_output=$(curl -X POST -H 'Content-type: application/json' \
+  --data '{"cloudformation_summary": '"${OUTPUT}"', "cloudformation_events": '"${CF_EVENTS}"', "bdd_output" : '"${BDD_OUTPUT}"', "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'"}' \
+  ${SLACK_URL_VAL})
 
   echo "Curl response: ${curl_output}"
-  curl_result=`echo $curl_output | python -c "import sys, json; print(json.load(sys.stdin)['ok'])"`
+  curl_result=$(echo $curl_output | python -c "import sys, json; print(json.load(sys.stdin)['ok'])")
   if [[ "$curl_result" != "True" ]]; then
-    message=`echo "Error posting nightly test results: ${curl_output}." | jq -Ra .`
+    message=$(echo "Error posting nightly test results: ${curl_output}." | jq -Ra .)
     echo $message
     curl -X POST -H 'Content-type: application/json' \
     --data '{"cloudformation_summary" : '"${message}"'}' \
