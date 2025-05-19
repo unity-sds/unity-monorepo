@@ -51,7 +51,12 @@ class HealthService(object):
         headers = get_headers(token, {
             'Content-type': 'application/json'
         })
-        response = requests.get(url, headers=headers, timeout=60)
+
+        try:
+            response = requests.get(url, headers=headers, timeout=60)
+            response.raise_for_status()
+        except requests.HTTPError as exception:
+            raise exception
 
         return response.json()
 
@@ -60,21 +65,33 @@ class HealthService(object):
         Return a generated report of health status information
         """
 
-        health_statuses = self.get_health_status()
-
         health_status_title = "HEALTH STATUS REPORT"
         report = f"\n\n{health_status_title}\n"
         report = report + len(health_status_title) * "-" + "\n\n"
+
+        try:
+            health_statuses = self.get_health_status()
+        except requests.HTTPError as error:
+            report = report + f"Error encountered with Health API Endpoint ({error.response.status_code})\n"
+            return report
+
         for service in health_statuses["services"]:
             service_name = service["componentName"]
+            service_category = service["componentCategory"]
+            service_type = service["componentType"]
+            service_description = service["description"]
             landing_page_url = service["landingPageUrl"]
-            report = report + f"{service_name} ({landing_page_url})\n"
+            report = report + f"{service_name}\n"
+            report = report + f"{service_description}\n"
+            report = report + f"URL: {landing_page_url}\n"
+            report = report + f"Category: {service_category}\n"
+            report = report + f"Type: {service_type}\n"
             for status in service["healthChecks"]:
                 service_status = status["status"]
                 service_status_date = status["date"]
-                report = report + f"{service_status_date}: {service_status}\n"
+                report = report + f"Health Status as of {service_status_date}: {service_status}\n"
             report = report + "\n"
-        
+
         return report
 
     def print_health_status(self):

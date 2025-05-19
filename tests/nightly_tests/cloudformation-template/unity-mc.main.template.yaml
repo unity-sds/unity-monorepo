@@ -256,8 +256,7 @@ Resources:
 
         # TODO: need to generalize for JPL, MCP and normal AWS accounts; currently these are specific to MCP
         - !Sub "arn:aws:iam::${AWS::AccountId}:policy/${PrivilegedPolicyName}"
-        - !Sub "arn:aws:iam::${AWS::AccountId}:policy/DatalakeKinesisPolicy"
-        - !Sub "arn:aws:iam::${AWS::AccountId}:policy/McpToolsAccessPolicy"
+        # Removed McpToolsAccessPolicy and DatalakeKinesisPolicy as they no longer exist
         - !Sub "arn:aws:iam::${AWS::AccountId}:policy/U-CS_Service_Policy"
         - !Sub "arn:aws:iam::${AWS::AccountId}:policy/U-CS_Service_Policy_Ondemand"
       PermissionsBoundary: !Sub "arn:aws:iam::${AWS::AccountId}:policy/${PrivilegedPolicyName}"
@@ -508,7 +507,8 @@ Resources:
               command: !Sub |
                 set -ex \
                 && echo "running 02_install_service" \
-                && cp scripts/managementconsole.service /etc/systemd/system/managementconsole.service
+                && cp scripts/managementconsole.service /etc/systemd/system/managementconsole.service \
+                && cp scripts/managementconsole-update.service /etc/systemd/system/managementconsole-update.service
               cwd: /home/ubuntu/management-console
             03_run_management_console:
               command: !Sub |

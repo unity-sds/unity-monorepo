@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.9.1] - 2025-03-04
+## [0.10.1] - 2025-03-04
 
 ### Added
 
@@ -20,7 +20,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Enforce a specific capitalization for the case insensitive portion of a collection id in DataService::create_collection
 * DataService::create_collection now returns the JSON it submitted to the API
 
+## [0.10.0] - 2025-02-19
+
+### Added
+* Unit test to validate the health services schema
+
+### Fixed
+* Schema definition of health service as it wasn't properly validating enumerated values
+
+### Changed
+* The health services schema has been updated to account for the new fields, componentCategory, componentType, and description
+* Improved error handling of health service methods related to fetching health information from API
+* Unit tests have been updated to use mock data rather than live API endpoints
+* Updated printing of health status report to include new fields mentioned above
+
 ### Removed
+* Superfluous unit test that creates a health_service instance
 
 ### Security
 

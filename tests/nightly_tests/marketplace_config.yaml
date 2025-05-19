@@ -1,6 +1,6 @@
 ManagementConsole:
   sha:
-  release: 24.11-stable
+  release: 24.15-stable
 
 MarketplaceItems:
   - name: unity-cs-monitoring-lambda
@@ -9,5 +9,5 @@ MarketplaceItems:
     version: 24.4-stable
   - name: unity-proxy
     version: 24.4-stable
-  - name: unity-ui
-    version: 24.4-stable
+  - name: unity-portal
+    version: 25.1-stable
