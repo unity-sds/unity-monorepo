@@ -2,7 +2,9 @@ from unity_sds_client.unity_exception import UnityException
 from unity_sds_client.resources.dataset import Dataset
 from unity_sds_client.resources.data_file import DataFile
 from pystac import Catalog, get_stac_version, ItemCollection, Item, Asset
+from pystac.extensions.file import FileExtension
 from pystac.errors import STACTypeError
+import hashlib
 import json
 import os
 from datetime import datetime
@@ -132,15 +134,33 @@ class Collection(object):
                 if key.startswith("./"):
                     key = os.path.basename(key)
 
-                item.add_asset(
-                    key = key,
-                    asset = Asset(
-                        href = item_location,
-                        title = "{} file".format(df.type),
-                        description = "",
-                        roles = df.roles
+                asset = Asset(
+                            href = item_location,
+                            title = "{} file".format(df.type),
+                            description = "",
+                            roles = df.roles
+                        )
+
+                # If the file exists locally on disk then add optional STAC
+                # attribuites: file:size, file:checksum
+                data_filename = os.path.join(data_dir, item_location)
+                if os.path.exists(data_filename):
+                    # Get file size
+                    file_stats = os.stat(data_filename)
+
+                    # Compute MD5SUM
+                    md5 = hashlib.md5()
+                    with open(data_filename, "rb") as f:
+                        while chunk := f.read(4096):
+                            md5.update(chunk)
+
+                    file_ext = FileExtension.ext(asset)
+                    file_ext.apply(
+                        size=file_stats.st_size,
+                        checksum=md5.hexdigest()
                     )
-                )
+
+                item.add_asset(key=key, asset=asset)
 
         from pystac.layout import TemplateLayoutStrategy
         write_dir = data_dir
