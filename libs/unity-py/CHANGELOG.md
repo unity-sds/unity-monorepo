@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.1] - 2025-03-04
+
+### Added
+
+### Fixed
+
+* Do not fail on case insensitive portion of collection id in DataService::create_collection routine
+* Fixed error handling of DataService routines to use .text instead of the invalid .message attrbute of the response object
+* Cleaned up JSON submitted by DataService::create_collection to not contain less random values
+
+### Changed
+
+* Enforce a specific capitalization for the case insensitive portion of a collection id in DataService::create_collection
+* DataService::create_collection now returns the JSON it submitted to the API
+
 ## [0.10.0] - 2025-02-19
 
 ### Added
