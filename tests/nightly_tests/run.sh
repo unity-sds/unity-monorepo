@@ -537,9 +537,10 @@ if [[ "$RUN_BDD_TESTS" == "true" ]]; then
     source ${BASE_TEST_DIR}/regression_test.sh &> behave_nightly_output.txt
     cat behave_nightly_output.txt >> testing_nightly_output.txt
 
-    echo "BDD Summary: " >> nightly_output.txt
+    echo -e "\n\nBDD Summary: " >> nightly_output.txt
     tail -4 behave_nightly_output.txt | grep "passed, " >> nightly_output.txt
     tail -4 behave_nightly_output.txt | grep "Took " >> nightly_output.txt
+    echo -e "\n\n"
 else
     echo "Not running BDD tests. (--run-bdd-tests false)"
     echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
@@ -564,16 +565,8 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
 
   OUTPUT=$(cat nightly_output.txt | jq -Rsa .)
 
-  # Ugly, I know but we can't use \n here because jq will escape it.
-  BDD_OUTPUT="BDD SUMMARY:
-$(tail -4 behave_nightly_output.txt)
-------------------------------------------
-
-
-
-$(cat behave_nightly_output.txt)"
-
-  BDD_OUTPUT=$(echo "$BDD_OUTPUT" | jq -Rsa .)
+  BDD_OUTPUT="BDD SUMMARY:\n$(tail -4 behave_nightly_output.txt)\n------------------------------------------\n\n\n$(cat behave_nightly_output.txt)"
+  BDD_OUTPUT=$(echo -e "${BDD_OUTPUT}" | jq -Rsa .)
   
   # Post results to Slack - OUTPUT, CF_EVENTS and BDD_OUTPUT have all been run through jq to ensure that any embedded JSON has been escaped
   curl_output=$(curl -X POST -H 'Content-type: application/json' \
