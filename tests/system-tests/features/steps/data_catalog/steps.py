@@ -35,7 +35,7 @@ def _send_request(unity_session, url, filter = None, limit = None):
 def _get_items_for_collection(context, endpoint, collection_name, filter = None):
     url = endpoint + f'/am-uds-dapa/collections/{collection_name}/items'
     response = _send_request(context.unity_session, url, filter)
-    # print(f"{response.json()}")
+    print(f"{response.json()}")
     return response.json()
 
 
