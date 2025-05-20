@@ -567,6 +567,7 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
 
   BDD_OUTPUT="BDD SUMMARY:\n$(tail -4 behave_nightly_output.txt)\n------------------------------------------\n\n\n$(cat behave_nightly_output.txt)"
   BDD_OUTPUT=$(echo -e "${BDD_OUTPUT}" | fmt -sw 132 | jq -Rsa .)
+  BDD_OUTPUT=$(echo -e "${BDD_OUTPUT}")
   
   # Post results to Slack - OUTPUT, CF_EVENTS and BDD_OUTPUT have all been run through jq to ensure that any embedded JSON has been escaped
   curl_output=$(curl -X POST -H 'Content-type: application/json' \
