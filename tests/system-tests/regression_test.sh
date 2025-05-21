@@ -34,10 +34,10 @@ fi
 # behave -q ${BASE_TEST_DIR}/features/data_catalog/ingest_with_required_metadata.feature
 
 # The data catalog shall return search results in STAC (SpatioTemporal Asset Catalogs) format
-behave -q ${BASE_TEST_DIR}/features/data_catalog/stac.feature -D STAC_SCHEMA_FILE=${STAC_SCHEMA_FILE}
+behave -q ${BASE_TEST_DIR}/features/data_catalog/stac.feature -D STAC_SCHEMA_FILE=${STAC_SCHEMA_FILE} --no-capture
 
 # Ensure granules can be found by their parent collections
-behave -q ${BASE_TEST_DIR}/features/data_catalog/parent_collections.feature -t test
+behave -q ${BASE_TEST_DIR}/features/data_catalog/parent_collections.feature -t test --no-capture
 
 # Test DAPA APIs
-behave -q ${BASE_TEST_DIR}/features/data_catalog/dapa.feature -t test
+behave -q ${BASE_TEST_DIR}/features/data_catalog/dapa.feature -t test --no-capture
