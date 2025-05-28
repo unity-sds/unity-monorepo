@@ -535,7 +535,6 @@ if [[ "$RUN_BDD_TESTS" == "true" ]]; then
 
     # run gherkin/behave tests
     source ${BASE_TEST_DIR}/regression_test.sh &> behave_nightly_output.txt
-    cat behave_nightly_output.txt >> testing_nightly_output.txt
 
     echo -e "\n\nBDD Summary: " >> nightly_output.txt
     tail -4 behave_nightly_output.txt | grep "passed, " >> nightly_output.txt
@@ -565,14 +564,34 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
 
   OUTPUT=$(cat nightly_output.txt | jq -Rsa .)
 
-  BDD_OUTPUT="BDD SUMMARY:\n$(tail -4 behave_nightly_output.txt)\n------------------------------------------\n\n\n$(cat behave_nightly_output.txt)"
-  BDD_OUTPUT=$(echo -e "${BDD_OUTPUT}" | fmt -sw 132 | jq -Rsa .)
+  # extract out the meaningful but brief snippets of the behave output
+  BDD_SUMMARY="BDD SUMMARY:\n$(tail -4 behave_nightly_output.txt)\n------------------------------------------\n\n\n"
+  BDD_OUTPUT="${BDD_SUMMARY}$(grep -E 'Feature: |'\
+'Scenario: |'\
+'Scenario Outline: |'\
+'^Failing scenarios:$|'\
+'^[0-9]+ feature[s]* passed, |'\
+'^[0-9]+ scenario[s]* passed, |'\
+'^[0-9]+ step[s]* passed, |'\
+'^Took [0-9.]+m[0-9.]+s$|'\
+':[0-9]+  [A-Za-z0-9., !?]*(--) \@[0-9.]+ endpoints$'\
+        behave_nightly_output.txt)"
+
   BDD_OUTPUT=$(echo -e "${BDD_OUTPUT}")
   
-  # Post results to Slack - OUTPUT, CF_EVENTS and BDD_OUTPUT have all been run through jq to ensure that any embedded JSON has been escaped
+  mv behave_nightly_output.txt ${LOG_DIR}
+
+  # Post results to Slack
   curl_output=$(curl -X POST -H 'Content-type: application/json' \
-  --data '{"cloudformation_summary": '"${OUTPUT}"', "cloudformation_events": '"${CF_EVENTS}"', "bdd_output" : '"${BDD_OUTPUT}"', "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'"}' \
-  ${SLACK_URL_VAL})
+    --data \
+      '{
+         "cloudformation_summary": "'"${OUTPUT}"'",
+         "cloudformation_events": "'"${CF_EVENTS}"'",
+         "bdd_output" : "'"${BDD_OUTPUT}"'",
+         "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'",
+         "bdd_output_url" : "'"${LOG_S3_PATH}/${LOG_DIR}/behave_nightly_output.txt"'"
+       }' \
+    ${SLACK_URL_VAL})
 
   echo "Curl response: ${curl_output}"
   curl_result=$(echo $curl_output | python -c "import sys, json; print(json.load(sys.stdin)['ok'])")
@@ -583,6 +602,7 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
     --data '{"cloudformation_summary" : '"${message}"'}' \
     ${SLACK_URL_VAL}
   fi
+
 else
   echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
 fi
