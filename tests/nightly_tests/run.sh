@@ -552,7 +552,7 @@ cat cloudformation_events.txt |sed 's/\s*},*//g' |sed 's/\s*{//g' |sed 's/\s*\]/
 EVENTS=$(cat CF_EVENTS.txt |grep -v ResourceProperties)
 echo "$EVENTS" > CF_EVENTS.txt
 cat CF_EVENTS.txt
-CF_EVENTS=$(cat CF_EVENTS.txt | jq -Rsa .)
+CF_EVENTS=$(cat CF_EVENTS.txt)
 
 # The rest of your script, including posting to Slack, can go here
 # Ensure to only post to Slack if tests were run 
@@ -562,7 +562,7 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
   mv nightly_output_$TODAYS_DATE.txt ${LOG_DIR}
   mv selenium_unity_images/* ${LOG_DIR}
 
-  OUTPUT=$(cat nightly_output.txt | jq -Rsa .)
+  OUTPUT=$(cat nightly_output.txt)
 
   # extract out the meaningful but brief snippets of the behave output
   BDD_SUMMARY="BDD SUMMARY:\n$(tail -4 behave_nightly_output.txt)\n------------------------------------------\n\n\n"
