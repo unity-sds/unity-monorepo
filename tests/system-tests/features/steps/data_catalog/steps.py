@@ -2,9 +2,10 @@ import datetime
 import os
 import requests
 import json
-from jsonschema import validate, ValidationError
 
 import boto3
+
+import pystac
 
 from behave import *  # noqa: F403
 from environment import get_value
@@ -25,17 +26,20 @@ def _send_request(unity_session, url, filter = None, limit = None):
     token = unity_session._session.get_auth().get_token()
     params = {}
     if limit is not None:
-        params["limit"] = limie
+        params['limit'] = limie
     if filter is not None:
-        params["filter"] = filter
-    return requests.get(url, headers={"Authorization" : "Bearer " + token}, params=(params if len(params) > 0 else None))
+        params['filter'] = filter
+    response = requests.get(url, headers={"Authorization" : "Bearer " + token}, params=(params if len(params) > 0 else None))
+
+    # dump the response on error
+    print(f"{response.json()}")
+    return response
 
 
 # utility function to issue a collections/{collection_name}/items request
 def _get_items_for_collection(context, endpoint, collection_name, filter = None):
-    url = endpoint + f'/am-uds-dapa/collections/{collection_name}/items'
+    url = endpoint + f"/am-uds-dapa/collections/{collection_name}/items"
     response = _send_request(context.unity_session, url, filter)
-    print(f"{response.json()}")
     return response.json()
 
 
@@ -81,64 +85,83 @@ def step_impl(context, endpoint):  # noqa: F403
     context.collection_data = response.json()
 
 
-@then("the response is a valid STAC document")
+@then("the response specifies a set of valid STAC collection items")
 def step_impl(context):  # noqa: F403
-    schema_file_name = get_value(context, 'STAC_SCHEMA_FILE', mandatory=True)
-    with open(schema_file_name) as schemaFile:
-        schema = json.loads(schemaFile.read())
+    failure_present = False
+    for each_feature in context.collection_data['features']:
+        try:
+            pystac.Item.from_dict(each_feature).validate()
+        except pystac.STACError as se:
+            print(f"Item id : {each_feature.get('id')} STAC Error\n{se}")
+            failure_present = True
+        except pystac.STACValidationError as ve:
+            print(f"Item id : {each_feature.get('id')} failed STAC validation\n{ve}")
+            failure_present = True
+    if failure_present:
+        raise Exception("One or more items failed STAC validation.")
 
-    try:
-        validate(context.collection_data, schema=schema)
-    except ValidationError as ve:
-        message = f"JSON failed validation for schema {schema_file_name}\n{ve}"
-        print(message)
-        raise Exception(message)
+
+@then("the response specifies a set of valid STAC collections")
+def step_impl(context):  # noqa: F403
+    failure_present = False
+    for each_collection in context.collection_data['features']:
+        try:
+            pystac.Collection.from_dict(each_collection).validate()
+        except pystac.STACError as se:
+            print(f"Collection id : {each_collection.get('id')} STAC Error\n{se}")
+            failure_present = True
+        except pystac.STACValidationError as ve:
+            print(f"Collection id : {each_collection.get('id')} failed STAC validation\n{ve}")
+            failure_present = True
+    if failure_present:
+        raise Exception("One or more collections failed STAC validation.")
 
 
 @then("the response includes one or more collections")
 def step_impl(context):  # noqa: F403
-    assert (context.collection_data["numberMatched"] > 0)
+    print(context.collection_data)
+    assert (context.collection_data.get('numberMatched') is not None and context.collection_data['numberMatched'] > 0)
 
 
 @then("the response includes one or more granules")
 def step_impl(context):  # noqa: F403
-    assert (len(context.collection_data["features"]) > 0)
+    assert (len(context.collection_data['features']) > 0)
 
 
 @then("each granule in the response has a temporal extent")
 def step_impl(context):  # noqa: F403
-    feature = context.collection_data["features"]
+    features = context.collection_data['features']
     for feature in features:
-        properties = feature.get("properties")
-        start_datetime = properties.get("start_datetime") if properties is not None else None
-        end_datetime = properties.get("end_datetime") if properties is not None else None
+        properties = feature.get('properties')
+        start_datetime = properties.get('start_datetime') if properties is not None else None
+        end_datetime = properties.get('end_datetime') if properties is not None else None
         assert(start_datetime is not None and end_datetime is not None)
 
 
 @then("each granule in the response has one or more data access links")
 def step_impl(context):  # noqa: F403
-    features = context.collection_data["features"]
+    features = context.collection_data['features']
     for feature in features:
-        assets = feature["assets"]
+        assets = feature['assets']
         for asset_id, asset_metadata in assets.items():
-            href = asset_metadata.get("href")
+            href = asset_metadata.get('href')
             assert(href is not None)
 
 
 @then("each collection in the response has a collection identifier")
 def step_impl(context):  # noqa: F403
-    for feature in context.collection_data["features"]:
-         assert feature.get("id") is not None
+    for feature in context.collection_data['features']:
+         assert feature.get('id') is not None
 
 
 @then("each granule in the response is within the range of {beginning_date} and {ending_date}")
 def step_impl(context, beginning_date, ending_date):  # noqa: F403
-    feature = context.collection_data["features"]
+    features = context.collection_data['features']
     beginning_datetime = datetime.strptime(beginning_date, "%Y-%m-%dT%H:%M:%SZ")
     ending_datetime = datetime.strptime(ending_date, "%Y-%m-%dT%H:%M:%SZ")
     for feature in features:
-        properties = feature.get("properties")
-        datetime_str = properties.get("datetime") if properties is not None else None
+        properties = feature.get('properties')
+        datetime_str = properties.get('datetime') if properties is not None else None
         assert(datetime_str is not None)
 
         feature_datetime = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -148,11 +171,11 @@ def step_impl(context, beginning_date, ending_date):  # noqa: F403
 @then("the object is downloaded from S3 via the data access link in the response")
 def step_impl(context):  #noqa: F403
     s3_client = boto3.client('s3')
-    features = context.collection_data["features"]
+    features = context.collection_data['features']
     for feature in features:
-        assets = feature["assets"]
+        assets = feature['assets']
         for asset_id, asset_metadata in assets.items():
-            hrefs = asset_metadata.get("href")
+            hrefs = asset_metadata.get('href')
             assert(hrefs is not None)
             if isinstance(hrefs, str):
                 hrefs = [hrefs]
