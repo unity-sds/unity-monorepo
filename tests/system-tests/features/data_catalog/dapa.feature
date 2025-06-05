@@ -2,7 +2,7 @@
 
 Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   The DAPA API is a set of function on the data. for the U-DS service
-  area, this includes the listing of colleciton,s granules, the filtering of
+  area, this includes the listing of collections, granules, the filtering of
   granules by time, and searching on project provided metadata
 
   # Access the {root}/collections endpoint
@@ -12,9 +12,8 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   Scenario Outline: List Collections
     Given I authenticate with Unity Services
     When I make a list collections request to the DAPA endpoint at <endpoint>
-    # Then the repsonse is a valid STAC document
-    # And the response includes one or more collections
     Then the response includes one or more collections
+    And the response specifies a set of valid STAC collections
     And each collection in the response has a collection identifier
 
     @test
@@ -29,8 +28,8 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   Scenario Outline: List products by Collection
     Given I authenticate with Unity Services
     When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name> with filter <filter>
-    Then the repsonse is a valid STAC document
-    And the response includes one or more granules
+    Then the response includes one or more granules
+    And the response specifies a set of valid STAC collection items
     And each granule in the response has a temporal extent
     And each granule in the response has one or more data access links
 
@@ -46,8 +45,8 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   Scenario Outline: Filter products by Collection and Time
     Given I authenticate with Unity Services
     When I make a datetime filtered get items request to the DAPA endpoint at <endpoint> for <collection_name> with <beginning_date> and <ending_date>
-    Then the repsonse is a valid STAC document
-    And the response includes one or more granules
+    Then the response includes one or more granules
+    And the response specifies a set of valid STAC collection items
     And each granule in the response has one or more data access links
     And each granule in the response is within the range of <beginning_date> and <ending_date>
 
@@ -61,8 +60,8 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
   Scenario Outline: Search on custom, project provided metadata
     Given I authenticate with Unity Services
     When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name>
-    Then the repsonse is a valid STAC document
-    And the response includes one or more collections
+    Then the response includes one or more granules
+    And the response specifies a set of valid STAC collection items
     And each collection in the response has a collection Identifier
 
     @test
@@ -76,9 +75,8 @@ Feature: MDPS_2_REQ-34, MDPS_2_REQ-30, MDPS_2_REQ-31, MDPS_2_REQ-35
     Given I authenticate with Unity Services
     And I authenticate with AWS 
     When I make a get items request to the DAPA endpoint at <endpoint> for <collection_name>
-    # Then the repsonse is a valid STAC document
-    # And each granule in the response has one or more data access links
-    Then each granule in the response has one or more data access links
+    Then the response specifies a set of valid STAC collection items
+    And each granule in the response has one or more data access links
     And the object is downloaded from S3 via the data access link in the response
 
     @test
