@@ -46,22 +46,24 @@ class STACCollectionCreator:
             id=self.collection_id
         )
         
-        # Create a Dataset for the collection
-        dataset = Dataset(
-            name=self.collection_name, # STAC JSON ID
-            collection_id=self.collection_id, # STAC JSON Collection
-            start_time=datetime.now().replace(tzinfo=timezone.utc).isoformat(), 
-            end_time=datetime.now().replace(tzinfo=timezone.utc).isoformat(),
-            creation_time=datetime.now().replace(tzinfo=timezone.utc).isoformat()
-        )
-
         # Create items for each file and add to collection
         for path in paths:
+            file_name = os.path.basename(path)
+            # Create a Dataset for the collection
+            dataset_name = self.collection_name+'_'+file_name
+            dataset = Dataset(
+                name=dataset_name, # STAC JSON ID
+                collection_id=self.collection_id, # STAC JSON Collection
+                start_time=datetime.now().replace(tzinfo=timezone.utc).isoformat(), 
+                end_time=datetime.now().replace(tzinfo=timezone.utc).isoformat(),
+                creation_time=datetime.now().replace(tzinfo=timezone.utc).isoformat()
+            )
+            
             self._add_file_to_dataset(path, dataset)
 
             # When we run "to_stac" below, this file will be generated. 
             # This needs to be added to the stac file itself for future reference.
-            self._add_file_to_dataset(Path(os.path.dirname(path) + '/' + self.collection_name + '_' + os.path.basename(path) + '.json'), dataset)
+            self._add_file_to_dataset(Path(dataset_name + '.json'), dataset)
 
             collection._datasets.append(dataset)
             
