@@ -59,9 +59,9 @@ class STACCollectionCreator:
         for path in paths:
             self._add_file_to_dataset(path, dataset)
 
-        # When we run "to_stac" below, this file will be generated. 
-        # This needs to be added to the stac file itself for future reference.
-        self._add_file_to_dataset(Path(self.collection_name + '.json'), dataset)
+            # When we run "to_stac" below, this file will be generated. 
+            # This needs to be added to the stac file itself for future reference.
+            self._add_file_to_dataset(Path(self.collection_name + '.json'), dataset)
 
         collection._datasets.append(dataset)
             
