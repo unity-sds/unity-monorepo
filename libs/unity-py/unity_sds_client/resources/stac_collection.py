@@ -63,7 +63,7 @@ class STACCollectionCreator:
             # This needs to be added to the stac file itself for future reference.
             self._add_file_to_dataset(Path(self.collection_name + os.path.basename(path) + '.json'), dataset)
 
-        collection._datasets.append(dataset)
+            collection._datasets.append(dataset)
             
         return collection
 
