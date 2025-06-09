@@ -1,12 +1,12 @@
-import os
 import getpass
 import json
-import requests
-
+import os
 from configparser import ConfigParser
+from datetime import datetime, timedelta
+
+import requests
 from unity_sds_client.unity_environments import UnityEnvironments
 from unity_sds_client.unity_exception import UnityException
-
 
 
 class UnitySession(object):
@@ -34,8 +34,10 @@ class UnitySession(object):
         self._config = config
 
         # set up unity authentication
-        self._auth = UnityAuth(self._config.get(env, "client_id"), self._config.get(env, "auth_endpoint"))
-        self._unity_href =  self._config.get(env, "unity_href")
+        self._auth = UnityAuth(
+            self._config.get(env, "client_id"), self._config.get(env, "auth_endpoint")
+        )
+        self._unity_href = self._config.get(env, "unity_href")
 
         self._project = None
         self._venue = None
@@ -63,18 +65,17 @@ class UnitySession(object):
     def get_unity_href(self):
         """convenience method for getting the unity href.
 
-                Parameters
-                ----------
-                none
+        Parameters
+        ----------
+        none
 
-                Returns
-                -------
-                str
-                    the url to the unity top url
+        Returns
+        -------
+        str
+            the url to the unity top url
 
-                """
+        """
         return self._unity_href
-
 
     def get_auth(self):
         """Returns the auth object in use by the session
@@ -99,27 +100,34 @@ class UnitySession(object):
 
     def get_project(self):
         if self._project is None:
-            raise UnityException("session variables project and venue or venue_id are required to interact with a "
-                                 "processing service.")
+            raise UnityException(
+                "session variables project and venue or venue_id are required to interact with a "
+                "processing service."
+            )
         else:
             return self._project
 
     def get_venue(self):
         if self._venue is None:
-            raise UnityException("session variables project and venue or venue_id are required to interact with a "
-                                 "processing service.")
+            raise UnityException(
+                "session variables project and venue or venue_id are required to interact with a "
+                "processing service."
+            )
         else:
             return self._venue
 
     def get_venue_id(self):
         if self._venue_id is None:
             if self._project is None or self._venue is None:
-                raise UnityException("session variables project and venue or venue_id are required to interact with a "
-                                     "processing service.")
+                raise UnityException(
+                    "session variables project and venue or venue_id are required to interact with a "
+                    "processing service."
+                )
             else:
                 return self._project + "/" + self._venue
         else:
             return self._venue_id
+
 
 class UnityAuth(object):
     """
@@ -132,14 +140,14 @@ class UnityAuth(object):
     # The auth_json is template for authorizing with AWS Cognito for a token that can be used for calls to the
     # data service. For now this is just an empty data structure. You will be prompted for your username and password
     # in a few steps.
-    auth_json = '''{
+    auth_json = """{
          "AuthParameters" : {
             "USERNAME" : "",
             "PASSWORD" : ""
          },
          "AuthFlow" : "USER_PASSWORD_AUTH",
          "ClientId" : ""
-      }'''
+      }"""
 
     def __init__(self, client_id, auth_endpoint):
         """initialize the Unity Auth class. The initialization looks for username/passwords in the following locations:
@@ -165,11 +173,11 @@ class UnityAuth(object):
         # order of operations:
         # environment
         # netrc? //todo
-        self._user = os.getenv('UNITY_USER', None)
-        self._password = os.getenv('UNITY_PASSWORD', None)
+        self._user = os.getenv("UNITY_USER", None)
+        self._password = os.getenv("UNITY_PASSWORD", None)
 
         if None in [self._user, self._password]:
-            username = input('Please enter your Unity username: ')
+            username = input("Please enter your Unity username: ")
             password = getpass.getpass("Please enter your Unity password: ")
             self._user = username
             self._password = password
@@ -190,6 +198,7 @@ class UnityAuth(object):
 
         return self._token
 
+    @staticmethod
     def _is_expired(expiration_date):
         """Convenience method for checking if a token is expired. static method
 
@@ -206,9 +215,9 @@ class UnityAuth(object):
         """
         if expiration_date is None:
             return True
-        else:
-            # TODO
-            return False
+        elif expiration_date <= datetime.now():
+            return True
+        return False
 
     def _get_unity_token(self):
         """Queries the backing service for a new API Token
@@ -220,14 +229,23 @@ class UnityAuth(object):
 
         """
         aj = json.loads(self.auth_json)
-        aj['AuthParameters']['USERNAME'] = self._user
-        aj['AuthParameters']['PASSWORD'] = self._password
-        aj['ClientId'] =self._client_id
+        aj["AuthParameters"]["USERNAME"] = self._user
+        aj["AuthParameters"]["PASSWORD"] = self._password
+        aj["ClientId"] = self._client_id
         try:
-            response = requests.post(self._endpoint, headers={"Content-Type":"application/x-amz-json-1.1", "X-Amz-Target":"AWSCognitoIdentityProviderService.InitiateAuth"}, json=aj)
+            response = requests.post(
+                self._endpoint,
+                headers={
+                    "Content-Type": "application/x-amz-json-1.1",
+                    "X-Amz-Target": "AWSCognitoIdentityProviderService.InitiateAuth",
+                },
+                json=aj,
+            )
             json_resp = response.json()
-            self._token = json_resp['AuthenticationResult']['AccessToken']
-            self._token_expiration = json_resp['AuthenticationResult']['AccessToken']
-        except:
+            self._token = json_resp["AuthenticationResult"]["AccessToken"]
+            self._token_expiration = datetime.now() + timedelta(
+                seconds=int(json_resp["AuthenticationResult"]["ExpiresIn"])
+            )
+        except Exception:
             print("Error, check username and password and try again.")
         return self._token
