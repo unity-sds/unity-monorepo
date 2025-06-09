@@ -63,20 +63,20 @@ class STACCollectionCreator:
 
             # When we run "to_stac" below, this file will be generated. 
             # This needs to be added to the stac file itself for future reference.
-            self._add_file_to_dataset(Path(dataset_name + '.json'), dataset)
+            self._add_file_to_dataset(Path(dataset_name + '.json'), dataset, "metadata")
 
             collection._datasets.append(dataset)
             
         return collection
 
-    def _add_file_to_dataset(self, file_path: Path, dataset: Dataset):
+    def _add_file_to_dataset(self, file_path: Path, dataset: Dataset, role: str = "data"):
         """Add a file to the dataset as a DataFile."""
         
         # Determine file type based on extension
         file_type = self._get_file_type(file_path)
         
         # Add the data file to the dataset
-        dataset.add_data_file(DataFile(file_type, str(file_path), ["metadata"]))
+        dataset.add_data_file(DataFile(file_type, str(file_path), [role]))
 
     def _get_file_type(self, file_path: Path) -> str:
         """Determine file type based on file extension."""
