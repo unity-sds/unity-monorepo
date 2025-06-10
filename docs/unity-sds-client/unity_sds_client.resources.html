@@ -253,6 +253,45 @@
 </dd></dl>
 
 </section>
+<section id="module-unity_sds_client.resources.stac_collection">
+<span id="unity-sds-client-resources-stac-collection-module"></span><h2>unity_sds_client.resources.stac_collection module<a class="headerlink" href="#module-unity_sds_client.resources.stac_collection" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="unity_sds_client.resources.stac_collection.STACCollectionCreator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">unity_sds_client.resources.stac_collection.</span></span><span class="sig-name descname"><span class="pre">STACCollectionCreator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_stac_catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unity_sds_client.resources.stac_collection.STACCollectionCreator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to create STAC Collection objects from a list of files using PySTAC.
+Each file becomes a pystac.Item with the file as a pystac.Asset.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.stac_collection.STACCollectionCreator.create_collection">
+<span class="sig-name descname"><span class="pre">create_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#unity_sds_client.resources.collection.Collection" title="unity_sds_client.resources.collection.Collection"><span class="pre">Collection</span></a></span></span><a class="headerlink" href="#unity_sds_client.resources.stac_collection.STACCollectionCreator.create_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a STAC Collection object from a list of files using Unity SDS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_paths</strong> – List of file paths to include in the collection</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Collection object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="unity_sds_client.resources.stac_collection.STACCollectionCreator.create_collection_to_stac">
+<span class="sig-name descname"><span class="pre">create_collection_to_stac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#unity_sds_client.resources.collection.Collection" title="unity_sds_client.resources.collection.Collection"><span class="pre">Collection</span></a></span></span><a class="headerlink" href="#unity_sds_client.resources.stac_collection.STACCollectionCreator.create_collection_to_stac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a STAC Collection from file paths and save to STAC catalog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_paths</strong> – List of file paths to include</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Collection object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-unity_sds_client.resources">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-unity_sds_client.resources" title="Permalink to this heading">¶</a></h2>
 </section>

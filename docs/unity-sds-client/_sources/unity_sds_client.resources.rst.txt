@@ -52,6 +52,14 @@ unity\_sds\_client.resources.process module
    :undoc-members:
    :show-inheritance:
 
+unity\_sds\_client.resources.stac\_collection module
+----------------------------------------------------
+
+.. automodule:: unity_sds_client.resources.stac_collection
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
