@@ -9,7 +9,7 @@ Feature: MDPS_2_REQ-33
   Scenario Outline: Confirm results from data catalog:get_collection_data()
     Given I authenticate with Unity Services
     When I make a get_collection_data call for <collection_name> with <filter>
-    Then the response specifies valid STAC collection items
+    Then the response specifies a set of valid STAC collection items
 
     @test
     Examples: collections
