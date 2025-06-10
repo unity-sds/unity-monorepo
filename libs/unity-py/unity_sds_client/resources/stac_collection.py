@@ -76,7 +76,7 @@ class STACCollectionCreator:
         file_type = self._get_file_type(file_path)
         
         # Add the data file to the dataset
-        dataset.add_data_file(DataFile(file_type, str(file_path)), [role])
+        dataset.add_data_file(DataFile(file_type, str(file_path), [role]))
 
     def _get_file_type(self, file_path: Path) -> str:
         """Determine file type based on file extension."""
