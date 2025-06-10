@@ -7,8 +7,8 @@ Feature: MDPS_2_REQ-4
 
   @develop @test
   Scenario Outline: The SPS shall be capable of executing CWL workflows - execution
-      Given the cwl_dag workflow is currently deployed in airflow
-      And I authenticate with Unity Services
+      Given I authenticate with Unity Services
+      And the cwl_dag workflow is currently deployed in airflow
       And I provide the required workflow inputs for <workflow_name>
       When I request a run of <workflow_name> from <workflow_url>
       Then the workflow is executed successfully
