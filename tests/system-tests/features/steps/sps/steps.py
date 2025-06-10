@@ -9,24 +9,40 @@ from unity_sds_client.resources.collection import Collection
 from unity_sds_client.unity_services import UnityServices as services
 
 
+def set_auth_header(unity_session, request_headers=None):
+    token = unity_session._session.get_auth().get_token()
+    if request_headers is None:
+        request_headers = {}
+
+    request_headers["Authorization"] = "Bearer " + token
+
+    return request_headers
+
+
+# utility function to send a request to a given endpoint
+def _send_request(unity_session, url, request_headers=None):
+    request_headers = set_auth_header(unity_session, request_headers)
+    response = requests.get(url, headers=request_headers, verify=False)
+
+    # dump the response on error
+    print(f"{response.json()}")
+    return response
+
+
 @given("the cwl_dag workflow is currently deployed in airflow")  # noqa: F405
 def step_impl(context):  # noqa: F811
     deployment_url = os.environ.get("AIRFLOW_ENDPOINT", None)
     if deployment_url is None:
         raise Exception("AIRFLOW_ENDPOINT environment viarble not set. ")
-    airflow_user = os.environ.get("AIRFLOW_USER", None)
-    airflow_pass = os.environ.get("AIRFLOW_PASS", None)
     dag_id = "cwl_dag"  # This is the generic "run any CWL you want" dag
-    response = requests.get(
-        url=f"{deployment_url}/api/v1/dags/{dag_id}",
-        verify=False,  # Required if not hitting this through a proxy (e.g. mdps.mcp.nasa.gov....)
-        auth=(airflow_user, airflow_pass),
-        headers={"Content-Type": "application/json"},
+    response = _send_request(
+        context.unity_session, 
+        url=f"{deployment_url}/dags/{dag_id}",
+        request_headers={"Content-Type" : "application/json"}
     )
+    print(response.text)
     assert response.status_code == 200
     assert response.json()["dag_id"] == "cwl_dag"
-    context.airflow_user = airflow_user
-    context.airflow_pass = airflow_pass
     context.airflow_endpoint = deployment_url
 
 
@@ -80,11 +96,11 @@ def step_impl(context):  # noqa: F811
 @when("I request a run of {workflow_name} from {workflow_location}")  # noqa: F405
 def step_impl(context, workflow_name, workflow_location):  # noqa: F811
     dag_id = "cwl_dag"  # This is the generic "run any CWL you want" dag
+    request_headers = set_auth_header(context.unity_session, {"Content-Type" : "application/json"})
     response = requests.post(
-        url=f"{context.airflow_endpoint}/api/v1/dags/{dag_id}/dagRuns",
+        url=f"{context.airflow_endpoint}/dags/{dag_id}/dagRuns",
         verify=False,  # Required if not hitting this through a proxy (e.g. mdps.mcp.nasa.gov....)
-        auth=(context.airflow_user, context.airflow_pass),
-        headers={"Content-Type": "application/json"},
+        headers=request_headers,
         data="""{{
         "conf":{{
             "cwl_args": {0},
@@ -106,14 +122,14 @@ def step_impl(context):  # noqa: F811
 
 @then("the workflow successfully completes")  # noqa: F405
 def step_impl(context):  # noqa: F811
+    request_headers = set_auth_header(context.unity_session, {"Content-Type" : "application/json"})
     dag_id = "cwl_dag"  # This is the generic "run any CWL you want" dag
     state = "running"
     while state == "running" or state == "queued":
         dag_run_response = requests.get(
-            url=f"{context.airflow_endpoint}/api/v1/dags/{dag_id}/dagRuns/{context.dag_run_id}",
+            url=f"{context.airflow_endpoint}/dags/{dag_id}/dagRuns/{context.dag_run_id}",
             verify=False,  # Required if not hitting this through a proxy (e.g. mdps.mcp.nasa.gov....)
-            auth=(context.airflow_user, context.airflow_pass),
-            headers={"Content-Type": "application/json"},
+            headers=request_headers
         )
         state = dag_run_response.json()["state"]
         print("Dag run state is {}".format(state))
@@ -128,9 +144,11 @@ def step_impl(context):  # noqa: F811
     collection_id = context.output_collection
     found = False
     check = 1
+    cd = None
     print("finding data for collection {}".format(collection_id))
     while found is False and check < 20:
         cd = data_manager.get_collection_data(Collection(collection_id), limit=100)
+        print(cd)
         for dataset in cd:
             if context.output_file in dataset.id:
                 found = True
@@ -138,4 +156,5 @@ def step_impl(context):  # noqa: F811
         check = check + 1
         time.sleep(30)
 
+    print(f"collection data :\n{cd}")
     assert found is True
