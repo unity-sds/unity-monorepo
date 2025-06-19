@@ -2,8 +2,6 @@
 
 DESTROY=""
 RUN_TESTS=""
-RUN_BDD_TEST=false
-USE_TESTRAIL=No
 PROJECT_NAME=""
 VENUE_NAME=""
 LATEST=""
@@ -18,10 +16,8 @@ APIGATEWAY_VERSION=""
 PROXY_VERSION=""
 UI_VERSION=""
 # Function to display usage instructions
-# TODO: refine the command line selection of tests, e.g. use behave tags for BDD testing and implicit tags for other (e.g. selenium) testing
 usage() {
-    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--log-s3-path <LOG_S3_PATH>] [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>] [--run-bdd-tests <true|false>] [--testrail <true|false>] [--repo-branch <branch>]"
-    echo "    --run-bdd-tests and --run-tests are independent from one another. But --testrail is considered only if --run-bbd-tests is active. Default for both --run-bdd-tests and --testrail are false."
+    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--log-s3-path <LOG_S3_PATH>] [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>] [--repo-branch <branch>]"
     exit 1
 }
 
@@ -53,36 +49,6 @@ while [[ $# -gt 0 ]]; do
                     ;;
                 *)
                     echo "Invalid argument for --run-tests. Please specify 'true' or 'false'." >&2
-                    exit 1
-                    ;;
-            esac
-            shift 2
-            ;;
-        --run-bdd-tests)
-            case "$2" in
-                true)
-                    RUN_BDD_TESTS=true
-                    ;;
-                false)
-                    RUN_BDD_TESTS=false
-                    ;;
-                *)
-                    echo "Invalid argument for --run-bdd-tests. Please specify 'true' or 'false'." >&2
-                    exit 1
-                    ;;
-            esac
-            shift 2
-            ;;
-        --testrail)
-            case "$2" in
-                true)
-                    USE_TESTRAIL=Yes
-                    ;;
-                false)
-                    USE_TESTRAIL=No
-                    ;;
-                *)
-                    echo "Invalid argument for --testrail. Please specify 'true' or 'false'." >&2
                     exit 1
                     ;;
             esac
@@ -210,26 +176,11 @@ if ! grep -q selenium out.txt; then
     pip3 install selenium
 fi
 
-# Install jq if not installed - this is used to escape any JSON embedded within the Slack data
-pip3 list | grep jq > out.txt
-if ! grep -q jq out.txt; then
-    echo "Installing jq..."
-    pip3 install jq
-fi
-
-# Check if yq is installed
-if ! command -v yq &> /dev/null; then
-    echo "Installing yq..."
-    sudo snap install yq
-fi
-
 rm out.txt
 
 echo "RUN ARGUMENTS: "
 echo "  - Destroy stack at end of script? $DESTROY"
 echo "  - Run tests?                      $RUN_TESTS"
-echo "  - Run BDD tests?                  $RUN_BDD_TESTS"
-echo "  - Use testrail?                   $USE_TESTRAIL"
 echo "  - Project Name:                   $PROJECT_NAME"
 echo "  - Venue Name:                     $VENUE_NAME"
 echo "  - MC Version:                     $MC_VERSION"
@@ -281,10 +232,6 @@ if [ -z "$GITHUB_USEREMAIL_VAL" ] ; then
     echo "ERROR: Could not read Github user email from SSM." ; exit 1
 fi
 
-#cd ../aws_role_create
-#./create_roles_and_policies.sh
-#cd ../nightly_tests
-
 #
 # Make sure git is properly setup
 #
@@ -299,8 +246,8 @@ mkdir -p ${LOG_DIR}
 NIGHTLY_HASH=$(git rev-parse --short HEAD)
 echo "Repo Hash (Nightly Test):     [$NIGHTLY_HASH]" >> nightly_output.txt
 echo "Repo Hash (Nightly Test):     [$NIGHTLY_HASH]"
-echo "Management Console Version:        [$MC_VERSION]"
-echo "Management Console SHA:        [$MC_SHA]"
+echo "Management Console Version:   [$MC_VERSION]"
+echo "Management Console SHA:       [$MC_SHA]"
 
 ## update self (unity-monorepo repository)
 git pull origin ${GH_BRANCH}
@@ -511,40 +458,6 @@ else
     echo "Smoke test failed or could not be verified. Skipping tests." >> nightly_output.txt
 fi
 
-if [[ "$RUN_BDD_TESTS" == "true" ]]; then
-    echo "Running BDD tests..."
-
-    # Install behave if not installed
-    pip3 list | grep "behave " > out.txt
-    if ! grep -q "behave " out.txt; then
-      echo "Installing behave..."
-      pip3 install behave
-    fi
-
-    # Install behave-testrail-reporter if needed and not installed
-    if [[ "$USE_TESTRAIL" == "true" ]]; then
-      pip3 list | grep "behave-testrail-reporter" > out.txt
-      if ! grep -q "behave-testrail-reporter" out.txt; then
-        echo "Installing behave-testrail-reporter..."
-        pip3 install behave-testrail-reporter
-      fi
-    fi
-
-    # set up gherkin/behave environment
-    source ./set_test_params.sh
-
-    # run gherkin/behave tests
-    source ${BASE_TEST_DIR}/regression_test.sh &> behave_nightly_output.txt
-
-    echo -e "\n\nBDD Summary: " >> nightly_output.txt
-    tail -4 behave_nightly_output.txt | grep "passed, " >> nightly_output.txt
-    tail -4 behave_nightly_output.txt | grep "Took " >> nightly_output.txt
-    echo -e "\n\n"
-else
-    echo "Not running BDD tests. (--run-bdd-tests false)"
-    echo "Not running BDD tests. (--run-bdd-tests false)" >> nightly_output.txt
-fi
-
 #
 # Parse and print out CloudFormation events
 #
@@ -556,7 +469,7 @@ CF_EVENTS=$(cat CF_EVENTS.txt)
 
 # The rest of your script, including posting to Slack, can go here
 # Ensure to only post to Slack if tests were run 
-if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
+if [[ "$RUN_TESTS" == "true" ]]; then
 
   cp testing_nightly_output.txt "nightly_output_$TODAYS_DATE.txt"
   mv nightly_output_$TODAYS_DATE.txt ${LOG_DIR}
@@ -564,32 +477,13 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
 
   OUTPUT=$(cat nightly_output.txt)
 
-  # extract out the meaningful but brief snippets of the behave output
-  BDD_SUMMARY="BDD SUMMARY:\n$(tail -4 behave_nightly_output.txt)\n------------------------------------------\n\n\n"
-  BDD_OUTPUT="${BDD_SUMMARY}$(grep -E 'Feature: |'\
-'Scenario: |'\
-'Scenario Outline: |'\
-'^Failing scenarios:$|'\
-'^[0-9]+ feature[s]* passed, |'\
-'^[0-9]+ scenario[s]* passed, |'\
-'^[0-9]+ step[s]* passed, |'\
-'^Took [0-9.]+m[0-9.]+s$|'\
-':[0-9]+  [A-Za-z0-9., !?]*(--) \@[0-9.]+ endpoints$'\
-        behave_nightly_output.txt)"
-
-  BDD_OUTPUT=$(echo -e "${BDD_OUTPUT}")
-  
-  mv behave_nightly_output.txt ${LOG_DIR}
-
   # Post results to Slack
   curl_output=$(curl -X POST -H 'Content-type: application/json' \
     --data \
       '{
          "cloudformation_summary": "'"${OUTPUT}"'",
          "cloudformation_events": "'"${CF_EVENTS}"'",
-         "bdd_output" : "'"${BDD_OUTPUT}"'",
-         "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'",
-         "bdd_output_url" : "'"${LOG_S3_PATH}/${LOG_DIR}/behave_nightly_output.txt"'"
+         "logs_url": "'"${LOG_S3_PATH}/${LOG_DIR}"'"
        }' \
     ${SLACK_URL_VAL})
 
@@ -604,7 +498,7 @@ if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
   fi
 
 else
-  echo "Not posting results to slack (--run-tests or --run-bdd-tests)"
+  echo "Not posting results to slack (--run-tests is false)"
 fi
 
 # Decide on resource destruction based on the smoke test result or DESTROY flag
@@ -621,7 +515,7 @@ fi
 #
 # Clean up logs and push up to S3 if configured
 #
-if [[ "$RUN_TESTS" == "true" || "$RUN_BDD_TESTS" == "true" ]]; then
+if [[ "$RUN_TESTS" == "true" ]]; then
 
     # Delete logs older then 2 weeks, if any
     bash delete_old_logs.sh
