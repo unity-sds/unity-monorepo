@@ -17,7 +17,7 @@ PROXY_VERSION=""
 UI_VERSION=""
 # Function to display usage instructions
 usage() {
-    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--log-s3-path <LOG_S3_PATH>] [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>] [--repo-branch <branch>]"
+    echo "Usage: $0 --destroy <true|false> --run-tests <true|false> --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> --log-dir <LOCAL_LOG_DIR> [--log-s3-path <LOG_S3_PATH>] [--mc-version <MC_VERSION>] [--mc-sha <MC_SHA>] [--config-file <CONFIG_FILE>] [--repo-branch <branch>]"
     exit 1
 }
 
@@ -74,6 +74,10 @@ while [[ $# -gt 0 ]]; do
             CONFIG_FILE="$2"
             shift 2
             ;;
+        --log-dir)
+            LOG_DIR="$2"
+            shift 2
+            ;;
         --repo-branch)
             GH_BRANCH="$2"
             shift 2
@@ -125,6 +129,9 @@ if [[ -z $PROJECT_NAME ]]; then
     usage
 fi
 if [[ -z $VENUE_NAME ]]; then
+    usage
+fi
+if [[ -z $LOG_DIR ]]; then
     usage
 fi
 
@@ -193,8 +200,6 @@ echo "---------------------------------------------------------"
 export MC_SHA="${MC_SHA}"
 export STACK_NAME="unity-management-console-${PROJECT_NAME}-${VENUE_NAME}"
 export GH_BRANCH="${GH_BRANCH}"
-TODAYS_DATE=$(date '+%F_%H-%M')
-LOG_DIR=nightly_logs/log_${TODAYS_DATE}
 
 #
 # Create common SSM params
