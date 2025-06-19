@@ -201,6 +201,8 @@ export MC_SHA="${MC_SHA}"
 export STACK_NAME="unity-management-console-${PROJECT_NAME}-${VENUE_NAME}"
 export GH_BRANCH="${GH_BRANCH}"
 
+TODAYS_DATE=$(date '+%F_%H-%M')
+
 #
 # Create common SSM params
 #
