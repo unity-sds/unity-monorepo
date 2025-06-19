@@ -465,7 +465,7 @@ cat cloudformation_events.txt |sed 's/\s*},*//g' |sed 's/\s*{//g' |sed 's/\s*\]/
 EVENTS=$(cat CF_EVENTS.txt |grep -v ResourceProperties)
 echo "$EVENTS" > CF_EVENTS.txt
 cat CF_EVENTS.txt
-CF_EVENTS=$(cat CF_EVENTS.txt)
+CF_EVENTS=$(head -50 CF_EVENTS.txt)
 
 # The rest of your script, including posting to Slack, can go here
 # Ensure to only post to Slack if tests were run 
