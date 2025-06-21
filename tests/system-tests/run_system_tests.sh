@@ -5,7 +5,6 @@ PROJECT_NAME=""
 VENUE_NAME=""
 GH_BRANCH="main"
 DEPLOYMENT_START_TIME=$(date +%s)
-LOG_S3_PATH=""
 
 # Function to display usage instructions
 usage() {
@@ -104,7 +103,7 @@ if [ -z "$SLACK_URL_VAL" ] ; then
 fi
 if [ -z "$AIRFLOW_ENDPOINT" ] ; then
     echo "ERROR: Could not read Airflow endpoint from SSM." ; exit 1
-fu
+fi
 
 mkdir -p ${LOG_DIR}
 
@@ -120,12 +119,10 @@ if ! grep -q "behave " out.txt; then
 fi
 
 # Install behave-testrail-reporter if needed and not installed
-if [[ "$USE_TESTRAIL" == "true" ]]; then
-  pip3 list | grep "behave-testrail-reporter" > out.txt
-  if ! grep -q "behave-testrail-reporter" out.txt; then
-    echo "Installing behave-testrail-reporter..."
-    pip3 install behave-testrail-reporter
-  fi
+pip3 list | grep "behave-testrail-reporter" > out.txt
+if ! grep -q "behave-testrail-reporter" out.txt; then
+  echo "Installing behave-testrail-reporter..."
+  pip3 install behave-testrail-reporter
 fi
 
 rm out.txt
@@ -168,29 +165,23 @@ BDD_OUTPUT=$(echo -e "${BDD_OUTPUT}")
 mv behave_nightly_output.txt ${LOG_DIR}
 
 # Push the output logs/screenshots to S3 for review/auditing purposesa
-echo "Pushing test results to ${LOG_S3_PATH}..."
-if aws s3 cp ${LOG_DIR} ${LOG_S3_PATH}/${LOG_DIR} --recursive; then
-  echo "Test results successfully pushed to S3."
+if [[ -n $LOG_S3_PATH ]]; then
+  echo "Pushing test results to ${LOG_S3_PATH}..."
+  if aws s3 cp ${LOG_DIR} ${LOG_S3_PATH}/${LOG_DIR} --recursive; then
+    echo "Test results successfully pushed to S3."
+  fi
 fi
 
 # Post results to Slack
 curl_output=$(curl -X POST -H 'Content-type: application/json' \
   --data \
     '{
-       "bdd_summary": "'"${BDD_OUTPUT}"'",
+       "bdd_summary" : "'"${BDD_OUTPUT}"'",
        "bdd_output_url" : "'"${LOG_S3_PATH}/${LOG_DIR}/behave_nightly_output.txt"'"
      }' \
   ${SLACK_URL_VAL})
 
 echo "Curl response: ${curl_output}"
-curl_result=$(echo $curl_output | python -c "import sys, json; print(json.load(sys.stdin)['ok'])")
-if [[ "$curl_result" != "True" ]]; then
-  message=$(echo "Error posting nightly test results: ${curl_output}.")
-  echo -e $message
-  curl -X POST -H 'Content-type: application/json' \
-  --data '{"bdd_summary" : '"${message}"'}' \
-  ${SLACK_URL_VAL}
-fi
 
 # prune older log directories
 BASE_LOG_DIR=./system_test_logs
