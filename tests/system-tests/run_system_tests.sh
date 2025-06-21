@@ -141,12 +141,6 @@ end_time=$(date +%s)
 # Calculate the duration
 duration=$((end_time - start_time))
 
-rm -f behave_summary.txt
-echo -e "\n\nBDD Summary: " >> behave_summary.txt
-tail -4 behave_nightly_output.txt | grep "passed, " >> behave_summary.txt
-tail -4 behave_nightly_output.txt | grep "Took " >> behave_summary.txt
-echo -e "\n\n" >> behave_summary.txt
-
 # extract out the meaningful but brief snippets of the behave output
 BDD_SUMMARY="BDD SUMMARY:\n$(tail -4 behave_nightly_output.txt)\n------------------------------------------\n\n\n"
 BDD_OUTPUT="${BDD_SUMMARY}$(grep -E 'Feature: |'\
