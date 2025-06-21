@@ -9,7 +9,7 @@ LOG_S3_PATH=""
 
 # Function to display usage instructions
 usage() {
-    echo "Usage: $0 --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> [--log-s3-path <LOG_S3_PATH>] [--testrail <true|false>] [--repo-branch <branch>]"
+    echo "Usage: $0 --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> --log-dir <LOCAL_LOG_DIR> [--log-s3-path <LOG_S3_PATH>] [--testrail <true|false>] [--repo-branch <branch>]"
     exit 1
 }
 
@@ -39,6 +39,10 @@ while [[ $# -gt 0 ]]; do
             VENUE_NAME="$2"
             shift 2
             ;;
+        --log-dir)
+            LOG_DIR="$2"
+            shift 2
+            ;;
         --log-s3-path)
             LOG_S3_PATH="$2"
             shift 2
@@ -59,6 +63,9 @@ if [[ -z $PROJECT_NAME ]]; then
     usage
 fi
 if [[ -z $VENUE_NAME ]]; then
+    usage
+fi
+if [[ -z $LOG_DIR ]]; then
     usage
 fi
 
@@ -85,8 +92,9 @@ echo "---------------------------------------------------------"
 
 export GH_BRANCH="${GH_BRANCH}"
 TODAYS_DATE=$(date '+%F_%H-%M')
-BASE_LOG_DIR=./system_test_logs
-LOG_DIR=${BASE_LOG_DIR}/system_test_log_${TODAYS_DATE}
+
+# set up gherkin/behave environment
+source ./set_test_params.sh
 
 #
 # Check values are set
@@ -121,9 +129,6 @@ if [[ "$USE_TESTRAIL" == "true" ]]; then
 fi
 
 rm out.txt
-
-# set up gherkin/behave environment
-source ./set_test_params.sh
 
 # Start the timer
 start_time=$(date +%s)
@@ -188,5 +193,6 @@ if [[ "$curl_result" != "True" ]]; then
 fi
 
 # prune older log directories
+BASE_LOG_DIR=./system_test_logs
 find "$BASE_LOG_DIR" -mindepth 1 -maxdepth 1 -type d -mtime +7 -exec echo "Deleting directory: {}" \; -exec rm -r {} \;
 
