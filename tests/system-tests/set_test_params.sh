@@ -54,11 +54,11 @@ export AIRFLOW_ENDPOINT=$(get_ssm_val "$UNITY_AIRFLOW_ENDPOINT_SSM")
 VENUE_BUCKET_SSM="${SSM_PREFIX}/venue-bucket"
 export VENUE_BUCKET=$(get_ssm_val "$VENUE_BUCKET_SSM")
 
-# DOCKSTORE_API_SSM="${SSM_PREFIX}/dockstore/api"
-# export DOCKSTORE_API=$(get_ssm_val "$DOCKSTORE_API_SSM")
+DOCKSTORE_API_SSM="${SSM_PREFIX}/dockstore/api"
+export DOCKSTORE_API=$(get_ssm_val "$DOCKSTORE_API_SSM")
 
-# DOCKSTORE_TOKEN_SSM="${SSM_PREFIX}/dockstore/token"
-# export DOCKSTORE_TOKEN=$(get_ssm_val "$DOCKSTORE_TOKEN_SSM")
+DOCKSTORE_TOKEN_SSM="${SSM_PREFIX}/dockstore/token"
+export DOCKSTORE_TOKEN=$(get_ssm_val "$DOCKSTORE_TOKEN_SSM")
 
 
 # ---------------------------------------
