@@ -143,7 +143,7 @@ def step_impl(context):  # noqa: F811
     found = False
     check = 1
     cd = None
-    print(f"looking for output file {context.output_file} for collection {collection_id}}")
+    print(f"looking for output file {context.output_file} for collection {collection_id}")
     while found is False and check < 20:
         cd = data_manager.get_collection_data(Collection(collection_id), limit=100)
         print(cd)
