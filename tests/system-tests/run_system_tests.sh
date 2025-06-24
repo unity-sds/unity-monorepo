@@ -1,14 +1,14 @@
 #!/bin/bash
 
 USE_TESTRAIL=No
-PROJECT_NAME=""
-VENUE_NAME=""
+PROJECT=""
+VENUE=""
 GH_BRANCH="main"
 DEPLOYMENT_START_TIME=$(date +%s)
 
 # Function to display usage instructions
 usage() {
-    echo "Usage: $0 --project-name <PROJECT_NAME> --venue-name <VENUE_NAME> --log-dir <LOCAL_LOG_DIR> [--log-s3-path <LOG_S3_PATH>] [--testrail <true|false>] [--repo-branch <branch>]"
+    echo "Usage: $0 --project-name <PROJECT> --venue-name <VENUE> --log-dir <LOCAL_LOG_DIR> [--log-s3-path <LOG_S3_PATH>] [--testrail <true|false>] [--repo-branch <branch>]"
     exit 1
 }
 
@@ -31,11 +31,11 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         --project-name)
-            PROJECT_NAME="$2"
+            PROJECT="$2"
             shift 2
             ;;
         --venue-name)
-            VENUE_NAME="$2"
+            VENUE="$2"
             shift 2
             ;;
         --log-dir)
@@ -58,10 +58,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Check if mandatory options are provided
-if [[ -z $PROJECT_NAME ]]; then
+if [[ -z $PROJECT ]]; then
     usage
 fi
-if [[ -z $VENUE_NAME ]]; then
+if [[ -z $VENUE ]]; then
     usage
 fi
 if [[ -z $LOG_DIR ]]; then
@@ -84,8 +84,8 @@ rm out.txt
 
 echo "RUN ARGUMENTS: "
 echo "  - Use testrail?                   $USE_TESTRAIL"
-echo "  - Project Name:                   $PROJECT_NAME"
-echo "  - Venue Name:                     $VENUE_NAME"
+echo "  - Project Name:                   $PROJECT"
+echo "  - Venue Name:                     $VENUE"
 echo "  - Github Branch :                 $GH_BRANCH"
 echo "---------------------------------------------------------"
 

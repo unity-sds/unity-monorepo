@@ -2,20 +2,7 @@
 
 source ../nightly_tests/define_ssm_functions.sh
 
-SSM_PREFIX="/${PROJECT_NAME}/${VENUE_NAME}/system-test"
-
-# ---------------------------------------
-# GitHub
-# ---------------------------------------
-# GITHUB_USERNAME_SSM="${SSM_PREFIX}/github/username"
-# GITHUB_USERNAME_VAL=$(get_ssm_val "$GITHUB_USERNAME_SSM")
-
-# GITHUB_USEREMAIL_SSM="${SSM_PREFIX}/github/useremail"
-# GITHUB_USEREMAIL_VAL=$(get_ssm_val "$GITHUB_USEREMAIL_SSM")
-
-# GITHUB_TOKEN_SSM="${SSM_PREFIX}/githubtoken"
-# GITHUB_TOKEN_VAL=$(get_ssm_val "$GITHUB_TOKEN_SSM")
-
+SSM_PREFIX="/${PROJECT}/${VENUE}/system-test"
 
 # ---------------------------------------
 # Posting slack results
