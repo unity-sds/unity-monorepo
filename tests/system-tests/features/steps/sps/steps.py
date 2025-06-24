@@ -58,7 +58,6 @@ def step_impl(context):  # noqa: F811
     date = datetime.now().strftime("%m%d%YT%H%M%S")
     s3bucket = os.environ.get("VENUE_BUCKET", None)
     output_collection = f"urn:nasa:unity:{project}:{venue}:unity-tutorial___1"
-    )
     output_file = f"summary_table_{date}.txt"
 
     context.output_file = output_file
