@@ -57,10 +57,9 @@ def step_impl(context):  # noqa: F811
     # We get a datetime to append to the file names we create so we can ensure a _new_ file is added to the system.
     date = datetime.now().strftime("%m%d%YT%H%M%S")
     s3bucket = os.environ.get("VENUE_BUCKET", None)
-    output_collection = "urn:nasa:unity:{0}:{1}:unity-tutorial___1".format(
-        project, venue
+    output_collection = f"urn:nasa:unity:{project}:{venue}:unity-tutorial___1"
     )
-    output_file = "summary_table_{0}.txt".format(date)
+    output_file = f"summary_table_{date}.txt"
 
     context.output_file = output_file
     context.output_collection = output_collection
@@ -132,7 +131,7 @@ def step_impl(context):  # noqa: F811
             headers=request_headers
         )
         state = dag_run_response.json()["state"]
-        print("Dag run state is {}".format(state))
+        print(f"Dag run state is {state}")
         time.sleep(30)
     assert state == "success"
 
@@ -145,7 +144,7 @@ def step_impl(context):  # noqa: F811
     found = False
     check = 1
     cd = None
-    print("finding data for collection {}".format(collection_id))
+    print(f"looking for output file {context.output_file} for collection {collection_id}}")
     while found is False and check < 20:
         cd = data_manager.get_collection_data(Collection(collection_id), limit=100)
         print(cd)
