@@ -142,8 +142,8 @@ end_time=$(date +%s)
 duration=$((end_time - start_time))
 
 # extract out the meaningful but brief snippets of the behave output
-BDD_SUMMARY="BDD SUMMARY:\n$(tail -4 behave_nightly_output.txt)\n------------------------------------------\n\n\n"
-BDD_OUTPUT="${BDD_SUMMARY}$(grep -E 'Feature: |'\
+BDD_OUTPUT="BDD Test Results\n"\
+$(grep -E 'Feature: |'\
 'Scenario: |'\
 'Scenario Outline: |'\
 '^Failing scenarios:$|'\
