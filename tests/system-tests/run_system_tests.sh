@@ -68,6 +68,8 @@ if [[ -z $LOG_DIR ]]; then
     usage
 fi
 
+export PROJECT=${PROJECT}
+export VENUE=${VENUE}
 
 # Install python3-pip
 sudo apt update

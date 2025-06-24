@@ -7,8 +7,8 @@ SSM_PREFIX="/${PROJECT}/${VENUE}/system-test"
 # ---------------------------------------
 # Posting slack results
 # ---------------------------------------
-SLACK_WEB_HOOK_URL_SSM="${SSM_PREFIX}/slack-web-hook-url"
-SLACK_URL_VAL=$(get_ssm_val "$SLACK_WEB_HOOK_URL_SSM")
+export SLACK_WEB_HOOK_URL_SSM="${SSM_PREFIX}/slack-web-hook-url"
+export SLACK_URL_VAL=$(get_ssm_val "$SLACK_WEB_HOOK_URL_SSM")
 
 
 # ---------------------------------------
