@@ -142,7 +142,7 @@ end_time=$(date +%s)
 duration=$((end_time - start_time))
 
 # extract out the meaningful but brief snippets of the behave output
-BDD_OUTPUT="BDD Test Results\n"\
+BDD_OUTPUT="BDD Test Results:
 $(grep -E 'Feature: |'\
 'Scenario: |'\
 'Scenario Outline: |'\
