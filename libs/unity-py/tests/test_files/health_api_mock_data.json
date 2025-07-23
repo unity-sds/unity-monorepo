@@ -1,0 +1,68 @@
+{
+  "services": [
+      {
+          "componentName": "Airflow API",
+          "componentCategory": "general",
+          "componentType": "api",
+          "description": "",
+          "ssmKey": "/unity/unity/dev/component/luca/airflow-api",
+          "healthCheckUrl": "http://k8s-airflow-airflowi-c68f394a2a-1712638265.us-west-2.elb.amazonaws.com:5000/api/v1/health",
+          "landingPageUrl": "http://k8s-airflow-airflowi-c68f394a2a-1712638265.us-west-2.elb.amazonaws.com:5000/api/v1",
+          "healthChecks": [
+              {
+                  "status": "HEALTHY",
+                  "httpResponseCode": "200",
+                  "date": "2024-07-26T07:29:21.316116"
+              }
+          ]
+      },
+      {
+          "componentName": "Airflow UI",
+          "componentCategory": "general",
+          "componentType": "ui",
+          "description": "",
+          "ssmKey": "/unity/unity/dev/component/luca/airflow-ui",
+          "healthCheckUrl": "http://k8s-airflow-airflowi-c68f394a2a-1712638265.us-west-2.elb.amazonaws.com:5000/health",
+          "landingPageUrl": "http://k8s-airflow-airflowi-c68f394a2a-1712638265.us-west-2.elb.amazonaws.com:5000",
+          "healthChecks": [
+              {
+                  "status": "HEALTHY",
+                  "httpResponseCode": "200",
+                  "date": "2024-07-26T07:29:21.363497"
+              }
+          ]
+      },
+      {
+          "componentName": "OGC API",
+          "componentCategory": "general",
+          "componentType": "api",
+          "description": "",
+          "ssmKey": "/unity/unity/dev/component/luca/ogc-api",
+          "healthCheckUrl": "http://k8s-airflow-ogcproce-e84448018d-906922971.us-west-2.elb.amazonaws.com:5001/health",
+          "landingPageUrl": "http://k8s-airflow-ogcproce-e84448018d-906922971.us-west-2.elb.amazonaws.com:5001",
+          "healthChecks": [
+              {
+                  "status": "HEALTHY",
+                  "httpResponseCode": "200",
+                  "date": "2024-07-26T07:29:21.395126"
+              }
+          ]
+      },
+      {
+          "componentName": "Management Console",
+          "componentCategory": "general",
+          "componentType": "ui",
+          "description": "",
+          "ssmKey": "/unity/unity/dev/component/management-console",
+          "healthCheckUrl": "http://unity-dev-httpd-alb-443241596.us-west-2.elb.amazonaws.com:8080/management/api/health_checks",
+          "landingPageUrl": "http://unity-dev-httpd-alb-443241596.us-west-2.elb.amazonaws.com:8080/management/ui",
+          "healthChecks": [
+              {
+                  "status": "UNHEALTHY",
+                  "httpResponseCode": "404",
+                  "date": "2024-07-26T07:29:21.417864"
+              }
+          ]
+      }
+  ]
+}

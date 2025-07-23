@@ -5,6 +5,63 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2025-07-01
+
+### Added
+* Modify Unity-Py Jupyter notebook to provide documentation on how to update an OGC process
+
+## [0.12.0] - 2025-06-10
+
+### Added
+* Introduce a new class as part of stage-out process: STACCollectionCreator class - Utility for creating STAC Collections from file lists 
+
+## [0.11.1] - 2025-06-09
+
+### Added
+* Cognito token fetching now appropriately stores and checks token expiration on token use.
+
+
+## [0.11.0] - 2025-05-19
+
+### Added
+* When creating STAC catalogs using the Collection resource, if an asset is a file local to the catalog file, then the file:size and file:checksum values will be added to the asset's STAC entry.
+
+## [0.10.1] - 2025-03-04
+
+### Added
+
+### Fixed
+
+* Do not fail on case insensitive portion of collection id in DataService::create_collection routine
+* Fixed error handling of DataService routines to use .text instead of the invalid .message attrbute of the response object
+* Cleaned up JSON submitted by DataService::create_collection to not contain less random values
+
+### Changed
+
+* Enforce a specific capitalization for the case insensitive portion of a collection id in DataService::create_collection
+* DataService::create_collection now returns the JSON it submitted to the API
+
+## [0.10.0] - 2025-02-19
+
+### Added
+* Unit test to validate the health services schema
+
+### Fixed
+* Schema definition of health service as it wasn't properly validating enumerated values
+
+### Changed
+* The health services schema has been updated to account for the new fields, componentCategory, componentType, and description
+* Improved error handling of health service methods related to fetching health information from API
+* Unit tests have been updated to use mock data rather than live API endpoints
+* Updated printing of health status report to include new fields mentioned above
+
+### Removed
+* Superfluous unit test that creates a health_service instance
+
+### Security
+
+### Deprecated
+
 ## [0.9.0] - 2025-02-19
 
 ### Added

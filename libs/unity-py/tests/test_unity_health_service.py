@@ -3,6 +3,8 @@ This module contains a set of tests is to ensure that the
 Unity Health Service is functional.
 """
 
+from unittest.mock import patch, Mock
+
 import json
 import pytest
 
@@ -13,30 +15,20 @@ from jsonschema import validate
 
 
 @pytest.mark.regression
-def test_health_service_client_creation():
+def test_health_status_schema():
     """
-    Test that an instance of the health service can be instantiated.
+    Test that Health API schema is valid
     """
-    s = Unity()
-    health_service = s.client(UnityServices.HEALTH_SERVICE)
+    print("Validate Health API Schema")
 
-@pytest.mark.regression
-def test_health_status_retrieval():
-    """
-    Test that health statuses can be retrieved using the health service.
-    """
-    print("Example health status check")
-    s = Unity(environment=UnityEnvironments.DEV)
-    s.set_project("unity")
-    s.set_venue("dev")
-    health_service = s.client(UnityServices.HEALTH_SERVICE)
-    health_statuses = health_service.get_health_status()
-    f = open('../../schemas/health-service/health-services.schema.json', encoding='utf-8')
-    schema = json.load(f)
+    mock_data_file_path = 'tests/test_files/health_api_mock_data.json'
+    schema_file_path = '../../schemas/health-service/health-services.schema.json'
 
-    validate(instance=health_statuses, schema=schema)
-
-    assert health_statuses is not None
+    with open(mock_data_file_path, encoding='utf-8') as f_mock_data, \
+         open(schema_file_path, encoding='utf-8') as f_health_schema:
+        mock_health_data = json.load(f_mock_data)
+        schema = json.load(f_health_schema)
+        validate(instance=mock_health_data, schema=schema)
 
 @pytest.mark.regression
 def test_health_status_printing():
@@ -49,7 +41,14 @@ def test_health_status_printing():
     health_service = s.client(UnityServices.HEALTH_SERVICE)
 
     print("Example health status output using health service object:")
-    health_service.print_health_status()
+
+    mock_data_file_path = 'tests/test_files/health_api_mock_data.json'
+    with open(mock_data_file_path, encoding='utf-8') as f_mock_data:
+        mock_get_patcher = patch('unity_sds_client.services.health_service.requests.get')
+        mock_get = mock_get_patcher.start()
+        mock_get.return_value = Mock(status_code = 200)
+        mock_get.return_value.json.return_value = json.load(f_mock_data)
+        health_service.print_health_status()
 
 @pytest.mark.regression
 def test_health_service_printing():
@@ -61,4 +60,10 @@ def test_health_service_printing():
     s.set_venue("dev")
 
     print("Example health status output using unity object:")
-    print(s)
+    mock_data_file_path = 'tests/test_files/health_api_mock_data.json'
+    with open(mock_data_file_path, encoding='utf-8') as f_mock_data:
+        mock_get_patcher = patch('unity_sds_client.services.health_service.requests.get')
+        mock_get = mock_get_patcher.start()
+        mock_get.return_value = Mock(status_code = 200)
+        mock_get.return_value.json.return_value = json.load(f_mock_data)
+        print(s)

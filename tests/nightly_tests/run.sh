@@ -286,6 +286,15 @@ RAW_SSM_VALUE=$(aws ssm get-parameter --name ${SSM_MC_URL} --query "Parameter.Va
 export MANAGEMENT_CONSOLE_URL="${RAW_SSM_VALUE}"
 echo "Management Console URL: ${MANAGEMENT_CONSOLE_URL}"
 
+# Get the component landing page URL from SSM
+export SSM_COMPONENT_PARAM="/unity/${PROJECT_NAME}/${VENUE_NAME}/component/management-console"
+
+# Get the raw SSM parameter value and extract landing page URL using jq
+COMPONENT_JSON=$(aws ssm get-parameter --name ${SSM_COMPONENT_PARAM} --query "Parameter.Value" --output text)
+LANDING_PAGE_URL=$(echo $COMPONENT_JSON | jq -r '.landingPageUrl')
+echo "Component Landing Page URL: ${LANDING_PAGE_URL}"
+
+
 # Extract just the hostname with debug prints
 STEP1=$(echo $MANAGEMENT_CONSOLE_URL | sed 's|^http://||' | sed 's|^HTTP://||')
 
@@ -357,66 +366,69 @@ fi
 rm $TEMP_CONFIG_FILE
 rm $TEMP_FULL_CONFIG
 
-if [[ "$RUN_TESTS" == "true" ]]; then
-  echo "Checking if Docker is installed..."
-  #
-  # Check if Docker is installed
-  #
-  if ! command -v docker &> /dev/null; then
-    echo "Docker not installed. Installing Docker..."
+echo "Checking if Docker is installed..."
+#
+# Check if Docker is installed
+#
+if ! command -v docker &> /dev/null; then
+  echo "Docker not installed. Installing Docker..."
 
-    # Add Docker's official GPG key
-    sudo apt-get update
-    sudo apt-get install -y ca-certificates curl gnupg
-    sudo install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+  # Add Docker's official GPG key
+  sudo apt-get update
+  sudo apt-get install -y ca-certificates curl gnupg
+  sudo install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-    # Add the repository to Apt sources
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update
+  # Add the repository to Apt sources
+  echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt-get update
 
-    # Install Docker
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    sudo systemctl start docker
-    sleep 10
-
-    echo "Docker installed successfully."
-  else
-    echo "Docker already installed [OK]"
-  fi
-
-  sudo docker pull selenium/standalone-chrome
-  echo "Launching selenium docker..."
-  CONTAINER_ID=$(sudo docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome)
+  # Install Docker
+  sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  sudo systemctl start docker
   sleep 10
 
-  cp nightly_output.txt testing_nightly_output.txt
-else
-  echo "Not checking if docker is installed (--run-tests false)."
-fi # END IF RUN-TESTS
 
-#
-# Wait until a succesful HTTP code is being returned
-# from the load balancer, indicating the Management Console is accessible
-#
-interval=10  # polling interval in seconds
-max_attempts=50
-attempt=1
-while [ $attempt -le $max_attempts ]; do
-    response_code=$(curl -s -o /dev/null -w "%{http_code}" "$MANAGEMENT_CONSOLE_URL")
-    if [[ $response_code =~ ^[2-3][0-9]{2}$ ]]; then
-        echo "Success! HTTP response code $response_code received."
-        break
+  cp nightly_output.txt testing_nightly_output.txt
+
+else
+  echo "Docker already installed [OK]"
+fi
+
+echo "Cleaning up any existing Selenium containers..."
+existing_containers=$(sudo docker ps -a --filter "ancestor=selenium/standalone-chrome" --format "{{.ID}}")
+if [ ! -z "$existing_containers" ]; then
+    echo "Stopping and removing existing Selenium containers..."
+    sudo docker stop $existing_containers
+    sudo docker rm $existing_containers
+fi
+
+sudo docker pull selenium/standalone-chrome
+echo "Launching selenium docker..."
+CONTAINER_ID=$(sudo docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome)
+sleep 10
+
+cp nightly_output.txt selenium_nightly_output.txt
+
+# Run the Selenium test with the landing page URL and 300-second timeout
+echo "Running Management Console verification test..."
+python3 test_landing_page.py "${LANDING_PAGE_URL}" 1200
+TEST_RESULT=$?
+
+if [ $TEST_RESULT -ne 0 ]; then
+    echo "ERROR: Management Console verification failed"
+    if [[ "$DESTROY" == "true" ]]; then
+        echo "Proceeding with resource destruction due to --destroy flag"
     else
-        echo "Attempt $attempt to reach Management Console via httpd -- Received HTTP response code $response_code. Retrying in $interval seconds..."
-        sleep $interval
-        ((attempt++))
+        echo "Exiting due to verification failure"
+        exit 1
     fi
-done
+fi
+
 # End the timer
 end_time=$(date +%s)
 

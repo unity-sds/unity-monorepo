@@ -1,4 +1,7 @@
+import re
 import requests
+
+from datetime import datetime, timezone
 
 from unity_sds_client.unity_exception import UnityException
 from unity_sds_client.unity_session import UnitySession
@@ -6,6 +9,8 @@ from unity_sds_client.resources.collection import Collection
 from unity_sds_client.resources.dataset import Dataset
 from unity_sds_client.resources.data_file import DataFile
 
+# All capitals to match the unity-dataservices stage-out convention
+UNITY_COLLECTION_INVARIANT_PREFIX = "URN:NASA:UNITY"
 
 class DataService(object):
     """
@@ -95,50 +100,33 @@ class DataService(object):
         if collection is None:
             raise UnityException("Invalid collection provided.")
 
-        # test version Information?
-
         # Test collection ID name: project and venue
         if self._session._project is None or self._session._venue is None:
             raise UnityException("To create a collection, the Unity session Project and Venue must be set!")
 
-        if not collection.collection_id.startswith(f"urn:nasa:unity:{self._session._project}:{self._session._venue}"):
-            raise UnityException(f"Collection Identifiers must start with urn:nasa:unity:{self._session._project}:{self._session._venue}")
+        # Enusure the collection ID contains a prefix that conforms to expectations, testing in a case insensitive manner
+        # But promoting to the preferred case
+        submission_collection_id = collection.collection_id
 
-        collection = {
-            "title": "Collection " + collection.collection_id,
+        if not re.search(rf'^{UNITY_COLLECTION_INVARIANT_PREFIX}', submission_collection_id, re.IGNORECASE):
+            raise UnityException(f"Collection Identifiers must start with {UNITY_COLLECTION_INVARIANT_PREFIX}")
+
+        # Make the prefix conform to expected formatting (case) to ensure consistency across services
+        submission_collection_id = re.sub(rf'^{UNITY_COLLECTION_INVARIANT_PREFIX}', UNITY_COLLECTION_INVARIANT_PREFIX, submission_collection_id, flags=re.IGNORECASE)
+
+        if not submission_collection_id.startswith(f"{UNITY_COLLECTION_INVARIANT_PREFIX}:{self._session._project}:{self._session._venue}"):
+            raise UnityException(f"Collection Identifiers must start with {UNITY_COLLECTION_INVARIANT_PREFIX}:{self._session._project}:{self._session._venue}")
+
+        collection_json = {
+            "title": "Collection " + submission_collection_id,
             "type": "Collection",
-            "id": collection.collection_id,
+            "id": submission_collection_id,
             "stac_version": "1.0.0",
-            "description": "TODO",
+            "description": "Collection " + submission_collection_id,
             "providers": [
                 {"name": "unity"}
             ],
-            "links": [
-                {
-                    "rel": "root",
-                    "href": "./collection.json?bucket=unknown_bucket&regex=%7BcmrMetadata.Granule.Collection.ShortName%7D___%7BcmrMetadata.Granule.Collection.VersionId%7D",
-                    "type": "application/json",
-                    "title": "test_file01.nc"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=protected&regex=%5Etest_file.%2A%5C.nc%24",
-                    "type": "data",
-                    "title": "test_file01.nc"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=protected&regex=%5Etest_file.%2A%5C.nc%5C.cas%24",
-                    "type": "metadata",
-                    "title": "test_file01.nc.cas"
-                },
-                {
-                    "rel": "item",
-                    "href": "./collection.json?bucket=private&regex=%5Etest_file.%2A%5C.cmr%5C.xml%24",
-                    "type": "metadata",
-                    "title": "test_file01.cmr.xml"
-                }
-            ],
+            "links": [],
             "stac_extensions": [],
             "extent": {
                 "spatial": {
@@ -154,8 +142,8 @@ class DataService(object):
                 "temporal": {
                     "interval": [
                         [
-                            "2022-10-04T00:00:00.000Z",
-                            "2022-10-04T23:59:59.999Z"
+                            datetime.now(timezone.utc).isoformat(),
+                            datetime.now(timezone.utc).isoformat()
                         ]
                     ]
                 }
@@ -176,9 +164,12 @@ class DataService(object):
         if not dry_run:
             url = self.endpoint + f'am-uds-dapa/collections'
             token = self._session.get_auth().get_token()
-            response = requests.post(url, headers={"Authorization": "Bearer " + token},  json=collection)
+            response = requests.post(url, headers={"Authorization": "Bearer " + token},  json=collection_json)
+
             if response.status_code != 202:
-                raise UnityException("Error creating collection: " + response.message)
+                raise UnityException(f"Error creating collection: " + response.text)
+
+        return collection_json
 
     def define_custom_metadata(self, metadata: dict):
         if self._session._project is None or self._session._venue is None:
@@ -189,7 +180,7 @@ class DataService(object):
         response = requests.put(url, headers={"Authorization": "Bearer " + token},
                                 params={"venue": self._session._venue}, json=metadata)
         if response.status_code != 200:
-            raise UnityException("Error adding custom metadata: " + response.message)
+            raise UnityException("Error adding custom metadata: " + response.text)
 
     def delete_collection_item(self, collection: type = Collection, granule_id: str = None):
         """
